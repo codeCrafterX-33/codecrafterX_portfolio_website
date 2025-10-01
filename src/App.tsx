@@ -6,6 +6,7 @@ import FeatureCards from "./components/sections/FeatureCards";
 import { ExperienceSection } from "./components/sections/ExperienceSection";
 import TechStack from "./components/sections/TechStack";
 import TechSkills from "./components/sections/TechSkills";
+import Contact from "./components/sections/Contact";
 const App = () => {
   return (
     <>
@@ -13,10 +14,11 @@ const App = () => {
       <Hero />
       <ShowcaseSection />
       <LogoSection />
-      <FeatureCards/>
+      <FeatureCards />
       <ExperienceSection />
       <TechSkills />
       <TechStack />
+      <Contact />
     </>
   );
 };

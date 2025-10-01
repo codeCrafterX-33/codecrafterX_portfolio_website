@@ -28,7 +28,7 @@ const TechSkills = () => {
       scrollTrigger: {
         trigger: ".tech-timeline",
         start: "top center",
-        end: "60% center",
+        end: "80% center",
         onUpdate: (self) => {
           gsap.to(".tech-timeline", {
             scaleY: 1 - self.progress,
