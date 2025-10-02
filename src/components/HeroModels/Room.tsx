@@ -173,5 +173,4 @@ export function Room(props: any) {
     </group>
   );
 }
-
 useGLTF.preload("/models/optimized-room.glb");
