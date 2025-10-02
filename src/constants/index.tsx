@@ -30,10 +30,12 @@ export const counterItems = [
 ];
 
 export const navLinks = [
-  { name: "Work", href: "#work" },
+  { name: "Projects", href: "#work" },
   { name: "Experience", href: "#experience" },
   { name: "Skills", href: "#skills" },
-  { name: "Testimonials", href: "#testimonials" },
+  { name: "Process", href: "/process" },
+  { name: "Case Studies", href: "/case-studies" },
+  { name: "Blog", href: "/blog" },
 ];
 
 export const logoIconsList = [

@@ -1,25 +1,25 @@
-import Hero from "./components/sections/Hero";
-import ShowcaseSection from "./components/sections/ShowcaseSection";
+import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import NavBar from "./components/NavBar";
-import LogoSection from "./components/sections/LogoSection";
-import FeatureCards from "./components/sections/FeatureCards";
-import { ExperienceSection } from "./components/sections/ExperienceSection";
-import TechStack from "./components/sections/TechStack";
-import TechSkills from "./components/sections/TechSkills";
-import Contact from "./components/sections/Contact";
+import Home from "./pages/Home";
+import About from "./pages/About";
+import CaseStudies from "./pages/CaseStudies";
+import Blog from "./pages/Blog";
+import BlogPost from "./pages/BlogPost";
+import Process from "./pages/Process";
+
 const App = () => {
   return (
-    <>
+    <Router>
       <NavBar />
-      <Hero />
-      <ShowcaseSection />
-      <LogoSection />
-      <FeatureCards />
-      <ExperienceSection />
-      <TechSkills />
-      <TechStack />
-      <Contact />
-    </>
+      <Routes>
+        <Route path="/" element={<Home />} />
+        <Route path="/about" element={<About />} />
+        <Route path="/case-studies" element={<CaseStudies />} />
+        <Route path="/blog" element={<Blog />} />
+        <Route path="/blog/:slug" element={<BlogPost />} />
+        <Route path="/process" element={<Process />} />
+      </Routes>
+    </Router>
   );
 };
 export default App;

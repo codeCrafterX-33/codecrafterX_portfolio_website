@@ -47,9 +47,19 @@ const ShowcaseSection = () => {
 
   return (
     <section ref={sectionRef} id="work" className="app-showcase">
+      {/* Header */}
+      <div className="text-center mb-16 px-5 md:px-20">
+        <h2 className="text-4xl md:text-5xl font-bold text-white mb-6">
+          Featured <span className="text-transparent bg-clip-text bg-gradient-to-r from-purple-400 to-pink-400">Projects</span>
+        </h2>
+        <p className="text-xl text-gray-300 max-w-3xl mx-auto mb-8">
+          Explore my recent work across web applications, mobile apps, and e-commerce solutions
+        </p>
+      </div>
+
       <div className="w-full">
         <div className="showcaselayout">
-          {/*LEFT: */}
+            {/*LEFT: */}
           <div className="first-project-wrapper" ref={project1Ref}>
             <div className="image-wrapper">
               <img src="/images/project1.png" alt="Campusly" />

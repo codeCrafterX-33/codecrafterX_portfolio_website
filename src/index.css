@@ -128,7 +128,7 @@ section {
     }
 
     .inner {
-      @apply mx-auto flex items-center justify-between;
+      @apply mx-auto flex items-center justify-between flex-wrap gap-2;
     }
 
     .logo {
@@ -151,6 +151,20 @@ section {
           .underline {
             @apply absolute -bottom-1 left-0 w-0 h-0.5 bg-white transition-all duration-300 group-hover:w-full;
           }
+
+          /* Active state styling */
+          a.active {
+            @apply text-white;
+            
+            .underline {
+              @apply w-full;
+            }
+          }
+
+          /* Active indicator dot */
+          a {
+            @apply relative;
+          }
         }
       }
     }
@@ -159,7 +173,7 @@ section {
       @apply flex;
 
       .inner {
-        @apply px-5 py-2 rounded-lg bg-white text-black group-hover:bg-black-50 transition-colors duration-300;
+        @apply px-3 md:px-5 py-2 rounded-lg bg-white text-black group-hover:bg-black-50 transition-colors duration-300 text-sm md:text-base;
 
         span {
           @apply group-hover:text-white transition-colors duration-300;
@@ -169,7 +183,7 @@ section {
   }
 
   .app-showcase {
-    @apply w-full mt-20 px-5 md:px-20 py-10 md:py-20 flex items-center justify-center;
+    @apply w-full mt-20 px-5 md:px-20 py-10 md:py-20 flex flex-col items-center;
 
     .showcaselayout {
       @apply flex xl:flex-row flex-col gap-10 justify-between;
