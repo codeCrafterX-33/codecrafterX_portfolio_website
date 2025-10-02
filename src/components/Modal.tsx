@@ -1,4 +1,4 @@
-import { ReactNode } from "react";
+import { type ReactNode } from "react";
 
 type ModalProps = {
   open: boolean;
@@ -32,7 +32,7 @@ export default function Modal({ open, onClose, title, children }: ModalProps) {
               onClick={onClose}
               className="px-4 py-2 rounded-md bg-white/10 hover:bg-white/20 transition"
             >
-              Close
+              Back to site
             </button>
           </div>
         </div>

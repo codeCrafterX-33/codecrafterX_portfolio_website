@@ -142,9 +142,22 @@ const Contact = () => {
         onClose={() => setShowSuccess(false)}
         title="Message sent"
       >
-        <p className="text-white/80">
-          Thanks for reaching out! I’ll reply to your email shortly.
+        <p className="text-white/80 mb-4">
+          Your message has landed in my inbox 📧 Thanks for reaching out — I’ll
+          get back to you within 24 hours or less.
         </p>
+        <button
+          onClick={() => {
+            setShowSuccess(false);
+            const nameInput = document.getElementById(
+              "name"
+            ) as HTMLInputElement | null;
+            nameInput?.focus();
+          }}
+          className="px-4 py-2 rounded-md bg-white/10 hover:bg-white/20 transition"
+        >
+          Send another message
+        </button>
       </Modal>
     </section>
   );
