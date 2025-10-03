@@ -136,7 +136,7 @@ section {
     }
 
     nav.desktop {
-      @apply hidden lg:flex items-center;
+      @apply hidden md:flex items-center;
 
       ul {
         @apply flex space-x-8;
@@ -166,6 +166,79 @@ section {
             @apply relative;
           }
         }
+      }
+    }
+
+    .desktop-buttons {
+      @apply hidden md:flex;
+    }
+
+    /* Mobile Menu Styles */
+    .mobile-menu-btn {
+      @apply relative w-8 h-8 flex flex-col justify-center cursor-pointer transition-all duration-300 ease-in-out;
+    }
+
+    .hamburger {
+      @apply w-full h-full flex flex-col justify-center space-y-1;
+
+      span {
+        @apply block w-full h-0.5 bg-white transition-all duration-300 ease-in-out;
+      }
+
+      &.open {
+        span:nth-child(1) {
+          @apply transform rotate-45 translate-y-2.5;
+        }
+        span:nth-child(2) {
+          @apply opacity-0;
+        }
+        span:nth-child(3) {
+          @apply transform -rotate-45 -translate-y-2.5;
+        }
+      }
+    }
+
+    .mobile-menu-overlay {
+      @apply fixed inset-0 bg-black/80 backdrop-blur-sm z-[999] transition-opacity duration-300 ease-in-out;
+    }
+
+    .mobile-menu-content {
+      @apply fixed top-20 left-0 w-full bg-zinc-900 border-t border-gray-700 shadow-2xl max-h-[calc(100vh-5rem)] overflow-y-auto relative;
+      animation: slideDown 0.3s ease-out;
+    }
+
+    .mobile-close-btn {
+      @apply absolute top-4 right-4 w-10 h-10 flex items-center justify-center text-white text-2xl font-bold bg-gray-800 hover:bg-gray-700 rounded-full transition-colors duration-300 z-10;
+    }
+
+    .mobile-nav-links {
+      @apply px-5 py-8 space-y-4;
+    }
+
+    .mobile-link {
+      @apply relative block py-4 text-white text-lg font-medium transition-colors duration-300 hover:text-purple-400;
+
+      &.active {
+        @apply text-purple-400;
+      }
+
+      .mobile-active-indicator {
+        @apply absolute left-0 top-1/2 w-1 h-8 bg-gradient-to-b from-purple-400 to-pink-400 transform -translate-y-1/2 rounded-r-full;
+      }
+    }
+
+    .mobile-action-buttons {
+      @apply px-5 py-6 border-t border-gray-700 space-y-3;
+    }
+
+    @keyframes slideDown {
+      from {
+        opacity: 0;
+        transform: translateY(-20px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
       }
     }
 

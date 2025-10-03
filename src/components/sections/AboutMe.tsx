@@ -13,25 +13,44 @@ const AboutMe = () => {
           </p>
         </div>
 
+        {/* Profile Photo Section */}
+        <div className="flex justify-center mb-16">
+          <div className="relative">
+            <img 
+              src="/images/codecrafterX.jpg" 
+              alt="Sopefoluwa" 
+              className="w-48 h-48 rounded-full object-cover border-4 border-purple-500/30 shadow-2xl"
+            />
+            <div className="absolute -bottom-2 -right-2 w-12 h-12 bg-green-500 rounded-full flex items-center justify-center border-4 border-zinc-900">
+              <span className="text-white text-xl">✓</span>
+            </div>
+          </div>
+        </div>
+
         <div className="grid lg:grid-cols-2 gap-12 items-center">
           
           {/* Left Side - Background Story */}
           <div className="space-y-8">
             <div className="bg-gradient-to-br from-gray-800 to-gray-900 rounded-xl p-8 border border-gray-700">
-              <div className="flex items-center mb-6">
-                <span className="w-12 h-12 bg-gradient-to-r from-blue-500 to-purple-500 rounded-xl flex items-center justify-center text-2xl mr-4">
-                  👋
-                </span>
-                <h3 className="text-2xl font-bold text-white">Hi, I'm Sopefoluwa!</h3>
+              <div className="text-center mb-6">
+                <h3 className="text-3xl font-bold text-white mb-2">Hi, I'm Sopefoluwa!</h3>
+                <p className="text-blue-400 font-semibold">Full-Stack Developer & Tech Enthusiast</p>
+                <p className="text-gray-400 text-sm mt-1">Based in China | Former Accountant Turned Developer</p>
               </div>
               
               <div className="space-y-6 text-gray-300 leading-relaxed">
                 <p>
-                  I'm a passionate Software Engineer based in Nigeria, specializing in web development and digital solutions. 
-                  My journey started with curiosity about how websites work, and now I'm dedicated to building exceptional 
-                  digital experiences that solve real-world problems.
+                  I'm a passionate Full-Stack Developer with over a year of experience building cool stuff with JavaScript, 
+                  TypeScript, React, React Native, and more. I work across both web and mobile, and I love creating clean, 
+                  user-friendly interfaces and solving tricky problems under the hood.
                 </p>
                 
+                <p>
+                  I originally came from an <span className="text-blue-400 font-semibold">accounting background</span>, 
+                  but I found my passion in tech and haven't looked back since. That mix of business logic and technical 
+                  know-how helps me build apps that aren't just functional, but actually make sense to users and teams.
+                </p>
+
                 <p>
                   As a Website Manager for Toke Makinwa Beauty, I've helped optimize e-commerce platforms, resulting in 
                   a <span className="text-green-400 font-semibold">40% increase in online sales</span> through collaborative 
@@ -39,9 +58,8 @@ const AboutMe = () => {
                 </p>
 
                 <p>
-                  I've also independently built and managed WordPress e-commerce stores from scratch, like Crismyla International, 
-                  where I achieved a <span className="text-blue-400 font-semibold">60% increase in sales</span> through 
-                  strategic development and digital marketing implementation.
+                  Currently based in China, I'm working on meaningful side projects and actively building in public. 
+                  My goal is to join a forward-thinking team where I can grow and build scalable products that have real impact.
                 </p>
               </div>
             </div>
@@ -54,20 +72,20 @@ const AboutMe = () => {
               </h4>
               <div className="grid grid-cols-2 gap-4">
                 <div className="bg-gray-800/50 rounded-lg p-3 border border-gray-700">
-                  <div className="text-green-400 font-semibold mb-1">E-commerce Solutions</div>
-                  <div className="text-sm text-gray-400">WordPress & Shopify Development</div>
+                  <div className="text-green-400 font-semibold mb-1">Full-Stack Development</div>
+                  <div className="text-sm text-gray-400">JavaScript, TypeScript, React</div>
                 </div>
                 <div className="bg-gray-800/50 rounded-lg p-3 border border-gray-700">
-                  <div className="text-blue-400 font-semibold mb-1">Performance Optimization</div>
-                  <div className="text-sm text-gray-400">Speed & User Experience</div>
+                  <div className="text-blue-400 font-semibold mb-1">Mobile Development</div>
+                  <div className="text-sm text-gray-400">React Native & Expo</div>
                 </div>
                 <div className="bg-gray-800/50 rounded-lg p-3 border border-gray-700">
-                  <div className="text-purple-400 font-semibold mb-1">Digital Marketing</div>
-                  <div className="text-sm text-gray-400">Strategy & Implementation</div>
+                  <div className="text-purple-400 font-semibold mb-1">Business Logic</div>
+                  <div className="text-sm text-gray-400">Accounting Background</div>
                 </div>
                 <div className="bg-gray-800/50 rounded-lg p-3 border border-gray-700">
-                  <div className="text-orange-400 font-semibold mb-1">Multi-platform Management</div>
-                  <div className="text-sm text-gray-400">Unified Brand Presence</div>
+                  <div className="text-orange-400 font-semibold mb-1">AI LLM Integration</div>
+                  <div className="text-sm text-gray-400">Future Focus Area</div>
                 </div>
               </div>
             </div>
@@ -118,7 +136,7 @@ const AboutMe = () => {
                   </div>
                   <div>
                     <div className="text-white font-semibold">Future Goals</div>
-                    <div className="text-gray-400 text-sm">Expanding into full-stack development and contributing to innovative tech solutions</div>
+                    <div className="text-gray-400 text-sm">Diving deep into AI LLM integration and automation to revolutionize business operations and workflows</div>
                   </div>
                 </div>
               </div>
@@ -130,10 +148,15 @@ const AboutMe = () => {
                 <span className="text-xl mr-2">💡</span>
                 Beyond Code
               </h4>
-              <p className="text-gray-300 text-sm leading-relaxed">
-                When I'm not coding, you'll find me exploring new technologies, contributing to open source projects, 
-                or mentoring aspiring developers. I believe in continuous learning and sharing knowledge with the community.
+              <p className="text-gray-300 text-sm leading-relaxed mb-4">
+                Long-term, I want to lead or be part of teams that innovate, solve real-world problems, and bring ideas to life through code. 
+                I'm currently working on meaningful side projects and actively building in public. Open to full-time roles, internships, and collaborations.
               </p>
+              <div className="text-center">
+                <span className="text-purple-400 font-semibold text-sm">
+                  🚀 Let's connect... especially if you're into tech, startups, or creating things that matter!
+                </span>
+              </div>
             </div>
           </div>
         </div>

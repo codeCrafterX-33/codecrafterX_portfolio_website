@@ -29,8 +29,30 @@ export const counterItems = [
   },
 ];
 
+export const socialImgs = [
+  // {
+  //   name: "insta",
+  //   imgPath: "/images/insta.png",
+  // },
+  // {
+  //   name: "fb",
+  //   imgPath: "/images/fb.png",
+  // },
+  {
+    name: "x",
+    imgPath: "/images/x.png",
+    href:"https://x.com/Rowdy_Sammy_"
+  },
+  {
+    name: "linkedin",
+    imgPath: "/images/linkedin.png",
+    href: "https://www.linkedin.com/in/sopefoluwa-bakare/",
+  },
+];
+
+
 export const navLinks = [
-  { name: "Projects", href: "#work" },
+  { name: "Projects", href: "/projects" },
   { name: "Experience", href: "#experience" },
   { name: "Skills", href: "#skills" },
   { name: "Process", href: "/process" },

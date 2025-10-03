@@ -70,7 +70,7 @@ const ProcessMethodologies = () => {
         "Performance monitoring and error tracking",
         "Documentation and knowledge transfer"
       ],
-      tools: ["AWS", "Vercel", "Docker", "New Relic"]
+      tools: ["Vercel", "Docker", "New Relic"]
     }
   ];
 
@@ -185,11 +185,10 @@ const ProcessMethodologies = () => {
                 { name: "Node.js/Express", icon: "🟢", level: "Advanced" },
                 { name: "TypeScript", icon: "📘", level: "Expert" },
                 { name: "MongoDB/PostgreSQL", icon: "🗄️", level: "Advanced" },
-                { name: "AWS/Vercel", icon: "☁️", level: "Intermediate" },
+                { name: "Vercel", icon: "☁️", level: "Intermediate" },
                 { name: "Figma/Design", icon: "🎨", level: "Advanced" },
                 { name: "Docker", icon: "🐳", level: "Intermediate" },
                 { name: "Git/GitHub", icon: "📚", level: "Expert" },
-                { name: "GraphQL", icon: "🔷", level: "Intermediate" },
                 { name: "Tailwind CSS", icon: "🎭", level: "Expert" },
                 { name: "GSAP/Animations", icon: "✨", level: "Advanced" },
                 { name: "Three.js", icon: "🎯", level: "Intermediate" }
