@@ -8,9 +8,9 @@ const ProcessMethodologies = () => {
         "Stakeholder interviews and requirements gathering",
         "Competitive analysis and market research",
         "Technical feasibility assessment",
-        "User persona development and journey mapping"
+        "User persona development and journey mapping",
       ],
-      tools: ["Miro", "Figma", "User Research", "Analytics"]
+      tools: ["Miro", "Figma", "User Research", "Analytics"],
     },
     {
       phase: "Planning",
@@ -20,9 +20,9 @@ const ProcessMethodologies = () => {
         "Project scope definition and timeline estimation",
         "Technology stack selection and architecture planning",
         "Team collaboration setup and communication protocols",
-        "Risk assessment and mitigation strategies"
+        "Risk assessment and mitigation strategies",
       ],
-      tools: ["Notion", "Linear", "GitHub Projects", "Slack"]
+      tools: ["Notion", "Linear", "GitHub Projects", "Slack"],
     },
     {
       phase: "Design",
@@ -32,9 +32,9 @@ const ProcessMethodologies = () => {
         "Wireframing and information architecture",
         "Interactive prototype creation and testing",
         "Design system development and component library",
-        "Accessibility compliance and responsive design"
+        "Accessibility compliance and responsive design",
       ],
-      tools: ["Figma", "Whimsical", "InVision", "Accessibility Tools"]
+      tools: ["Figma", "Whimsical", "InVision", "Accessibility Tools"],
     },
     {
       phase: "Development",
@@ -44,9 +44,9 @@ const ProcessMethodologies = () => {
         "Version control and branching strategy",
         "Continuous integration and automated testing",
         "Code reviews and pair programming sessions",
-        "Performance optimization and security audits"
+        "Performance optimization and security audits",
       ],
-      tools: ["Git", "GitHub Actions", "Jest", "Lighthouse"]
+      tools: ["Git", "GitHub Actions", "Jest", "Lighthouse"],
     },
     {
       phase: "Testing",
@@ -56,9 +56,9 @@ const ProcessMethodologies = () => {
         "Unit and integration testing automation",
         "User acceptance testing and feedback loops",
         "Performance testing and optimization",
-        "Cross-browser and device compatibility testing"
+        "Cross-browser and device compatibility testing",
       ],
-      tools: ["Jest", "Cypress", "Postman", "BrowserStack"]
+      tools: ["Jest", "Cypress", "Postman", "BrowserStack"],
     },
     {
       phase: "Deployment",
@@ -68,55 +68,67 @@ const ProcessMethodologies = () => {
         "Production environment setup and configuration",
         "CI/CD pipeline implementation and monitoring",
         "Performance monitoring and error tracking",
-        "Documentation and knowledge transfer"
+        "Documentation and knowledge transfer",
       ],
-      tools: ["Vercel", "Docker", "New Relic"]
-    }
+      tools: ["Vercel", "Docker", "New Relic"],
+    },
   ];
 
   const principles = [
     {
       title: "User-First Approach",
       description: "Every decision is backed by user research and testing",
-      icon: "👥"
+      icon: "👥",
     },
     {
       title: "Clean Architecture",
-      description: "Scalable, maintainable code following industry best practices",
-      icon: "🏗️"
+      description:
+        "Scalable, maintainable code following industry best practices",
+      icon: "🏗️",
     },
     {
       title: "Agile Methodology",
       description: "Iterative development with regular feedback loops",
-      icon: "🔄"
+      icon: "🔄",
     },
     {
       title: "Performance Focus",
       description: "Optimized for speed, accessibility, and user experience",
-      icon: "⚡"
-    }
+      icon: "⚡",
+    },
   ];
 
   return (
-    <section id="process" className="py-20 px-5 md:px-20 bg-gradient-to-b from-black to-zinc-900">
+    <section
+      id="process"
+      className="py-20 px-5 md:px-20 bg-gradient-to-b from-black to-zinc-900"
+    >
       <div className="max-w-7xl mx-auto">
-        
         {/* Header */}
         <div className="text-center mb-16">
           <h2 className="text-4xl md:text-5xl font-bold text-white mb-6">
-            Process & <span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-cyan-400">Methodologies</span>
+            Process &{" "}
+            <span className="text-transparent bg-clip-text bg-gradient-to-r from-green-400 to-emerald-400">
+              Methodologies
+            </span>
           </h2>
           <p className="text-xl text-gray-300 max-w-3xl mx-auto">
-            How I approach every project to deliver exceptional results consistently
+            How I approach every project to deliver exceptional results
+            consistently
           </p>
         </div>
 
         {/* Core Principles */}
         <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6 mb-20">
           {principles.map((principle, index) => (
-            <div key={index} className="bg-gradient-to-br from-gray-800 to-gray-900 rounded-xl p-6 border border-gray-700 hover:border-blue-500/50 transition-all duration-300">
+            <div
+              key={index}
+              className="bg-gradient-to-br from-gray-800 to-gray-900 rounded-xl p-6 border border-gray-700 hover:border-green-500/50 transition-all duration-300"
+            >
               <div className="text-3xl mb-4">{principle.icon}</div>
-              <h3 className="text-lg font-semibold text-white mb-2">{principle.title}</h3>
+              <h3 className="text-lg font-semibold text-white mb-2">
+                {principle.title}
+              </h3>
               <p className="text-gray-300 text-sm">{principle.description}</p>
             </div>
           ))}
@@ -127,45 +139,54 @@ const ProcessMethodologies = () => {
           <h3 className="text-3xl font-bold text-white mb-8 text-center">
             My Development Process
           </h3>
-          
+
           <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
             {methodologies.map((method, index) => (
               <div key={index} className="relative">
-                
                 {/* Phase Number */}
-                <div className="absolute -top-4 -left-4 w-8 h-8 bg-gradient-to-r from-blue-500 to-cyan-500 rounded-full flex items-center justify-center text-white font-bold text-sm">
+                <div className="absolute -top-4 -left-4 w-8 h-8 bg-gradient-to-r from-green-500 to-emerald-500 rounded-full flex items-center justify-center text-white font-bold text-sm">
                   {index + 1}
                 </div>
-                
+
                 <div className="bg-gradient-to-br from-gray-700 to-gray-800 rounded-xl p-6 border border-gray-600">
                   <div className="flex items-center gap-3 mb-4">
                     <span className="text-2xl">{method.icon}</span>
-                    <h4 className="text-xl font-bold text-white">{method.phase}</h4>
+                    <h4 className="text-xl font-bold text-white">
+                      {method.phase}
+                    </h4>
                   </div>
-                  
-                  <h5 className="text-lg font-semibold text-blue-400 mb-3">{method.title}</h5>
-                  
+
+                  <h5 className="text-lg font-semibold text-green-400 mb-3">
+                    {method.title}
+                  </h5>
+
                   <ul className="space-y-2 mb-4">
                     {method.steps.map((step, stepIndex) => (
-                      <li key={stepIndex} className="flex items-start text-gray-300 text-sm">
-                        <span className="w-1.5 h-1.5 bg-blue-400 rounded-full mt-2 mr-3 flex-shrink-0"></span>
+                      <li
+                        key={stepIndex}
+                        className="flex items-start text-gray-300 text-sm"
+                      >
+                        <span className="w-1.5 h-1.5 bg-green-400 rounded-full mt-2 mr-3 flex-shrink-0"></span>
                         {step}
                       </li>
                     ))}
                   </ul>
-                  
+
                   <div className="flex flex-wrap gap-2">
                     {method.tools.map((tool, toolIndex) => (
-                      <span key={toolIndex} className="bg-blue-500/20 text-blue-400 px-2 py-1 rounded text-xs">
+                      <span
+                        key={toolIndex}
+                        className="bg-green-500/20 text-green-400 px-2 py-1 rounded text-xs"
+                      >
                         {tool}
                       </span>
                     ))}
                   </div>
                 </div>
-                
+
                 {/* Connecting Line */}
                 {index < methodologies.length - 1 && (
-                  <div className="hidden lg:block absolute top-1/2 -right-4 w-8 h-0.5 bg-gradient-to-r from-blue-500 to-transparent"></div>
+                  <div className="hidden lg:block absolute top-1/2 -right-4 w-8 h-0.5 bg-gradient-to-r from-green-500 to-transparent"></div>
                 )}
               </div>
             ))}
@@ -177,7 +198,7 @@ const ProcessMethodologies = () => {
           <h3 className="text-3xl font-bold text-white mb-8">
             Technologies I Work With
           </h3>
-          
+
           <div className="bg-gradient-to-r from-gray-800/50 to-gray-900/50 rounded-xl p-8 border border-gray-700">
             <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-6">
               {[
@@ -191,13 +212,15 @@ const ProcessMethodologies = () => {
                 { name: "Git/GitHub", icon: "📚", level: "Expert" },
                 { name: "Tailwind CSS", icon: "🎭", level: "Expert" },
                 { name: "GSAP/Animations", icon: "✨", level: "Advanced" },
-                { name: "Three.js", icon: "🎯", level: "Intermediate" }
+                { name: "Three.js", icon: "🎯", level: "Intermediate" },
               ].map((tech, index) => (
                 <div key={index} className="text-center group">
                   <div className="text-3xl mb-2 group-hover:scale-110 transition-transform duration-300">
                     {tech.icon}
                   </div>
-                  <h4 className="text-sm font-semibold text-white mb-1">{tech.name}</h4>
+                  <h4 className="text-sm font-semibold text-white mb-1">
+                    {tech.name}
+                  </h4>
                   <p className="text-xs text-gray-400">{tech.level}</p>
                 </div>
               ))}

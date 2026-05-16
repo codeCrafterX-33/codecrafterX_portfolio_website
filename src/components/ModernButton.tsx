@@ -41,19 +41,19 @@ const ModernButton = ({
 
   const variantClasses = {
     primary: `
-      bg-gradient-to-r from-purple-500 to-pink-500 
-      border-transparent text-white shadow-lg shadow-purple-500/25
-      hover:shadow-xl hover:shadow-purple-500/40
-      focus:ring-purple-500
-      before:absolute before:inset-0 before:bg-gradient-to-r before:from-pink-500 before:to-purple-500 
+      bg-gradient-to-r from-green-500 to-emerald-500 
+      border-transparent text-white shadow-lg shadow-emerald-500/25
+      hover:shadow-xl hover:shadow-emerald-500/40
+      focus:ring-green-500
+      before:absolute before:inset-0 before:bg-gradient-to-r before:from-emerald-500 before:to-green-500 
       before:opacity-0 before:transition-opacity before:duration-300 hover:before:opacity-100
     `,
     secondary: `
-      bg-gradient-to-r from-blue-500 to-cyan-500 
-      border-transparent text-white shadow-lg shadow-blue-500/25
-      hover:shadow-xl hover:shadow-blue-500/40
-      focus:ring-blue-500
-      before:absolute before:inset-0 before:bg-gradient-to-r before:from-cyan-500 before:to-blue-500 
+      bg-gradient-to-r from-lime-500 to-green-500 
+      border-transparent text-white shadow-lg shadow-lime-500/25
+      hover:shadow-xl hover:shadow-lime-500/40
+      focus:ring-lime-500
+      before:absolute before:inset-0 before:bg-gradient-to-r before:from-green-500 before:to-lime-500 
       before:opacity-0 before:transition-opacity before:duration-300 hover:before:opacity-100
     `,
     outline: `
@@ -75,28 +75,32 @@ const ModernButton = ({
   const content = (
     <>
       <span className="relative z-10 flex items-center gap-2">
-        {icon && <span className="transition-transform group-hover:scale-110">{icon}</span>}
+        {icon && (
+          <span className="transition-transform group-hover:scale-110">
+            {icon}
+          </span>
+        )}
         {children}
       </span>
-      
+
       {/* Shimmer effect */}
       <div className="absolute inset-0 -top-2 -left-2 bg-gradient-to-r from-transparent via-white/20 to-transparent skew-x-12 transform -translate-x-full group-hover:translate-x-full transition-transform duration-700 ease-out" />
-      
+
       {/* Glow effect */}
-      <div className="absolute inset-0 rounded-xl opacity-0 group-hover:opacity-100 transition-opacity duration-300 bg-gradient-to-r from-purple-400/20 to-pink-400/20 blur-xl -z-10" />
+      <div className="absolute inset-0 rounded-xl opacity-0 group-hover:opacity-100 transition-opacity duration-300 bg-gradient-to-r from-green-400/20 to-emerald-400/20 blur-xl -z-10" />
     </>
   );
 
   if (href) {
     // Use React Router Link for route navigation, regular <a> for hash anchors
-    if (href.startsWith('/') && !href.includes('#')) {
+    if (href.startsWith("/") && !href.includes("#")) {
       return (
         <Link to={href} className={classes}>
           {content}
         </Link>
       );
     }
-    
+
     // Regular link for hash anchors or external URLs
     return (
       <Link to={href} target={target} rel={rel} className={classes}>

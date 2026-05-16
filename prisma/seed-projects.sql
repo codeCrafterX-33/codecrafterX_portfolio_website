@@ -1,0 +1,121 @@
+INSERT INTO "Project" (
+  "id",
+  "slug",
+  "title",
+  "category",
+  "description",
+  "longDescription",
+  "challenge",
+  "solution",
+  "results",
+  "techStack",
+  "images",
+  "liveUrl",
+  "features",
+  "bgColor",
+  "featured",
+  "published",
+  "sortOrder",
+  "updatedAt"
+) VALUES
+(
+  'seed_campusly',
+  'campusly',
+  'Campusly',
+  'Mobile Application',
+  'A platform that helps students connect with other students within or outside their school.',
+  'Campusly is a comprehensive social networking mobile application designed specifically for students. The platform enables students from different educational institutions to connect, share experiences, and build meaningful relationships within the student community.',
+  'Students often struggle to connect with peers outside their immediate social circles or institutions, limiting opportunities for collaboration, knowledge sharing, and networking.',
+  'Developed a React Native mobile application with Firebase backend integration, featuring user profiles, real-time messaging, event sharing, and campus-specific groups to facilitate meaningful student connections.',
+  ARRAY[
+    'Built with React Native for cross-platform iOS and Android support',
+    'Expo framework for streamlined development and deployment',
+    'Firebase integration for real-time data synchronization',
+    'Student verification system ensuring authentic user base',
+    'Interactive campus maps and location-based features'
+  ],
+  ARRAY['React Native', 'Expo', 'Firebase', 'JavaScript', 'React Navigation'],
+  ARRAY['/images/campusly_screen1.png', '/images/campusly_1.jpg', '/images/campusly_3.jpg'],
+  NULL,
+  ARRAY[
+    'User Authentication & Profiles',
+    'Real-time Messaging',
+    'Campus-based Groups',
+    'Event Discovery',
+    'Student Directory',
+    'Push Notifications'
+  ],
+  'bg-[#ecfdf3]',
+  true,
+  true,
+  0,
+  CURRENT_TIMESTAMP
+),
+(
+  'seed_phylote',
+  'phylote',
+  'Phylote',
+  'E-commerce Platform',
+  'Nigeria''s leading armored vehicle and weapons company specializing in security solutions and tactical equipment.',
+  'Phylote is a premium e-commerce platform designed for the defense and security industry. The platform showcases armored vehicles, weapons, and tactical equipment with advanced filtering, customization options, and secure client portals for defense professionals.',
+  'The defense industry requires a specialized e-commerce platform that can handle complex product catalogs, customization requests, secure transactions, and compliance with regulations.',
+  'Developed a React-based e-commerce solution with advanced product filtering, customization tools, secure payment processing, and professional client portals with document verification and order tracking.',
+  ARRAY[
+    'Custom React application with responsive design',
+    'Advanced product filtering and search capabilities',
+    'Secure client portal with document management',
+    'Customization tools for equipment specifications',
+    'Integration with payment processors and logistics partners'
+  ],
+  ARRAY['React', 'Node.js', 'MongoDB', 'Stripe', 'TailwindCSS'],
+  ARRAY['/images/phylote_homepage.png', '/images/phylote_products.png', '/images/phylote_customization.png', '/images/phylote_portal.png'],
+  'https://phyloteng.com',
+  ARRAY[
+    'Product Catalog',
+    'Customization Tools',
+    'Secure Client Portal',
+    'Document Management',
+    'Order Tracking',
+    'Multi-language Support'
+  ],
+  'bg-[#e6fbe9]',
+  true,
+  true,
+  1,
+  CURRENT_TIMESTAMP
+),
+(
+  'seed_crismyla',
+  'crismyla',
+  'Crismyla',
+  'Beauty E-commerce',
+  'A beauty brand offering premium beauty products including perfume, hair care, facials, and skincare essentials.',
+  'Crismyla is a comprehensive beauty e-commerce platform that offers premium beauty products with personalized consultation services, beauty tutorials, and seamless online shopping experience for beauty enthusiasts.',
+  'Creating an immersive beauty shopping experience that allows customers to discover products, book consultations, access expert advice, and make informed purchasing decisions.',
+  'Built a complete WordPress e-commerce solution with WooCommerce integration, featuring product catalogs, virtual consultation booking, beauty tutorials, customer reviews, and personalized product recommendations.',
+  ARRAY[
+    'Complete WordPress e-commerce website built from scratch',
+    'WooCommerce integration for seamless product management',
+    'Virtual consultation booking system',
+    'Beauty tutorial content management',
+    'CRM integration for customer relationship management',
+    'Mobile-responsive design for optimal user experience'
+  ],
+  ARRAY['WordPress', 'WooCommerce', 'PHP', 'MySQL', 'CSS3', 'JavaScript'],
+  ARRAY['/images/crismyl_homepage.png', '/images/crismyla_products.png', '/images/crismyla_consultation.png', '/images/crismyla_blog.png'],
+  'https://crismyla.store',
+  ARRAY[
+    'Product Catalog',
+    'Consultation Booking',
+    'Beauty Tutorials',
+    'Customer Reviews',
+    'Personalized Recommendations',
+    'Mobile Responsive'
+  ],
+  'bg-[#ecfdf3]',
+  true,
+  true,
+  2,
+  CURRENT_TIMESTAMP
+)
+ON CONFLICT ("slug") DO NOTHING;

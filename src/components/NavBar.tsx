@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { useLocation, Link } from "react-router-dom";
 import { navLinks } from "../constants";
 import ModernButton from "./ModernButton";
+import { ThemeToggle } from "./ThemeToggle";
 
 const NavBar = () => {
   const [scrolled, setScrolled] = useState(false);
@@ -22,10 +23,6 @@ const NavBar = () => {
     return () => {
       window.removeEventListener("scroll", handleScroll);
     };
-
-    return () => {
-      window.removeEventListener("scroll", handleScroll);
-    };
   }, []);
 
   const toggleMobileMenu = () => {
@@ -38,38 +35,44 @@ const NavBar = () => {
         <Link className="logo" to="/#hero">
           Sopefoluwa | CodecrafterX
         </Link>
-        
+
         {/* Desktop Navigation */}
         <nav className="desktop">
           <ul>
             {navLinks.map(({ name, href }) => {
               // Check if the link is active based on current route
-              const isActive = 
-                (href.startsWith('/') && location.pathname === href) ||
-                (href.startsWith('#') && location.pathname === '/' && location.hash === href);
-              
+              const isActive =
+                (href.startsWith("/") && location.pathname === href) ||
+                (href.startsWith("#") &&
+                  location.pathname === "/" &&
+                  location.hash === href);
+
               // Use Link for route navigation, special handling for hash anchors
-              if (href.startsWith('#')) {
+              if (href.startsWith("#")) {
                 return (
                   <li key={name} className="group">
-                    <Link to={`/${href}`} className={isActive ? 'active' : ''}>
+                    <Link to={`/${href}`} className={isActive ? "active" : ""}>
                       <span> {name}</span>
-                      <span className={`underline ${isActive ? 'animate-pulse bg-gradient-to-r from-purple-400 to-pink-400' : ''}`}></span>
+                      <span
+                        className={`underline ${isActive ? "animate-pulse bg-gradient-to-r from-green-400 to-emerald-400" : ""}`}
+                      ></span>
                       {isActive && (
-                        <span className="absolute -top-1 -right-1 w-2 h-2 bg-gradient-to-r from-purple-400 to-pink-400 rounded-full animate-pulse"></span>
+                        <span className="absolute -top-1 -right-1 w-2 h-2 bg-gradient-to-r from-green-400 to-emerald-400 rounded-full animate-pulse"></span>
                       )}
                     </Link>
                   </li>
                 );
               }
-              
+
               return (
                 <li key={name} className="group">
-                  <Link to={href} className={isActive ? 'active' : ''}>
+                  <Link to={href} className={isActive ? "active" : ""}>
                     <span> {name}</span>
-                    <span className={`underline ${isActive ? 'animate-pulse bg-gradient-to-r from-purple-400 to-pink-400' : ''}`}></span>
+                    <span
+                      className={`underline ${isActive ? "animate-pulse bg-gradient-to-r from-green-400 to-emerald-400" : ""}`}
+                    ></span>
                     {isActive && (
-                      <span className="absolute -top-1 -right-1 w-2 h-2 bg-gradient-to-r from-purple-400 to-pink-400 rounded-full animate-pulse"></span>
+                      <span className="absolute -top-1 -right-1 w-2 h-2 bg-gradient-to-r from-green-400 to-emerald-400 rounded-full animate-pulse"></span>
                     )}
                   </Link>
                 </li>
@@ -79,12 +82,12 @@ const NavBar = () => {
         </nav>
 
         {/* Mobile Hamburger Button */}
-        <button 
+        <button
           className="md:hidden mobile-menu-btn"
           onClick={toggleMobileMenu}
           aria-label="Toggle mobile menu"
         >
-          <div className={`hamburger ${mobileMenuOpen ? 'open' : ''}`}>
+          <div className={`hamburger ${mobileMenuOpen ? "open" : ""}`}>
             <span></span>
             <span></span>
             <span></span>
@@ -92,19 +95,20 @@ const NavBar = () => {
         </button>
 
         {/* Action Buttons - Desktop */}
-        <div className="desktop-buttons flex flex-col sm:flex-row gap-2 sm:gap-3">
-          <ModernButton 
-            href="/#contact" 
-            variant="primary" 
+        <div className="desktop-buttons flex-col sm:flex-row gap-2 sm:gap-3">
+          <ThemeToggle />
+          <ModernButton
+            href="/#contact"
+            variant="primary"
             size="sm"
             className="text-xs sm:text-sm"
             icon={<span className="text-xs">📧</span>}
           >
             Contact me
           </ModernButton>
-          <ModernButton 
-            href="/about" 
-            variant="outline" 
+          <ModernButton
+            href="/about"
+            variant="outline"
             size="sm"
             className="text-xs sm:text-sm"
             icon={<span className="text-xs">👤</span>}
@@ -116,36 +120,55 @@ const NavBar = () => {
         {/* Mobile Menu Overlay */}
         {mobileMenuOpen && (
           <div className="mobile-menu-overlay" onClick={toggleMobileMenu}>
-            <div className="mobile-menu-content" onClick={(e) => e.stopPropagation()}>
+            <div
+              className="mobile-menu-content"
+              onClick={(e) => e.stopPropagation()}
+            >
               {/* Close Button */}
-              <button 
+              <button
                 className="mobile-close-btn"
                 onClick={toggleMobileMenu}
                 aria-label="Close mobile menu"
               >
                 ×
               </button>
-              
+
               {/* Mobile Navigation Links */}
               <div className="mobile-nav-links">
                 {navLinks.map(({ name, href }) => {
-                  const isActive = 
-                    (href.startsWith('/') && location.pathname === href) ||
-                    (href.startsWith('#') && location.pathname === '/' && location.hash === href);
-                  
-                  if (href.startsWith('#')) {
+                  const isActive =
+                    (href.startsWith("/") && location.pathname === href) ||
+                    (href.startsWith("#") &&
+                      location.pathname === "/" &&
+                      location.hash === href);
+
+                  if (href.startsWith("#")) {
                     return (
-                      <Link key={name} to={`/${href}`} className={`mobile-link ${isActive ? 'active' : ''}`} onClick={toggleMobileMenu}>
+                      <Link
+                        key={name}
+                        to={`/${href}`}
+                        className={`mobile-link ${isActive ? "active" : ""}`}
+                        onClick={toggleMobileMenu}
+                      >
                         {name}
-                        {isActive && <span className="mobile-active-indicator"></span>}
+                        {isActive && (
+                          <span className="mobile-active-indicator"></span>
+                        )}
                       </Link>
                     );
                   }
-                  
+
                   return (
-                    <Link key={name} to={href} className={`mobile-link ${isActive ? 'active' : ''}`} onClick={toggleMobileMenu}>
+                    <Link
+                      key={name}
+                      to={href}
+                      className={`mobile-link ${isActive ? "active" : ""}`}
+                      onClick={toggleMobileMenu}
+                    >
                       {name}
-                      {isActive && <span className="mobile-active-indicator"></span>}
+                      {isActive && (
+                        <span className="mobile-active-indicator"></span>
+                      )}
                     </Link>
                   );
                 })}
@@ -154,9 +177,9 @@ const NavBar = () => {
               {/* Mobile Action Buttons */}
               <div className="mobile-action-buttons">
                 <div onClick={toggleMobileMenu}>
-                  <ModernButton 
-                    href="/#contact" 
-                    variant="primary" 
+                  <ModernButton
+                    href="/#contact"
+                    variant="primary"
                     size="sm"
                     icon={<span className="text-xs">📧</span>}
                   >
@@ -164,9 +187,9 @@ const NavBar = () => {
                   </ModernButton>
                 </div>
                 <div onClick={toggleMobileMenu}>
-                  <ModernButton 
-                    href="/about" 
-                    variant="outline" 
+                  <ModernButton
+                    href="/about"
+                    variant="outline"
                     size="sm"
                     icon={<span className="text-xs">👤</span>}
                   >

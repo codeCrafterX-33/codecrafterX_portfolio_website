@@ -7,50 +7,52 @@ const Footer = () => {
   return (
     <footer className="bg-gradient-to-t from-gray-900 to-black border-t border-gray-800">
       <div className="max-w-7xl mx-auto px-5 md:px-20 py-16">
-        
         {/* Main Footer Content */}
         <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-12 mb-12">
-          
           {/* Brand Section */}
           <div className="space-y-6">
             <div>
               <h3 className="text-2xl font-bold text-white mb-4">
-                CodeCrafter<span className="text-transparent bg-clip-text bg-gradient-to-r from-purple-400 to-blue-400">X</span>
+                CodeCrafter
+                <span className="text-transparent bg-clip-text bg-gradient-to-r from-green-400 to-emerald-400">
+                  X
+                </span>
               </h3>
               <p className="text-gray-300 leading-relaxed">
-                Full-Stack Developer crafting exceptional digital experiences that solve real-world problems.
+                Full-Stack Developer crafting exceptional digital experiences
+                that solve real-world problems.
               </p>
             </div>
-            
+
             {/* Social Links */}
             <div className="flex space-x-4">
               {socialImgs.map((social, index) => (
                 <a
                   key={index}
                   href={social.href}
-                  className="w-10 h-10 bg-gray-800 rounded-lg flex items-center justify-center hover:bg-purple-600 transition-colors duration-300 group"
+                  className="w-10 h-10 bg-black/100 dark:bg-gray-800 rounded-lg flex items-center justify-center hover:bg-green-600 transition-colors duration-300 group"
                   aria-label={social.name}
                   target="_blank"
                   rel="noopener noreferrer"
                 >
-                  <img 
-                    src={social.imgPath} 
+                  <img
+                    src={social.imgPath}
                     alt={social.name}
                     className={`w-5 h-5 ${
-                      social.name === 'x' 
-                        ? 'opacity-70 group-hover:opacity-100' // X icon without filters (often has white background)
-                        : 'filter brightness-0 invert opacity-70 group-hover:opacity-100'
+                      social.name === "x"
+                        ? "opacity-70 group-hover:opacity-100" // X icon without filters (often has white background)
+                        : "filter brightness-0 invert opacity-70 group-hover:opacity-100"
                     }`}
                   />
                 </a>
               ))}
             </div>
-            
+
             {/* Email Contact */}
             <div className="mt-18">
-              <a 
+              <a
                 href="mailto:codecrafterx@sopefoluwabakare.dev"
-                className="inline-flex items-center text-gray-300 hover:text-purple-400 transition-colors duration-300"
+                className="inline-flex items-center text-gray-300 hover:text-green-400 transition-colors duration-300"
               >
                 <span className="mr-2">📧</span>
                 <span>codecrafterx@sopefoluwabakare.dev</span>
@@ -60,30 +62,47 @@ const Footer = () => {
 
           {/* Quick Links */}
           <div className="space-y-4">
-            <h4 className="text-lg font-semibold text-white mb-6">Quick Links</h4>
+            <h4 className="text-lg font-semibold text-white mb-6">
+              Quick Links
+            </h4>
             <ul className="space-y-3">
               <li>
-                <Link to="/" className="text-gray-300 hover:text-purple-400 transition-colors duration-300">
+                <Link
+                  to="/"
+                  className="text-gray-300 hover:text-green-400 transition-colors duration-300"
+                >
                   Home
                 </Link>
               </li>
               <li>
-                <Link to="/about" className="text-gray-300 hover:text-purple-400 transition-colors duration-300">
+                <Link
+                  to="/about"
+                  className="text-gray-300 hover:text-green-400 transition-colors duration-300"
+                >
                   About Me
                 </Link>
               </li>
               <li>
-                <Link to="/projects" className="text-gray-300 hover:text-purple-400 transition-colors duration-300">
+                <Link
+                  to="/projects"
+                  className="text-gray-300 hover:text-green-400 transition-colors duration-300"
+                >
                   Projects
                 </Link>
               </li>
               <li>
-                <Link to="/case-studies" className="text-gray-300 hover:text-purple-400 transition-colors duration-300">
+                <Link
+                  to="/case-studies"
+                  className="text-gray-300 hover:text-green-400 transition-colors duration-300"
+                >
                   Case Studies
                 </Link>
               </li>
               <li>
-                <Link to="/process" className="text-gray-300 hover:text-purple-400 transition-colors duration-300">
+                <Link
+                  to="/process"
+                  className="text-gray-300 hover:text-green-400 transition-colors duration-300"
+                >
                   Process
                 </Link>
               </li>
@@ -105,7 +124,9 @@ const Footer = () => {
 
           {/* Contact Info */}
           <div className="space-y-4">
-            <h4 className="text-lg font-semibold text-white mb-6">Get In Touch</h4>
+            <h4 className="text-lg font-semibold text-white mb-6">
+              Get In Touch
+            </h4>
             <div className="space-y-3">
               <p className="text-gray-300">
                 📍 <span className="ml-2">Based in China</span>
@@ -116,13 +137,13 @@ const Footer = () => {
               <p className="text-gray-300">
                 🚀 <span className="ml-2">Building in Public</span>
               </p>
-        </div>
-            
+            </div>
+
             {/* Call to Action */}
             <div className="pt-4">
-              <Link 
+              <Link
                 to="/#contact"
-                className="inline-flex items-center px-4 py-2 bg-gradient-to-r from-purple-500 to-blue-500 text-white rounded-lg hover:from-purple-600 hover:to-blue-600 transition-all duration-300 text-sm font-medium"
+                className="inline-flex items-center px-4 py-2 bg-gradient-to-r from-green-500 to-emerald-500 text-white rounded-lg hover:from-green-600 hover:to-emerald-600 transition-all duration-300 text-sm font-medium"
               >
                 Let's Connect →
               </Link>
@@ -133,7 +154,6 @@ const Footer = () => {
         {/* Bottom Section */}
         <div className="border-t border-gray-800 pt-8">
           <div className="flex flex-col md:flex-row justify-between items-center space-y-4 md:space-y-0">
-            
             {/* Copyright */}
             <div className="text-center md:text-left">
               <p className="text-gray-400 text-sm">
@@ -148,23 +168,29 @@ const Footer = () => {
             <div className="flex items-center space-x-6">
               <span className="text-gray-400 text-xs">Built with:</span>
               <div className="flex space-x-2">
-                <span className="px-2 py-1 bg-blue-500/20 text-blue-300 text-xs rounded-full">React</span>
-                <span className="px-2 py-1 bg-purple-500/20 text-purple-300 text-xs rounded-full">TypeScript</span>
-                <span className="px-2 py-1 bg-green-500/20 text-green-300 text-xs rounded-full">Tailwind</span>
+                <span className="px-2 py-1 bg-black/100 dark:bg-green-500/20 text-green-300 text-xs rounded-full">
+                  React
+                </span>
+                <span className="px-2 py-1 bg-black/100 dark:bg-emerald-500/20 text-emerald-300 text-xs rounded-full">
+                  TypeScript
+                </span>
+                <span className="px-2 py-1 bg-black/100 dark:bg-green-500/20 text-green-300 text-xs rounded-full">
+                  Tailwind
+                </span>
               </div>
             </div>
 
             {/* Additional Links */}
             <div className="flex space-x-6">
-              <Link 
-                to="/process" 
-                className="text-gray-400 hover:text-purple-400 text-xs transition-colors duration-300"
+              <Link
+                to="/process"
+                className="text-gray-400 hover:text-green-400 text-xs transition-colors duration-300"
               >
                 Privacy Policy
               </Link>
-              <Link 
-                to="/case-studies" 
-                className="text-gray-400 hover:text-purple-400 text-xs transition-colors duration-300"
+              <Link
+                to="/case-studies"
+                className="text-gray-400 hover:text-green-400 text-xs transition-colors duration-300"
               >
                 Terms of Service
               </Link>

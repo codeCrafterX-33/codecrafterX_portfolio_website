@@ -82,7 +82,11 @@ const TechSkills = () => {
 
                     <div className="tech-expText flex xl:gap-20 md:gap-10 gap-5 relative z-20">
                       <div className="tech-timeline-logo">
-                        <img src={skill.logoPath} alt="logo" />
+                        <img
+                          src={skill.logoPath}
+                          alt="logo"
+                          className="size-full rounded-full object-contain p-1 md:p-2"
+                        />
                       </div>
                       <div>
                         <h1 className="text-3xl font-semibold">

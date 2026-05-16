@@ -19,7 +19,7 @@ export default function Modal({ open, onClose, title, children }: ModalProps) {
           className="pointer-events-none absolute -inset-[2px] rounded-2xl opacity-80 blur-md"
           style={{
             background:
-              "conic-gradient(from 180deg at 50% 50%, #a855f7, #ec4899, #f59e0b, #22d3ee, #a855f7)",
+              "conic-gradient(from 180deg at 50% 50%, #16a34a, #22c55e, #4ade80, #86efac, #16a34a)",
           }}
         />
         <div className="relative rounded-xl bg-zinc-900 text-white p-6 shadow-xl border border-white/10">

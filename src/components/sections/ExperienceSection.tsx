@@ -5,19 +5,28 @@ import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { useGSAP } from "@gsap/react";
 
+interface ExpCard {
+  company: string;
+  review: string;
+  role: string;
+  logoPath: string;
+  duration: string;
+  responsibilities: string[];
+}
+
 gsap.registerPlugin(ScrollTrigger);
 
 export const ExperienceSection = () => {
   useGSAP(() => {
-    gsap.utils.toArray(".timeline-card").forEach((card: any) => {
-      gsap.from(card, {
+    gsap.utils.toArray(".timeline-card").forEach((card) => {
+      gsap.from(card as gsap.TweenTarget, {
         xPercent: -100,
         opacity: 0,
         transformOrigin: "left left",
         duration: 1,
         ease: "power2.inOut",
         scrollTrigger: {
-          trigger: card,
+          trigger: card as gsap.DOMTarget,
           start: "top 80%",
         },
       });
@@ -38,15 +47,15 @@ export const ExperienceSection = () => {
       },
     });
 
-    gsap.utils.toArray(".expText").forEach((text: any) => {
-      gsap.from(text, {
+    gsap.utils.toArray(".expText").forEach((text) => {
+      gsap.from(text as gsap.DOMTarget, {
         xPercent: 0,
         opacity: 0,
-    
+
         duration: 1,
         ease: "power2.inOut",
         scrollTrigger: {
-          trigger: text,
+          trigger: text as gsap.DOMTarget,
           start: "top 60%",
         },
       });
@@ -65,8 +74,8 @@ export const ExperienceSection = () => {
         />
         <div className="mt-32 relative">
           <div className="relative z-50 xl:space-y-32 space-y-10">
-            {expCards.map((card: any) => (
-              <div key={card.title} className="exp-card-wrapper">
+            {expCards.map((card: ExpCard) => (
+              <div key={card.company} className="exp-card-wrapper">
                 <div className="xl:w-2/6">
                   <GlowCard card={card}>
                     <div>
@@ -83,7 +92,11 @@ export const ExperienceSection = () => {
 
                     <div className="expText flex xl:gap-20 md:gap-10 gap-5 relative z-20">
                       <div className="timeline-logo">
-                        <img src={card.logoPath} alt="logo" />
+                        <img
+                          src={card.logoPath}
+                          alt="logo"
+                          className="size-full rounded-full object-contain p-1 md:p-2"
+                        />
                       </div>
                       <div>
                         <h1 className="text-3xl font-semibold">{card.role}</h1>
@@ -94,7 +107,7 @@ export const ExperienceSection = () => {
                         </p>
                         <ul className="list-disc ms-5 mt-5 flex flex-col gap-5 text-white-50">
                           {" "}
-                          {card.responsibilities.map((responsibility: any) => (
+                          {card.responsibilities.map((responsibility: string) => (
                             <li key={responsibility}>{responsibility}</li>
                           ))}{" "}
                         </ul>

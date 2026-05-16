@@ -15,7 +15,7 @@ const Hero = () => {
         duration: 1,
         stagger: 0.2,
         ease: "power2.inOut",
-      }
+      },
     );
   });
   return (
@@ -32,13 +32,13 @@ const Hero = () => {
             <div className="mb-4 flex items-start gap-6">
               {/* Gradient Line */}
               <div className="flex flex-col items-center">
-                <div className="w-3 h-3 rounded-full bg-purple-400 mb-2"></div>
+                <div className="w-3 h-3 rounded-full bg-green-400 mb-2"></div>
                 <div className="gradient-line w-1 h-20"></div>
               </div>
 
               <div>
                 <h1 className="text-4xl md:text-3xl lg:text-2xl xl:text-5xl font-bold text-white mb-2">
-                  Hi, I'm <span className="text-purple-400">Sopefoluwa</span>
+                  Hi, I'm <span className="text-green-400">Sopefoluwa</span>
                 </h1>
                 <h2 className="text-xl md:text-2xl lg:text-1xl xl:text-1xl font-semibold text-white-50">
                   A passionate Software Engineer

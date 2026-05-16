@@ -9,6 +9,8 @@ import BlogPost from "./pages/BlogPost";
 import Process from "./pages/Process";
 import Projects from "./pages/Projects";
 import ProjectTemplate from "./pages/ProjectTemplate";
+import { ThemeToggle } from "./components/ThemeToggle";
+import AdminProjects from "./pages/AdminProjects";
 
 const App = () => {
   return (
@@ -23,7 +25,11 @@ const App = () => {
         <Route path="/process" element={<Process />} />
         <Route path="/projects" element={<Projects />} />
         <Route path="/projects/:projectId" element={<ProjectTemplate />} />
+        <Route path="/admin/projects" element={<AdminProjects />} />
       </Routes>
+      <div className="fixed bottom-5 right-5 z-[140] md:hidden">
+        <ThemeToggle />
+      </div>
       <Footer />
     </Router>
   );
