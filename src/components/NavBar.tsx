@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useLocation, Link } from "react-router-dom";
 import { navLinks } from "../constants";
 import ModernButton from "./ModernButton";
@@ -6,34 +6,67 @@ import { ThemeToggle } from "./ThemeToggle";
 
 const NavBar = () => {
   const [scrolled, setScrolled] = useState(false);
+  const [hidden, setHidden] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const revealTimer = useRef<number | null>(null);
   const location = useLocation();
 
   // Handle scroll event to change navbar style
-
   useEffect(() => {
     const handleScroll = () => {
-      const isScrolled = window.scrollY > 10;
+      const currentScrollY = window.scrollY;
+      const isScrolled = currentScrollY > 10;
+
       setScrolled(isScrolled);
+
+      if (!isScrolled || mobileMenuOpen) {
+        setHidden(false);
+        return;
+      }
+
+      setHidden(true);
+
+      if (revealTimer.current) {
+        window.clearTimeout(revealTimer.current);
+      }
+
+      revealTimer.current = window.setTimeout(() => {
+        setHidden(false);
+      }, 1000);
     };
 
+    handleScroll();
     window.addEventListener("scroll", handleScroll);
 
     // Cleanup event listener on component unmount
     return () => {
       window.removeEventListener("scroll", handleScroll);
+      if (revealTimer.current) {
+        window.clearTimeout(revealTimer.current);
+      }
     };
-  }, []);
+  }, [mobileMenuOpen]);
 
   const toggleMobileMenu = () => {
     setMobileMenuOpen(!mobileMenuOpen);
   };
 
   return (
-    <header className={`navbar ${scrolled ? "scrolled" : "not-scrolled"}`}>
-      <div className="inner">
-        <Link className="logo" to="/#hero">
-          Sopefoluwa | CodecrafterX
+    <header
+      className={`navbar ${scrolled ? "scrolled" : "not-scrolled"} ${
+        hidden ? "hidden-up" : "visible-down"
+      }`}
+    >
+      <div className="inner px-2 md:py-5">
+        <Link
+          className="logo flex w-[280px] shrink-0 items-center justify-start -translate-x-8 md:-translate-x-4"
+          to="/"
+        >
+          <img
+            src="/images/logos/codecrafter_logo.png"
+            alt="CodeCrafterX"
+            className="h-12 md:h-10 w-auto object-contain max-w-none origin-left scale-[1.2] md:scale-[1.9] transition-transform duration-300 ease-in-out"
+          />
         </Link>
 
         {/* Desktop Navigation */}
@@ -66,7 +99,11 @@ const NavBar = () => {
 
               return (
                 <li key={name} className="group">
-                  <Link to={href} className={isActive ? "active" : ""}>
+                  <Link
+                    to={href}
+                    reloadDocument
+                    className={isActive ? "active" : ""}
+                  >
                     <span> {name}</span>
                     <span
                       className={`underline ${isActive ? "animate-pulse bg-gradient-to-r from-green-400 to-emerald-400" : ""}`}

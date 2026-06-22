@@ -1,4 +1,4 @@
-import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
+import { BrowserRouter as Router, Routes, Route, Navigate } from "react-router-dom";
 import NavBar from "./components/NavBar";
 import Footer from "./components/sections/Footer";
 import Home from "./pages/Home";
@@ -10,11 +10,14 @@ import Process from "./pages/Process";
 import Projects from "./pages/Projects";
 import ProjectTemplate from "./pages/ProjectTemplate";
 import { ThemeToggle } from "./components/ThemeToggle";
+import AdminProjectEditor from "./pages/AdminProjectEditor";
 import AdminProjects from "./pages/AdminProjects";
+import ScrollToTop from "./components/ScrollToTop";
 
 const App = () => {
   return (
     <Router>
+      <ScrollToTop />
       <NavBar />
       <Routes>
         <Route path="/" element={<Home />} />
@@ -25,7 +28,10 @@ const App = () => {
         <Route path="/process" element={<Process />} />
         <Route path="/projects" element={<Projects />} />
         <Route path="/projects/:projectId" element={<ProjectTemplate />} />
+        <Route path="/admin" element={<Navigate to="/admin/projects" replace />} />
         <Route path="/admin/projects" element={<AdminProjects />} />
+        <Route path="/admin/projects/new" element={<AdminProjectEditor />} />
+        <Route path="/admin/projects/:slug/edit" element={<AdminProjectEditor />} />
       </Routes>
       <div className="fixed bottom-5 right-5 z-[140] md:hidden">
         <ThemeToggle />

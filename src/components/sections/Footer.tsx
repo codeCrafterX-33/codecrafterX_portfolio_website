@@ -5,7 +5,7 @@ const Footer = () => {
   const currentYear = new Date().getFullYear();
 
   return (
-    <footer className="bg-gradient-to-t from-gray-900 to-black border-t border-gray-800">
+    <footer className="mt-20 bg-gradient-to-t from-gray-900 to-black border-t border-gray-800">
       <div className="max-w-7xl mx-auto px-5 md:px-20 py-16">
         {/* Main Footer Content */}
         <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-12 mb-12">
@@ -39,8 +39,8 @@ const Footer = () => {
                     src={social.imgPath}
                     alt={social.name}
                     className={`w-5 h-5 ${
-                      social.name === "x"
-                        ? "opacity-70 group-hover:opacity-100" // X icon without filters (often has white background)
+                      social.name === "x" || social.name === "whatsapp"
+                        ? "opacity-70 group-hover:opacity-100" // X and WhatsApp icons already carry their own colors.
                         : "filter brightness-0 invert opacity-70 group-hover:opacity-100"
                     }`}
                   />
@@ -54,7 +54,12 @@ const Footer = () => {
                 href="mailto:codecrafterx@sopefoluwabakare.dev"
                 className="inline-flex items-center text-gray-300 hover:text-green-400 transition-colors duration-300"
               >
-                <span className="mr-2">📧</span>
+                <img
+                  src="/images/logos/codecrafter_logo.png"
+                  alt=""
+                  aria-hidden="true"
+                  className="mr-2 h-7 w-auto object-contain"
+                />
                 <span>codecrafterx@sopefoluwabakare.dev</span>
               </a>
             </div>
@@ -69,6 +74,7 @@ const Footer = () => {
               <li>
                 <Link
                   to="/"
+                  reloadDocument
                   className="text-gray-300 hover:text-green-400 transition-colors duration-300"
                 >
                   Home
@@ -77,6 +83,7 @@ const Footer = () => {
               <li>
                 <Link
                   to="/about"
+                  reloadDocument
                   className="text-gray-300 hover:text-green-400 transition-colors duration-300"
                 >
                   About Me
@@ -85,6 +92,7 @@ const Footer = () => {
               <li>
                 <Link
                   to="/projects"
+                  reloadDocument
                   className="text-gray-300 hover:text-green-400 transition-colors duration-300"
                 >
                   Projects
@@ -93,6 +101,7 @@ const Footer = () => {
               <li>
                 <Link
                   to="/case-studies"
+                  reloadDocument
                   className="text-gray-300 hover:text-green-400 transition-colors duration-300"
                 >
                   Case Studies
@@ -101,6 +110,7 @@ const Footer = () => {
               <li>
                 <Link
                   to="/process"
+                  reloadDocument
                   className="text-gray-300 hover:text-green-400 transition-colors duration-300"
                 >
                   Process
@@ -142,7 +152,8 @@ const Footer = () => {
             {/* Call to Action */}
             <div className="pt-4">
               <Link
-                to="/#contact"
+                to="/"
+                reloadDocument
                 className="inline-flex items-center px-4 py-2 bg-gradient-to-r from-green-500 to-emerald-500 text-white rounded-lg hover:from-green-600 hover:to-emerald-600 transition-all duration-300 text-sm font-medium"
               >
                 Let's Connect →
@@ -184,12 +195,14 @@ const Footer = () => {
             <div className="flex space-x-6">
               <Link
                 to="/process"
+                reloadDocument
                 className="text-gray-400 hover:text-green-400 text-xs transition-colors duration-300"
               >
                 Privacy Policy
               </Link>
               <Link
                 to="/case-studies"
+                reloadDocument
                 className="text-gray-400 hover:text-green-400 text-xs transition-colors duration-300"
               >
                 Terms of Service

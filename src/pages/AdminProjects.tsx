@@ -1,133 +1,146 @@
-import { useEffect, useMemo, useState, type FormEvent } from "react";
+import { SignInButton, UserButton, useAuth, useUser } from "@clerk/clerk-react";
 import {
-  createProject,
-  deleteProject,
-  getProjects,
-  updateProject,
-} from "../lib/projectsApi";
-import type { Project, ProjectInput } from "../types/project";
+  ArrowUpRight,
+  LayoutDashboard,
+  Pencil,
+  Plus,
+  Star,
+  Trash2,
+} from "lucide-react";
+import { useCallback, useEffect, useMemo, useState } from "react";
+import { Link } from "react-router-dom";
+import { deleteProject, getProjects } from "../lib/projectsApi";
+import type { Project } from "../types/project";
 
-type ProjectFormState = {
-  slug: string;
-  title: string;
-  category: string;
-  description: string;
-  longDescription: string;
-  challenge: string;
-  solution: string;
-  results: string;
-  techStack: string;
-  images: string;
-  liveUrl: string;
-  features: string;
-  bgColor: string;
-  featured: boolean;
-  published: boolean;
-  sortOrder: number;
-};
+const statusPillClass =
+  "inline-flex items-center rounded-full px-3 py-1 text-xs font-bold uppercase tracking-[0.12em]";
 
-const emptyForm: ProjectFormState = {
-  slug: "",
-  title: "",
-  category: "",
-  description: "",
-  longDescription: "",
-  challenge: "",
-  solution: "",
-  results: "",
-  techStack: "",
-  images: "",
-  liveUrl: "",
-  features: "",
-  bgColor: "bg-[#ecfdf3]",
-  featured: true,
-  published: true,
-  sortOrder: 0,
-};
+const isClerkAdmin = (role: unknown): role is "admin" => role === "admin";
 
-const listFromText = (value: string) =>
-  value
-    .split(/\n|,/)
-    .map((item) => item.trim())
-    .filter(Boolean);
+const AdminProjectsSkeleton = () => (
+  <main className="min-h-screen w-full max-w-full overflow-x-hidden bg-[#f6f1e8] px-4 pb-20 pt-32 text-slate-950 dark:bg-[#111111] dark:!text-white sm:px-6 lg:px-8">
+    <div className="mx-auto w-full max-w-7xl min-w-0">
+      <section className="mb-8 w-full max-w-full overflow-hidden rounded-3xl border border-slate-950/10 bg-[#101820] shadow-[0_24px_80px_rgba(15,23,42,0.16)] dark:border-white/10">
+        <div className="flex min-w-0 flex-col gap-8 p-6 md:p-8">
+          <div className="flex flex-wrap items-center justify-between gap-4">
+            <div className="h-9 w-40 animate-pulse rounded-full bg-white/10" />
+            <div className="h-10 w-36 animate-pulse rounded-full bg-white/10" />
+          </div>
 
-const textFromList = (value: string[]) => value.join("\n");
+          <div className="grid min-w-0 gap-8 xl:grid-cols-[minmax(0,1fr)_minmax(0,480px)] xl:items-end">
+            <div className="min-w-0">
+              <div className="h-12 w-72 max-w-full animate-pulse rounded-2xl bg-white/10 md:h-14" />
+              <div className="mt-5 h-4 w-full max-w-xl animate-pulse rounded-full bg-white/10" />
+              <div className="mt-3 h-4 w-2/3 max-w-md animate-pulse rounded-full bg-white/10" />
+            </div>
 
-const slugify = (value: string) =>
-  value
-    .toLowerCase()
-    .trim()
-    .replace(/[^a-z0-9]+/g, "-")
-    .replace(/(^-|-$)+/g, "");
+            <div className="grid min-w-0 gap-3 sm:grid-cols-3 xl:max-w-[480px]">
+              {[0, 1, 2].map((item) => (
+                <div
+                  key={item}
+                  className="rounded-2xl border border-white/10 bg-white/[0.08] p-4"
+                >
+                  <div className="mb-3 h-9 w-9 animate-pulse rounded-full bg-white/15" />
+                  <div className="h-3 w-24 animate-pulse rounded-full bg-white/10" />
+                </div>
+              ))}
+            </div>
+          </div>
+        </div>
+      </section>
 
-const formFromProject = (project: Project): ProjectFormState => ({
-  slug: project.slug,
-  title: project.title,
-  category: project.category,
-  description: project.description,
-  longDescription: project.longDescription,
-  challenge: project.challenge,
-  solution: project.solution,
-  results: textFromList(project.results),
-  techStack: textFromList(project.techStack),
-  images: textFromList(project.images),
-  liveUrl: project.liveUrl ?? "",
-  features: textFromList(project.features),
-  bgColor: project.bgColor ?? "bg-[#ecfdf3]",
-  featured: project.featured,
-  published: project.published,
-  sortOrder: project.sortOrder,
-});
+      <section className="w-full max-w-full overflow-hidden rounded-3xl border border-slate-950/10 bg-white p-5 shadow-sm dark:border-white/10 dark:bg-zinc-950 md:p-6">
+        <div className="mb-6 flex min-w-0 flex-wrap items-center justify-between gap-4">
+          <div className="min-w-0">
+            <div className="h-3 w-24 animate-pulse rounded-full bg-emerald-200 dark:bg-emerald-300/20" />
+            <div className="mt-3 h-8 w-36 animate-pulse rounded-xl bg-slate-200 dark:bg-white/10" />
+          </div>
+          <div className="h-10 w-32 animate-pulse rounded-full bg-slate-200 dark:bg-white/10" />
+        </div>
 
-const inputFromForm = (form: ProjectFormState): ProjectInput => ({
-  slug: form.slug || slugify(form.title),
-  title: form.title,
-  category: form.category,
-  description: form.description,
-  longDescription: form.longDescription,
-  challenge: form.challenge,
-  solution: form.solution,
-  results: listFromText(form.results),
-  techStack: listFromText(form.techStack),
-  images: listFromText(form.images),
-  liveUrl: form.liveUrl || null,
-  features: listFromText(form.features),
-  bgColor: form.bgColor || null,
-  featured: form.featured,
-  published: form.published,
-  sortOrder: Number(form.sortOrder) || 0,
-});
-
-const fieldClass =
-  "w-full rounded-lg border border-slate-300 bg-white px-4 py-3 text-slate-950 outline-none transition focus:border-emerald-500 dark:border-zinc-700 dark:bg-zinc-900 dark:text-white";
-
-const labelClass = "text-sm font-semibold text-slate-700 dark:text-white-50";
+        <div className="grid min-w-0 grid-cols-1 gap-4 md:grid-cols-[repeat(2,minmax(0,1fr))] xl:grid-cols-[repeat(3,minmax(0,1fr))]">
+          {[0, 1, 2, 3, 4, 5].map((item) => (
+            <article
+              key={item}
+              className="min-w-0 rounded-2xl border border-slate-200 bg-white p-4 dark:border-white/10 dark:bg-zinc-900"
+            >
+              <div className="mb-4 aspect-video animate-pulse rounded-xl bg-slate-100 dark:bg-zinc-800" />
+              <div className="flex min-w-0 items-start justify-between gap-3">
+                <div className="min-w-0 flex-1">
+                  <div className="h-5 w-4/5 animate-pulse rounded-full bg-slate-200 dark:bg-white/10" />
+                  <div className="mt-3 h-4 w-2/3 animate-pulse rounded-full bg-slate-100 dark:bg-white/10" />
+                </div>
+                <div className="h-8 w-8 animate-pulse rounded-full bg-amber-100 dark:bg-amber-300/15" />
+              </div>
+              <div className="mt-4 flex min-w-0 flex-wrap gap-2">
+                <div className="h-7 w-24 animate-pulse rounded-full bg-emerald-100 dark:bg-emerald-300/15" />
+                <div className="h-7 w-32 animate-pulse rounded-full bg-slate-100 dark:bg-white/10" />
+              </div>
+              <div className="mt-5 flex min-w-0 gap-2">
+                <div className="h-10 flex-1 animate-pulse rounded-full bg-slate-100 dark:bg-white/10" />
+                <div className="h-10 w-12 animate-pulse rounded-full bg-red-100 dark:bg-red-400/15" />
+              </div>
+            </article>
+          ))}
+        </div>
+      </section>
+    </div>
+  </main>
+);
 
 const AdminProjects = () => {
-  const [adminToken, setAdminToken] = useState(
-    () => localStorage.getItem("admin-token") ?? "",
-  );
+  const { getToken } = useAuth();
+  const { isLoaded, isSignedIn, user } = useUser();
   const [projects, setProjects] = useState<Project[]>([]);
-  const [form, setForm] = useState<ProjectFormState>(emptyForm);
-  const [editingSlug, setEditingSlug] = useState("");
-  const [message, setMessage] = useState("");
   const [error, setError] = useState("");
-  const [isSaving, setIsSaving] = useState(false);
-  const [isUploading, setIsUploading] = useState(false);
+  const [isLoadingProjects, setIsLoadingProjects] = useState(false);
+  const [isDeletingSlug, setIsDeletingSlug] = useState("");
 
-  const canSubmit = useMemo(
-    () => adminToken.trim().length > 0 && form.title.trim().length > 0,
-    [adminToken, form.title],
-  );
+  const hasAdminRole = isClerkAdmin(user?.publicMetadata?.role);
 
-  const loadProjects = async (token = adminToken) => {
+  const dashboardStats = useMemo(() => {
+    const publishedCount = projects.filter((project) => project.published).length;
+    const featuredCount = projects.filter((project) => project.featured).length;
+
+    return [
+      {
+        label: "Total projects",
+        value: projects.length,
+        tone: "bg-slate-950 !text-white dark:bg-white dark:!text-black",
+      },
+      {
+        label: "Published",
+        value: publishedCount,
+        tone: "bg-emerald-600 !text-white",
+      },
+      {
+        label: "Featured",
+        value: featuredCount,
+        tone: "bg-amber-500 text-slate-950",
+      },
+    ];
+  }, [projects]);
+
+  const getSessionToken = useCallback(async () => {
+    const token = await getToken();
     if (!token) {
+      throw new Error("Sign in required.");
+    }
+    return token;
+  }, [getToken]);
+
+  const loadProjects = useCallback(async (showSkeleton = true) => {
+    if (!isSignedIn || !hasAdminRole) {
       return;
     }
 
     try {
       setError("");
-      const nextProjects = await getProjects({ adminToken: token });
+      if (showSkeleton) {
+        setIsLoadingProjects(true);
+      }
+      const token = await getSessionToken();
+      const nextProjects = await getProjects({ authToken: token });
       setProjects(nextProjects);
     } catch (loadError) {
       setError(
@@ -135,114 +148,26 @@ const AdminProjects = () => {
           ? loadError.message
           : "Unable to load admin projects.",
       );
+    } finally {
+      if (showSkeleton) {
+        setIsLoadingProjects(false);
+      }
     }
-  };
+  }, [getSessionToken, hasAdminRole, isSignedIn]);
 
   useEffect(() => {
+    if (!isLoaded) {
+      return;
+    }
+
+    if (!isSignedIn) {
+      setProjects([]);
+      setIsLoadingProjects(false);
+      return;
+    }
+
     void loadProjects();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
-
-  const updateField = <Key extends keyof ProjectFormState>(
-    key: Key,
-    value: ProjectFormState[Key],
-  ) => {
-    setForm((current) => ({ ...current, [key]: value }));
-  };
-
-  const saveToken = () => {
-    localStorage.setItem("admin-token", adminToken);
-    void loadProjects(adminToken);
-  };
-
-  const resetForm = () => {
-    setForm(emptyForm);
-    setEditingSlug("");
-  };
-
-  const handleSubmit = async (event: FormEvent) => {
-    event.preventDefault();
-
-    if (!canSubmit) {
-      setError("Add your admin token and project title first.");
-      return;
-    }
-
-    try {
-      setIsSaving(true);
-      setError("");
-      setMessage("");
-
-      if (editingSlug) {
-        await updateProject(editingSlug, inputFromForm(form), { adminToken });
-        setMessage("Project updated.");
-      } else {
-        await createProject(inputFromForm(form), { adminToken });
-        setMessage("Project created.");
-      }
-
-      resetForm();
-      await loadProjects();
-    } catch (saveError) {
-      setError(
-        saveError instanceof Error ? saveError.message : "Unable to save project.",
-      );
-    } finally {
-      setIsSaving(false);
-    }
-  };
-
-  const handleUpload = async (files: FileList | null) => {
-    if (!files || files.length === 0) {
-      return;
-    }
-
-    if (!adminToken) {
-      setError("Save your admin token before uploading images.");
-      return;
-    }
-
-    try {
-      setIsUploading(true);
-      setError("");
-
-      const uploadedUrls: string[] = [];
-
-      for (const file of Array.from(files)) {
-        const formData = new FormData();
-        formData.append("file", file);
-
-        const res = await fetch("/api/projects/upload-image", {
-          method: "POST",
-          body: formData,
-          headers: {
-            Authorization: `Bearer ${adminToken}`,
-          },
-        });
-
-        if (!res.ok) {
-          const err = await res.json().catch(() => ({}));
-          throw new Error(err.error || "Upload failed");
-        }
-
-        const data = await res.json();
-        uploadedUrls.push(data.url);
-      }
-
-      setForm((current) => ({
-        ...current,
-        images: [...listFromText(current.images), ...uploadedUrls].join("\n"),
-      }));
-    } catch (uploadError) {
-      setError(
-        uploadError instanceof Error
-          ? uploadError.message
-          : "Unable to upload images.",
-      );
-    } finally {
-      setIsUploading(false);
-    }
-  };
+  }, [isLoaded, isSignedIn, loadProjects]);
 
   const handleDelete = async (slug: string) => {
     if (!window.confirm(`Delete ${slug}?`)) {
@@ -250,318 +175,239 @@ const AdminProjects = () => {
     }
 
     try {
-      await deleteProject(slug, { adminToken });
-      await loadProjects();
-      if (editingSlug === slug) {
-        resetForm();
-      }
+      setIsDeletingSlug(slug);
+      const token = await getSessionToken();
+      await deleteProject(slug, { authToken: token });
+      await loadProjects(false);
     } catch (deleteError) {
       setError(
         deleteError instanceof Error
           ? deleteError.message
           : "Unable to delete project.",
       );
+    } finally {
+      setIsDeletingSlug("");
     }
   };
 
-  return (
-    <main className="min-h-screen bg-gradient-to-b from-emerald-50 to-white px-5 py-24 text-slate-950 dark:from-zinc-900 dark:to-black dark:text-white md:px-12">
-      <div className="mx-auto max-w-6xl">
-        <div className="mb-10">
-          <p className="mb-3 text-sm font-semibold uppercase tracking-[0.2em] text-emerald-700 dark:text-emerald-300">
-            Admin
-          </p>
-          <h1 className="text-4xl font-bold md:text-5xl">Manage Projects</h1>
-          <p className="mt-4 max-w-2xl text-slate-600 dark:text-gray-300">
-            Add, edit, publish, and order portfolio projects from Neon Postgres.
+  if (!isLoaded) {
+    return (
+      <main className="min-h-screen bg-[#f6f1e8] px-5 pb-24 pt-32 text-slate-950 dark:bg-[#111111] dark:!text-white md:px-12">
+        <div className="mx-auto max-w-6xl">
+          <div className="h-2 w-32 animate-pulse rounded-full bg-emerald-500" />
+          <p className="mt-6 text-lg text-slate-600 dark:text-gray-300">
+            Loading admin workspace...
           </p>
         </div>
+      </main>
+    );
+  }
 
-        <div className="mb-8 rounded-xl border border-slate-200 bg-white p-5 shadow-sm dark:border-zinc-700 dark:bg-zinc-900">
-          <label className={labelClass} htmlFor="admin-token">
-            Admin token
-          </label>
-          <div className="mt-2 flex flex-col gap-3 md:flex-row">
-            <input
-              id="admin-token"
-              type="password"
-              value={adminToken}
-              onChange={(event) => setAdminToken(event.target.value)}
-              className={fieldClass}
-              placeholder="Paste ADMIN_TOKEN"
-            />
-            <button
-              type="button"
-              onClick={saveToken}
-              className="rounded-lg bg-emerald-600 px-5 py-3 font-semibold text-white transition hover:bg-emerald-700"
+  if (!isSignedIn) {
+    return (
+      <main className="flex min-h-screen items-center justify-center bg-[#f6f1e8] px-5 pb-12 pt-32 text-slate-950 dark:bg-[#111111] dark:!text-white">
+        <div className="relative w-full max-w-4xl overflow-hidden rounded-3xl border border-slate-950/10 bg-white p-8 shadow-[0_24px_80px_rgba(15,23,42,0.12)] dark:border-white/10 dark:bg-zinc-950 md:p-12">
+          <div className="relative max-w-2xl">
+            <div className="mb-8 inline-flex items-center gap-2 rounded-full border border-slate-950/10 bg-[#fff8ec] px-4 py-2 text-sm font-bold text-slate-700 dark:border-white/10 dark:bg-white/5 dark:!text-white">
+              <LayoutDashboard size={16} />
+              Portfolio admin
+            </div>
+            <h1 className="text-4xl font-black leading-tight tracking-tight md:text-6xl">
+              Sign in to manage the work that shows up on your portfolio.
+            </h1>
+          </div>
+          <div className="relative mt-8 flex flex-wrap items-center gap-4">
+            <SignInButton mode="modal">
+              <button
+                type="button"
+                className="inline-flex items-center gap-2 rounded-full bg-slate-950 px-6 py-3 font-bold !text-white transition hover:bg-emerald-700 dark:bg-white dark:!text-slate-950 dark:hover:bg-emerald-200"
+              >
+                Open admin
+                <ArrowUpRight size={18} />
+              </button>
+            </SignInButton>
+            <Link
+              to="/"
+              reloadDocument
+              className="inline-flex items-center rounded-full border border-slate-300 px-5 py-3 text-sm font-bold text-slate-700 transition hover:border-emerald-500 hover:text-emerald-700 dark:border-white/10 dark:text-gray-200 dark:hover:!text-white"
             >
-              Load
-            </button>
+              Go to homepage
+            </Link>
           </div>
         </div>
+      </main>
+    );
+  }
 
-        {(message || error) && (
-          <div
-            className={`mb-8 rounded-xl border p-4 ${
-              error
-                ? "border-red-500/30 bg-red-500/10 text-red-700 dark:text-red-200"
-                : "border-emerald-500/30 bg-emerald-500/10 text-emerald-800 dark:text-emerald-200"
-            }`}
-          >
-            {error || message}
+  if (!hasAdminRole) {
+    return (
+      <main className="flex min-h-screen items-center justify-center bg-[#f6f1e8] px-5 pb-12 pt-32 text-slate-950 dark:bg-[#111111] dark:!text-white">
+        <div className="w-full max-w-xl rounded-3xl border border-slate-950/10 bg-white p-8 text-center shadow-[0_24px_80px_rgba(15,23,42,0.12)] dark:border-white/10 dark:bg-zinc-950 md:p-12">
+          <h1 className="text-3xl font-black md:text-5xl">Admin access only</h1>
+          <p className="mt-4 text-slate-600 dark:text-gray-300">
+            Your Clerk account is signed in, but it does not have the admin role.
+          </p>
+          <div className="mt-8 flex justify-center">
+            <UserButton afterSignOutUrl="/admin/projects" />
+          </div>
+        </div>
+      </main>
+    );
+  }
+
+  if (isLoadingProjects) {
+    return <AdminProjectsSkeleton />;
+  }
+
+  return (
+    <main className="min-h-screen w-full max-w-full overflow-x-hidden bg-[#f6f1e8] px-4 pb-20 pt-32 text-slate-950 dark:bg-[#111111] dark:!text-white sm:px-6 lg:px-8">
+      <div className="mx-auto w-full max-w-7xl min-w-0">
+        <section className="mb-8 w-full max-w-full overflow-hidden rounded-3xl border border-slate-950/10 bg-[#101820] !text-white shadow-[0_24px_80px_rgba(15,23,42,0.16)] dark:border-white/10">
+          <div className="flex min-w-0 flex-col gap-8 p-6 md:p-8">
+            <div className="flex flex-wrap items-center justify-between gap-4">
+              <div className="inline-flex items-center gap-2 rounded-full bg-white/10 px-4 py-2 text-sm font-bold text-emerald-100">
+                <LayoutDashboard size={16} />
+                Admin workspace
+              </div>
+              <div className="inline-flex items-center gap-3 rounded-full border border-white/10 bg-white/10 px-3 py-2">
+                <span className="text-sm font-bold !text-white">Admin active</span>
+                <UserButton afterSignOutUrl="/admin/projects" />
+              </div>
+            </div>
+
+            <div className="grid min-w-0 gap-8 xl:grid-cols-[minmax(0,1fr)_minmax(0,480px)] xl:items-end">
+	              <div className="min-w-0">
+                <h1 className="text-4xl font-black !text-green-400 leading-tight md:text-5xl">
+                  Project library
+                </h1>
+                <p className="mt-4 max-w-2xl text-base font-medium !text-slate-300 md:text-lg">
+                  Review portfolio projects, open detail editors, and create new
+                  work from a focused page.
+                </p>
+              </div>
+
+              <div className="grid min-w-0 gap-3 sm:grid-cols-3 xl:max-w-[480px]">
+                {dashboardStats.map((stat) => (
+                  <div
+                    key={stat.label}
+                    className="rounded-2xl border border-white/10 bg-white/[0.08] p-4 backdrop-blur"
+                  >
+                    <div
+                      className={`mb-3 inline-flex h-9 w-9 items-center justify-center rounded-full text-sm font-black ${stat.tone}`}
+                    >
+                      {stat.value}
+                    </div>
+                    <p className="text-xs font-bold uppercase tracking-[0.12em] !text-slate-300">
+                      {stat.label}
+                    </p>
+                  </div>
+                ))}
+              </div>
+            </div>
+          </div>
+        </section>
+
+        {error && (
+          <div className="mb-8 rounded-2xl border border-red-500/30 bg-red-500/10 p-4 font-semibold text-red-800 dark:text-red-200">
+            {error}
           </div>
         )}
 
-        <div className="grid gap-8 lg:grid-cols-[1fr_360px]">
-          <form
-            onSubmit={handleSubmit}
-            className="rounded-xl border border-slate-200 bg-white p-6 shadow-sm dark:border-zinc-700 dark:bg-zinc-900"
-          >
-            <div className="mb-6 flex items-center justify-between gap-4">
-              <h2 className="text-2xl font-bold">
-                {editingSlug ? "Edit project" : "New project"}
-              </h2>
-              {editingSlug && (
-                <button
-                  type="button"
-                  onClick={resetForm}
-                  className="rounded-lg border border-slate-300 px-4 py-2 text-sm font-semibold dark:border-zinc-700"
-                >
-                  Clear
-                </button>
-              )}
+        <section className="w-full max-w-full overflow-hidden rounded-3xl border border-slate-950/10 bg-white p-5 shadow-sm dark:border-white/10 dark:bg-zinc-950 md:p-6">
+	          <div className="mb-6 flex min-w-0 flex-wrap items-center justify-between gap-4">
+	            <div className="min-w-0">
+              <p className="text-sm font-bold uppercase tracking-[0.16em] text-emerald-700 dark:text-emerald-300">
+                Library
+              </p>
+              <h2 className="mt-1 text-2xl font-black">Projects</h2>
             </div>
-
-            <div className="grid gap-5 md:grid-cols-2">
-              <label className="space-y-2">
-                <span className={labelClass}>Title</span>
-                <input
-                  value={form.title}
-                  onChange={(event) => updateField("title", event.target.value)}
-                  className={fieldClass}
-                />
-              </label>
-              <label className="space-y-2">
-                <span className={labelClass}>Slug</span>
-                <input
-                  value={form.slug}
-                  onChange={(event) => updateField("slug", event.target.value)}
-                  className={fieldClass}
-                  placeholder="auto-generated from title"
-                />
-              </label>
-              <label className="space-y-2">
-                <span className={labelClass}>Category</span>
-                <input
-                  value={form.category}
-                  onChange={(event) =>
-                    updateField("category", event.target.value)
-                  }
-                  className={fieldClass}
-                />
-              </label>
-              <label className="space-y-2">
-                <span className={labelClass}>Live URL</span>
-                <input
-                  value={form.liveUrl}
-                  onChange={(event) =>
-                    updateField("liveUrl", event.target.value)
-                  }
-                  className={fieldClass}
-                />
-              </label>
-              <label className="space-y-2 md:col-span-2">
-                <span className={labelClass}>Short description</span>
-                <textarea
-                  value={form.description}
-                  onChange={(event) =>
-                    updateField("description", event.target.value)
-                  }
-                  className={fieldClass}
-                  rows={3}
-                />
-              </label>
-              <label className="space-y-2 md:col-span-2">
-                <span className={labelClass}>Long description</span>
-                <textarea
-                  value={form.longDescription}
-                  onChange={(event) =>
-                    updateField("longDescription", event.target.value)
-                  }
-                  className={fieldClass}
-                  rows={4}
-                />
-              </label>
-              <label className="space-y-2">
-                <span className={labelClass}>Challenge</span>
-                <textarea
-                  value={form.challenge}
-                  onChange={(event) =>
-                    updateField("challenge", event.target.value)
-                  }
-                  className={fieldClass}
-                  rows={4}
-                />
-              </label>
-              <label className="space-y-2">
-                <span className={labelClass}>Solution</span>
-                <textarea
-                  value={form.solution}
-                  onChange={(event) =>
-                    updateField("solution", event.target.value)
-                  }
-                  className={fieldClass}
-                  rows={4}
-                />
-              </label>
-              <label className="space-y-2">
-                <span className={labelClass}>Features</span>
-                <textarea
-                  value={form.features}
-                  onChange={(event) =>
-                    updateField("features", event.target.value)
-                  }
-                  className={fieldClass}
-                  rows={5}
-                  placeholder="One per line or comma separated"
-                />
-              </label>
-              <label className="space-y-2">
-                <span className={labelClass}>Results</span>
-                <textarea
-                  value={form.results}
-                  onChange={(event) => updateField("results", event.target.value)}
-                  className={fieldClass}
-                  rows={5}
-                />
-              </label>
-              <label className="space-y-2">
-                <span className={labelClass}>Tech stack</span>
-                <textarea
-                  value={form.techStack}
-                  onChange={(event) =>
-                    updateField("techStack", event.target.value)
-                  }
-                  className={fieldClass}
-                  rows={4}
-                />
-              </label>
-              <label className="space-y-2">
-                <span className={labelClass}>Image URLs</span>
-                <textarea
-                  value={form.images}
-                  onChange={(event) => updateField("images", event.target.value)}
-                  className={fieldClass}
-                  rows={4}
-                />
-              </label>
-              <label className="space-y-2">
-                <span className={labelClass}>Upload images</span>
-                <input
-                  type="file"
-                  accept="image/*"
-                  multiple
-                  onChange={(event) => void handleUpload(event.target.files)}
-                  className={fieldClass}
-                />
-                <span className="block text-xs text-slate-500 dark:text-gray-400">
-                  {isUploading ? "Uploading..." : "Uploads to Cloudinary (server-side)"}
-                </span>
-              </label>
-              <label className="space-y-2">
-                <span className={labelClass}>Card background class</span>
-                <input
-                  value={form.bgColor}
-                  onChange={(event) => updateField("bgColor", event.target.value)}
-                  className={fieldClass}
-                />
-              </label>
-              <label className="space-y-2">
-                <span className={labelClass}>Sort order</span>
-                <input
-                  type="number"
-                  value={form.sortOrder}
-                  onChange={(event) =>
-                    updateField("sortOrder", Number(event.target.value))
-                  }
-                  className={fieldClass}
-                />
-              </label>
-            </div>
-
-            <div className="mt-6 flex flex-wrap gap-6">
-              <label className="flex items-center gap-2 text-sm font-semibold">
-                <input
-                  type="checkbox"
-                  checked={form.featured}
-                  onChange={(event) =>
-                    updateField("featured", event.target.checked)
-                  }
-                />
-                Featured
-              </label>
-              <label className="flex items-center gap-2 text-sm font-semibold">
-                <input
-                  type="checkbox"
-                  checked={form.published}
-                  onChange={(event) =>
-                    updateField("published", event.target.checked)
-                  }
-                />
-                Published
-              </label>
-            </div>
-
-            <button
-              type="submit"
-              disabled={!canSubmit || isSaving}
-              className="mt-8 rounded-lg bg-emerald-600 px-6 py-3 font-semibold text-white transition hover:bg-emerald-700 disabled:cursor-not-allowed disabled:opacity-50"
+            <Link
+              to="/admin/projects/new"
+              reloadDocument
+              className="inline-flex items-center gap-2 rounded-full bg-slate-950 px-4 py-2 text-sm font-bold !text-white transition hover:bg-emerald-700 dark:bg-white dark:!text-slate-950 dark:hover:bg-emerald-200"
             >
-              {isSaving ? "Saving..." : editingSlug ? "Update project" : "Create project"}
-            </button>
-          </form>
+              <Plus size={16} />
+              New project
+            </Link>
+          </div>
 
-          <aside className="rounded-xl border border-slate-200 bg-white p-5 shadow-sm dark:border-zinc-700 dark:bg-zinc-900">
-            <h2 className="mb-4 text-xl font-bold">Projects</h2>
-            <div className="space-y-3">
-              {projects.map((project) => (
-                <div
-                  key={project.id}
-                  className="rounded-lg border border-slate-200 p-4 dark:border-zinc-700"
-                >
-                  <div className="font-semibold">{project.title}</div>
-                  <div className="text-sm text-slate-500 dark:text-gray-400">
-                    /projects/{project.slug}
+          <div className="grid min-w-0 grid-cols-1 gap-4 md:grid-cols-[repeat(2,minmax(0,1fr))] xl:grid-cols-[repeat(3,minmax(0,1fr))]">
+            {projects.map((project) => (
+              <article
+                key={project.id}
+	                className="min-w-0 rounded-2xl border border-slate-200 bg-white p-4 transition hover:border-slate-300 dark:border-white/10 dark:bg-zinc-900 dark:hover:border-white/20"
+              >
+                {project.images[0] && (
+                  <div className="mb-4 aspect-video overflow-hidden rounded-xl bg-slate-100 dark:bg-zinc-800">
+                    <img
+                      src={project.images[0]}
+                      alt={project.title}
+                      className="h-full w-full object-cover"
+                    />
                   </div>
-                  <div className="mt-3 flex gap-2">
-                    <button
-                      type="button"
-                      onClick={() => {
-                        setEditingSlug(project.slug);
-                        setForm(formFromProject(project));
-                      }}
-                      className="rounded-md border border-slate-300 px-3 py-2 text-sm font-semibold dark:border-zinc-700"
-                    >
-                      Edit
-                    </button>
-                    <button
-                      type="button"
-                      onClick={() => void handleDelete(project.slug)}
-                      className="rounded-md bg-red-600 px-3 py-2 text-sm font-semibold text-white"
-                    >
-                      Delete
-                    </button>
+                )}
+	                <div className="flex min-w-0 items-start justify-between gap-3">
+	                  <div className="min-w-0">
+	                    <h3 className="break-words font-black">{project.title}</h3>
+	                    <p className="mt-1 break-all text-sm text-slate-500 dark:text-gray-400">
+                      /projects/{project.slug}
+                    </p>
                   </div>
+                  {project.featured && (
+                    <span className="rounded-full bg-amber-100 p-2 text-amber-700 dark:bg-amber-300/15 dark:text-amber-200">
+                      <Star size={15} fill="currentColor" />
+                    </span>
+                  )}
                 </div>
-              ))}
-              {projects.length === 0 && (
-                <p className="text-sm text-slate-500 dark:text-gray-400">
-                  Add your token and load projects.
-                </p>
-              )}
+	                <div className="mt-4 flex min-w-0 flex-wrap gap-2">
+                  <span
+                    className={`${statusPillClass} ${
+                      project.published
+                        ? "bg-emerald-100 text-emerald-800 dark:bg-emerald-300/15 dark:text-emerald-200"
+                        : "bg-slate-100 text-slate-600 dark:bg-white/10 dark:text-gray-300"
+                    }`}
+                  >
+                    {project.published ? "Published" : "Draft"}
+                  </span>
+	                  <span className={`${statusPillClass} max-w-full break-words bg-slate-100 text-slate-600 dark:bg-white/10 dark:text-gray-300`}>
+                    {project.category || "Uncategorized"}
+                  </span>
+                </div>
+	                <div className="mt-5 flex min-w-0 gap-2">
+                  <Link
+                    to={`/admin/projects/${project.slug}/edit`}
+                    reloadDocument
+                    className="inline-flex flex-1 items-center justify-center gap-2 rounded-full border border-slate-300 px-3 py-2 text-sm font-bold transition hover:border-emerald-500 hover:text-emerald-700 dark:border-white/10 dark:hover:text-emerald-200"
+                  >
+                    <Pencil size={15} />
+                    Edit
+                  </Link>
+                  <button
+                    type="button"
+                    onClick={() => void handleDelete(project.slug)}
+                    disabled={isDeletingSlug === project.slug}
+                    className="inline-flex items-center justify-center rounded-full bg-red-600 px-3 py-2 text-sm font-bold !text-white transition hover:bg-red-700 disabled:cursor-not-allowed disabled:opacity-60"
+                    aria-label={`Delete ${project.title}`}
+                  >
+                    <Trash2 size={15} />
+                  </button>
+                </div>
+              </article>
+            ))}
+          </div>
+
+          {projects.length === 0 && (
+            <div className="rounded-2xl border border-dashed border-slate-300 bg-[#fff8ec] p-8 text-center dark:border-white/15 dark:bg-white/5">
+              <div className="mx-auto mb-4 flex h-12 w-12 items-center justify-center rounded-full bg-emerald-100 text-emerald-700 dark:bg-emerald-300/15 dark:text-emerald-200">
+                <Plus size={22} />
+              </div>
+              <p className="font-black">No projects yet</p>
+              <p className="mt-2 text-sm text-slate-500 dark:text-gray-400">
+                Create the first project from its dedicated editor.
+              </p>
             </div>
-          </aside>
-        </div>
+          )}
+        </section>
       </div>
     </main>
   );

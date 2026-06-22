@@ -11,7 +11,7 @@ const BlogPost = () => {
       <div className="min-h-screen bg-black flex items-center justify-center">
         <div className="text-center">
           <h1 className="text-4xl font-bold text-white mb-4">Post Not Found</h1>
-          <ModernButton href="/blog" variant="primary">
+              <ModernButton href="/blog" variant="primary">
             Back to Blog
           </ModernButton>
         </div>

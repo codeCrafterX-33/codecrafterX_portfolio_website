@@ -12,18 +12,20 @@ model Project {
   title           String
   category        String
   description     String
-  longDescription String
+  longDescription String  @map("longdescription")
   challenge       String
   solution        String
   results         String[]
-  techStack       String[]
+  techStack       String[] @map("techstack")
   images          String[]
-  liveUrl         String?
+  liveUrl         String?  @map("liveurl")
   features        String[]
-  bgColor         String?
+  bgColor         String?  @map("bgcolor")
   featured        Boolean  @default(false)
   published       Boolean  @default(true)
-  sortOrder       Int      @default(0)
-  createdAt       DateTime @default(now())
-  updatedAt       DateTime @updatedAt
+  sortOrder       Int      @default(0) @map("sortorder")
+  createdAt       DateTime @default(now()) @map("createdat")
+  updatedAt       DateTime @updatedAt @map("updatedat")
+
+  @@map("Project")
 }

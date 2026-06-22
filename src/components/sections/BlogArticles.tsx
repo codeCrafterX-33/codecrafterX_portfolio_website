@@ -2,7 +2,7 @@ const BlogArticles = () => {
   return (
     <section
       id="blog"
-      className="py-20 px-5 md:px-20 bg-gradient-to-b from-zinc-900 to-black"
+      className="py-12 px-5 md:px-20 bg-gradient-to-b from-zinc-900 to-black"
     >
       <div className="max-w-7xl mx-auto">
         {/* Header */}

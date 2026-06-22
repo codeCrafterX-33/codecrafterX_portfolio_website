@@ -24,6 +24,7 @@ const ProjectTemplate = () => {
         setProject(nextProject);
         setCurrentImageIndex(0);
       } catch (loadError) {
+        setProject(null);
         setError(
           loadError instanceof Error
             ? loadError.message
@@ -86,7 +87,7 @@ const ProjectTemplate = () => {
       <div className="max-w-7xl mx-auto px-5 md:px-20 py-10">
         {/* Back Button */}
         <div className="mb-8">
-          <Link to="/">
+          <Link to="/" reloadDocument>
             <ModernButton variant="outline" size="sm">
               ← Back to Projects
             </ModernButton>
@@ -122,58 +123,55 @@ const ProjectTemplate = () => {
         {/* Image Carousel */}
         {project.images.length > 0 && (
           <div className="mb-16 relative group">
-          <div className="relative overflow-hidden rounded-2xl bg-gray-800">
-            <img
-              src={project.images[currentImageIndex]}
-              alt={`${project.title} screenshot ${currentImageIndex + 1}`}
-              className="w-full h-auto max-h-[600px] object-cover transition-all duration-300"
-              onError={(e) => {
-                // Fallback for missing images
-                const target = e.target as HTMLImageElement;
-                target.src = project.images[0];
-              }}
-            />
+            <div className="relative overflow-hidden rounded-2xl bg-gray-800">
+              <img
+                src={project.images[currentImageIndex]}
+                alt={`${project.title} screenshot ${currentImageIndex + 1}`}
+                className="w-full h-auto max-h-[600px] object-cover transition-all duration-300"
+                onError={(e) => {
+                  const target = e.target as HTMLImageElement;
+                  target.src = project.images[0];
+                }}
+              />
 
-            {/* Navigation Arrows */}
-            <button
-              type="button"
-              onClick={prevImage}
-              className="absolute left-4 top-1/2 -translate-y-1/2 rounded-full border border-zinc-300 bg-white/80 p-3 text-zinc-900 opacity-0 shadow-sm backdrop-blur-sm transition-all duration-300 group-hover:opacity-100 hover:bg-white dark:border-zinc-700 dark:bg-zinc-900/70 dark:text-white dark:hover:bg-zinc-900"
-              aria-label="Previous image"
-              title="Previous image"
-            >
-              ←
-            </button>
-            <button
-              type="button"
-              onClick={nextImage}
-              className="absolute right-4 top-1/2 -translate-y-1/2 rounded-full border border-zinc-300 bg-white/80 p-3 text-zinc-900 opacity-0 shadow-sm backdrop-blur-sm transition-all duration-300 group-hover:opacity-100 hover:bg-white dark:border-zinc-700 dark:bg-zinc-900/70 dark:text-white dark:hover:bg-zinc-900"
-              aria-label="Next image"
-              title="Next image"
-            >
-              →
-            </button>
-          </div>
-
-          {/* Carousel Indicators */}
-          {project.images.length > 1 && (
-            <div className="flex justify-center mt-6 gap-2">
-              {project.images.map((_, index) => (
-                <button
-                  key={index}
-                  type="button"
-                  onClick={() => setCurrentImageIndex(index)}
-                  className={`w-3 h-3 rounded-full transition-colors duration-300 ${
-                    index === currentImageIndex
-                      ? "bg-green-500"
-                      : "bg-gray-600 hover:bg-gray-500"
-                  }`}
-                  aria-label={`Go to image ${index + 1}`}
-                  title={`Go to image ${index + 1}`}
-                />
-              ))}
+              <button
+                type="button"
+                onClick={prevImage}
+                className="absolute left-4 top-1/2 -translate-y-1/2 rounded-full border border-zinc-300 bg-white/80 p-3 text-zinc-900 opacity-0 shadow-sm backdrop-blur-sm transition-all duration-300 group-hover:opacity-100 hover:bg-white dark:border-zinc-700 dark:bg-zinc-900/70 dark:text-white dark:hover:bg-zinc-900"
+                aria-label="Previous image"
+                title="Previous image"
+              >
+                ←
+              </button>
+              <button
+                type="button"
+                onClick={nextImage}
+                className="absolute right-4 top-1/2 -translate-y-1/2 rounded-full border border-zinc-300 bg-white/80 p-3 text-zinc-900 opacity-0 shadow-sm backdrop-blur-sm transition-all duration-300 group-hover:opacity-100 hover:bg-white dark:border-zinc-700 dark:bg-zinc-900/70 dark:text-white dark:hover:bg-zinc-900"
+                aria-label="Next image"
+                title="Next image"
+              >
+                →
+              </button>
             </div>
-          )}
+
+            {project.images.length > 1 && (
+              <div className="flex justify-center mt-6 gap-2">
+                {project.images.map((_, index) => (
+                  <button
+                    key={index}
+                    type="button"
+                    onClick={() => setCurrentImageIndex(index)}
+                    className={`w-3 h-3 rounded-full transition-colors duration-300 ${
+                      index === currentImageIndex
+                        ? "bg-green-500"
+                        : "bg-gray-600 hover:bg-gray-500"
+                    }`}
+                    aria-label={`Go to image ${index + 1}`}
+                    title={`Go to image ${index + 1}`}
+                  />
+                ))}
+              </div>
+            )}
           </div>
         )}
 
@@ -273,10 +271,10 @@ const ProjectTemplate = () => {
             comprehensive solution tailored to your needs.
           </p>
           <div className="flex justify-center gap-4">
-            <Link to="/#contact">
+            <Link to="/" reloadDocument>
               <ModernButton variant="primary">Let's Talk</ModernButton>
             </Link>
-            <Link to="/projects">
+            <Link to="/projects" reloadDocument>
               <ModernButton variant="outline">View All Projects</ModernButton>
             </Link>
           </div>

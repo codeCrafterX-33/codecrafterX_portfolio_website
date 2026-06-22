@@ -8,7 +8,7 @@ gsap.registerPlugin(ScrollTrigger);
 
 const TechSkills = () => {
   useGSAP(() => {
-    gsap.utils.toArray(".tech-timeline-card").forEach((card: any) => {
+    gsap.utils.toArray<HTMLElement>(".tech-timeline-card").forEach((card: HTMLElement) => {
       gsap.from(card, {
         xPercent: -100,
         opacity: 0,
@@ -37,7 +37,7 @@ const TechSkills = () => {
       },
     });
 
-    gsap.utils.toArray(".tech-expText").forEach((text: any) => {
+    gsap.utils.toArray<HTMLElement>(".tech-expText").forEach((text: HTMLElement) => {
       gsap.from(text, {
         xPercent: 0,
         opacity: 0,
@@ -62,7 +62,7 @@ const TechSkills = () => {
           title="How I Contribute Across Web, Mobile, and Tools"
           sub="🤝 What I Bring to the Table"
         />
-        <div className="mt-32 relative">
+        <div className="md:mt-32 mt-10 relative">
           <div className="relative z-50 xl:space-y-32 space-y-10">
             {techSkills.map((skill, index) => (
               <div key={skill.title} className="tech-exp-card-wrapper">

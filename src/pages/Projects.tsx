@@ -30,7 +30,7 @@ const Projects = () => {
   }, []);
 
   return (
-    <div className="min-h-screen pt-20 bg-gradient-to-b from-zinc-900 to-black">
+    <div className="min-h-screen md:pt-30 pt-20 bg-gradient-to-b from-zinc-900 to-black">
       <div className="max-w-7xl mx-auto px-5 md:px-20 py-10">
         {/* Header */}
         <div className="text-center mb-16">
@@ -45,7 +45,7 @@ const Projects = () => {
             e-commerce solutions built with modern technologies.
           </p>
           <div className="flex justify-center">
-            <Link to="/">
+            <Link to="/" reloadDocument>
               <ModernButton variant="outline" size="sm">
                 ← Back to Home
               </ModernButton>
@@ -66,13 +66,7 @@ const Projects = () => {
           </div>
         )}
 
-        {!isLoading && !error && projects.length === 0 && (
-          <div className="mb-16 rounded-xl border border-gray-700 bg-gray-800/30 p-8 text-center text-gray-300">
-            No published projects yet.
-          </div>
-        )}
-
-        {!isLoading && !error && projects.length > 0 && (
+        {!isLoading && projects.length > 0 && (
           <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8 mb-16">
             {projects.map((project) => (
               <ProjectCard
@@ -101,12 +95,12 @@ const Projects = () => {
             platforms, I'm ready to help you succeed.
           </p>
           <div className="flex justify-center gap-4">
-            <Link to="/#contact">
+            <Link to="/" reloadDocument>
               <ModernButton variant="primary" size="lg">
                 Start a Project
               </ModernButton>
             </Link>
-            <Link to="/case-studies">
+            <Link to="/case-studies" reloadDocument>
               <ModernButton variant="outline" size="lg">
                 View Case Studies
               </ModernButton>

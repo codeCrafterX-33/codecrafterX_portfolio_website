@@ -1,24 +1,36 @@
-import React, { useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { gsap } from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { useGSAP } from "@gsap/react";
 import ModernButton from "../ModernButton";
 import { getProjects } from "../../lib/projectsApi";
+import type { Project } from "../../types/project";
 
 gsap.registerPlugin(ScrollTrigger);
 
 const ShowcaseSection = () => {
   const sectionRef = useRef<HTMLDivElement | null>(null);
-  const [projects, setProjects] = useState<any[]>([]);
+  const [projects, setProjects] = useState<Project[]>([]);
+  const [error, setError] = useState("");
 
   useEffect(() => {
     let mounted = true;
     (async () => {
       try {
+        setError("");
         const data = await getProjects();
-        if (mounted && Array.isArray(data)) setProjects(data);
-      } catch (e) {
-        // ignore
+        if (!mounted) return;
+
+        setProjects(data);
+      } catch (loadError) {
+        if (!mounted) return;
+
+        setProjects([]);
+        setError(
+          loadError instanceof Error
+            ? loadError.message
+            : "Unable to load projects.",
+        );
       }
     })();
     return () => {
@@ -58,11 +70,11 @@ const ShowcaseSection = () => {
     );
   }, [projects]);
 
-  const items = projects.slice(0, 3);
+  const items = projects.filter((project) => project.featured).slice(0, 3);
 
   return (
     <section ref={sectionRef} id="work" className="app-showcase">
-      <div className="text-center mb-16 px-5 md:px-20">
+      <div className="text-center mb-10 px-5 md:px-10">
         <h2 className="text-4xl md:text-5xl font-bold text-white mb-6">
           Featured{" "}
           <span className="text-transparent bg-clip-text bg-gradient-to-r from-green-400 to-emerald-400">
@@ -75,7 +87,7 @@ const ShowcaseSection = () => {
         </p>
       </div>
 
-      <div className="w-full mt-8">
+      <div className="w-full mt-4">
         <div className="showcaselayout space-y-8">
           {items.map((project, idx) => (
             <div
@@ -107,7 +119,13 @@ const ShowcaseSection = () => {
             </div>
           ))}
 
-          {items.length === 0 && (
+          {error && (
+            <div className="text-center py-8">
+              <p className="text-red-200">{error}</p>
+            </div>
+          )}
+
+          {!error && items.length === 0 && (
             <div className="text-center py-8">
               <p className="text-gray-300">
                 No projects yet — check back later.
@@ -116,7 +134,7 @@ const ShowcaseSection = () => {
           )}
         </div>
 
-        <div className="text-center mt-16">
+        <div className="text-center mt-12">
           <div className="mb-8">
             <h3 className="text-2xl font-bold text-white mb-4">
               Want to see more?

@@ -22,7 +22,8 @@ export const projectSelect = {
   updatedAt: true,
 };
 
-const text = (value: unknown) => (typeof value === "string" ? value.trim() : "");
+const text = (value: unknown) =>
+  typeof value === "string" ? value.trim() : "";
 const optionalText = (value: unknown) => {
   const trimmed = text(value);
   return trimmed.length > 0 ? trimmed : null;
@@ -76,20 +77,9 @@ export const parseProjectInput = (body: unknown): ProjectInput => {
     featured: Boolean(payload.featured),
     published: payload.published !== false,
     sortOrder:
-      typeof payload.sortOrder === "number" && Number.isFinite(payload.sortOrder)
+      typeof payload.sortOrder === "number" &&
+      Number.isFinite(payload.sortOrder)
         ? payload.sortOrder
         : 0,
   };
-};
-
-export const requireAdmin = (authorizationHeader?: string) => {
-  const expectedToken = process.env.ADMIN_TOKEN;
-
-  if (!expectedToken) {
-    throw new Error("ADMIN_TOKEN is not configured.");
-  }
-
-  if (authorizationHeader !== `Bearer ${expectedToken}`) {
-    throw new Error("Unauthorized.");
-  }
 };

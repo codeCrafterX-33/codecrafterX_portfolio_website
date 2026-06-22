@@ -95,17 +95,17 @@ const ModernButton = ({
     // Use React Router Link for route navigation, regular <a> for hash anchors
     if (href.startsWith("/") && !href.includes("#")) {
       return (
-        <Link to={href} className={classes}>
+        <Link to={href} reloadDocument className={classes}>
           {content}
         </Link>
       );
     }
 
-    // Regular link for hash anchors or external URLs
+    // Use a plain anchor for hash anchors so the browser handles section jumps
     return (
-      <Link to={href} target={target} rel={rel} className={classes}>
+      <a href={href} target={target} rel={rel} className={classes}>
         {content}
-      </Link>
+      </a>
     );
   }
 

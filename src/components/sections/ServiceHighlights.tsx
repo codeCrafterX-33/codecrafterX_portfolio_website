@@ -1,4 +1,82 @@
+import { useEffect, useRef, useState } from "react";
+
+const stats = [
+  {
+    end: 40,
+    suffix: "%",
+    label: "Average Sales Increase",
+  },
+  {
+    end: 2,
+    suffix: "+",
+    label: "Complete Platforms Built",
+  },
+  {
+    end: 100,
+    suffix: "%",
+    label: "Client Satisfaction",
+  },
+] as const;
+
 const ServiceHighlights = () => {
+  const statsRef = useRef<HTMLDivElement | null>(null);
+  const [values, setValues] = useState(stats.map(() => 0));
+
+  useEffect(() => {
+    if (!statsRef.current) return;
+
+    const node = statsRef.current;
+    const reduceMotion = window.matchMedia(
+      "(prefers-reduced-motion: reduce)",
+    ).matches;
+
+    let rafId = 0;
+    let hasAnimated = false;
+
+    const runCountUp = () => {
+      if (hasAnimated) return;
+      hasAnimated = true;
+
+      if (reduceMotion) {
+        setValues(stats.map((stat) => stat.end));
+        return;
+      }
+
+      const duration = 1200;
+      const start = performance.now();
+
+      const tick = (now: number) => {
+        const progress = Math.min((now - start) / duration, 1);
+        const eased = 1 - Math.pow(1 - progress, 3);
+
+        setValues(stats.map((stat) => Math.round(stat.end * eased)));
+
+        if (progress < 1) {
+          rafId = window.requestAnimationFrame(tick);
+        }
+      };
+
+      rafId = window.requestAnimationFrame(tick);
+    };
+
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        if (entry.isIntersecting) {
+          runCountUp();
+          observer.disconnect();
+        }
+      },
+      { threshold: 0.35 },
+    );
+
+    observer.observe(node);
+
+    return () => {
+      observer.disconnect();
+      window.cancelAnimationFrame(rafId);
+    };
+  }, []);
+
   const services = [
     {
       icon: "⚛️",
@@ -43,7 +121,7 @@ const ServiceHighlights = () => {
   return (
     <section
       id="services"
-      className="py-20 px-5 md:px-20 bg-gradient-to-b from-zinc-900 to-black"
+      className="service-highlights-dark py-20 px-5 md:px-20 bg-gradient-to-b from-zinc-900 to-black"
     >
       <div className="max-w-7xl mx-auto">
         {/* Header */}
@@ -63,7 +141,7 @@ const ServiceHighlights = () => {
         <div className="grid lg:grid-cols-2 xl:grid-cols-4 gap-8">
           {services.map((service, index) => (
             <div key={index} className="group">
-              <div className="bg-gradient-to-br from-gray-800 to-gray-900 rounded-xl p-8 border border-gray-700 hover:border-gray-600 transition-all duration-300 hover:shadow-2xl hover:shadow-green-500/10 hover:-translate-y-2">
+              <div className="service-card-dark bg-gradient-to-br from-gray-800 to-gray-900 rounded-xl p-8 border border-gray-700 hover:border-gray-600 transition-all duration-300 hover:shadow-2xl hover:shadow-green-500/10 hover:-translate-y-2">
                 {/* Service Icon */}
                 <div
                   className={`w-16 h-16 bg-gradient-to-r ${service.color} rounded-xl flex items-center justify-center text-3xl mb-6 mx-auto`}
@@ -105,24 +183,20 @@ const ServiceHighlights = () => {
         </div>
 
         {/* Bottom Stats */}
-        <div className="mt-20 bg-gradient-to-r from-gray-800/50 to-gray-900/50 rounded-2xl p-8 border border-gray-700">
+        <div
+          ref={statsRef}
+          className="stats-dark mt-20 bg-gradient-to-r from-gray-800/50 to-gray-900/50 rounded-2xl p-8 border border-gray-700"
+        >
           <div className="grid md:grid-cols-3 gap-8 text-center">
-            <div>
-              <div className="text-3xl font-bold text-white mb-2">40%</div>
-              <div className="text-gray-400 text-sm">
-                Average Sales Increase
+            {stats.map((stat, index) => (
+              <div key={stat.label}>
+                <div className="text-3xl font-bold text-white mb-2">
+                  {values[index]}
+                  {stat.suffix}
+                </div>
+                <div className="text-gray-400 text-sm">{stat.label}</div>
               </div>
-            </div>
-            <div>
-              <div className="text-3xl font-bold text-white mb-2">2+</div>
-              <div className="text-gray-400 text-sm">
-                Complete Platforms Built
-              </div>
-            </div>
-            <div>
-              <div className="text-3xl font-bold text-white mb-2">100%</div>
-              <div className="text-gray-400 text-sm">Client Satisfaction</div>
-            </div>
+            ))}
           </div>
         </div>
       </div>
