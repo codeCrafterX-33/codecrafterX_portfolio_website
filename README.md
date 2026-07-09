@@ -42,44 +42,53 @@ Vite proxies `/api/*` to the Express backend.
 npm run dev:web      # frontend only
 npm run dev:api      # backend only (watch mode)
 npm run start:api    # backend only (single run)
-npm run build
+npm run build        # static frontend build in dist/
 npm run test
 npm run check
 npm run lint
 ```
 
-## Hostinger production deployment
+## Static frontend deployment
 
-The production deployment runs one Express process. Express serves the API under
-`/api/*` and the built React application from `build/public/`.
+The frontend is a normal Vite static build. To deploy with Hostinger file
+upload:
 
-Create a **Node.js Web App** in Hostinger and connect this Git repository.
-
-Use these deployment settings:
-
-```text
-Node.js version: 20 or newer
-Build command: npm run build
-Start command: npm start
-Output directory: build
-Entry file (only if Hostinger asks): server.js
+```bash
+npm run build
 ```
 
-Add every value from `.env.example` to Hostinger's environment-variable
-settings. Do not set `API_PORT`; the production server uses Hostinger's `PORT`
-value and falls back to `5000` when `PORT` is not provided. Leave
-`VITE_API_BASE_URL` empty so the frontend uses same-origin `/api` requests.
+Upload the contents of `dist/` to Hostinger's website root, usually
+`public_html`.
 
-After deployment, verify:
+For React Router routes like `/about` and `/projects`, configure Hostinger to
+fallback all unknown paths to `index.html` if the file manager or hosting panel
+does not do it automatically.
 
-```text
-https://your-domain.example/
-https://your-domain.example/about
-https://your-domain.example/api/health
+## Express API server
+
+The Express server is API-only. It no longer serves the built frontend.
+
+Use it when you need:
+
+- `/api/contact`
+- `/api/projects`
+- admin project management
+- Cloudinary cleanup
+
+Run it locally with:
+
+```bash
+npm run dev:api
 ```
 
-The health endpoint must return:
+For a separate deployed API, set `VITE_API_BASE_URL` before building the static
+frontend so browser requests go to that API host.
 
-```json
-{"ok":true}
+Example:
+
+```bash
+VITE_API_BASE_URL=https://api.your-domain.example npm run build
 ```
+
+If you upload only the static frontend and do not deploy the API elsewhere,
+features that call `/api/*` will not work.

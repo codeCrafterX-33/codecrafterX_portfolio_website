@@ -2,9 +2,6 @@ import "dotenv/config";
 import { clerkMiddleware } from "@clerk/express";
 import express from "express";
 import { v2 as cloudinary } from "cloudinary";
-import { existsSync } from "node:fs";
-import { dirname, join, resolve } from "node:path";
-import { fileURLToPath } from "node:url";
 import { requireAdmin } from "./auth";
 import {
   checkContactRateLimit,
@@ -26,10 +23,6 @@ const app = express();
 const isProduction = process.env.NODE_ENV === "production";
 const defaultPort = isProduction ? 5000 : Number(process.env.API_PORT || 8787);
 const port = Number(process.env.PORT || defaultPort);
-const serverDirectory = dirname(fileURLToPath(import.meta.url));
-const frontendDistPath = isProduction
-  ? resolve(serverDirectory, "public")
-  : resolve(serverDirectory, "../dist");
 const contactRateLimitStore: ContactRateLimitStore = new Map();
 const clerkPublishableKey =
   process.env.CLERK_PUBLISHABLE_KEY ?? process.env.VITE_CLERK_PUBLISHABLE_KEY;
@@ -44,12 +37,6 @@ const whatsappUrl =
 
 if (!Number.isInteger(port) || port <= 0 || port > 65535) {
   throw new Error("PORT or API_PORT must be a valid TCP port.");
-}
-
-if (isProduction && !existsSync(join(frontendDistPath, "index.html"))) {
-  throw new Error(
-    "Production frontend build is missing. Run `npm run build` before `npm start`.",
-  );
 }
 
 app.disable("x-powered-by");
@@ -587,25 +574,6 @@ app.delete("/api/projects/:slug", async (req, res, next) => {
 
 app.use("/api", (_req, res) => {
   res.status(404).json({ error: "API route not found." });
-});
-
-app.use(
-  "/assets",
-  express.static(join(frontendDistPath, "assets"), {
-    immutable: true,
-    maxAge: "1y",
-  }),
-);
-app.use(
-  express.static(frontendDistPath, {
-    index: false,
-    maxAge: "1h",
-  }),
-);
-
-app.get("*", (_req, res) => {
-  res.setHeader("Cache-Control", "no-cache");
-  res.sendFile(join(frontendDistPath, "index.html"));
 });
 
 app.use(

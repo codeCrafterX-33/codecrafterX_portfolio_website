@@ -157,13 +157,13 @@ const NavBar = () => {
     >
       <div className="inner px-2 md:py-5">
         <Link
-          className="logo flex w-[240px] shrink-0 items-center justify-start md:w-[280px] md:-translate-x-4"
+          className="logo flex w-[260px] shrink-0 items-center justify-start md:w-[280px] md:-translate-x-4"
           to="/"
         >
           <img
             src="/images/logos/codecrafter_logo.png"
             alt="CodeCrafterX"
-            className="h-12 w-auto max-w-none origin-left object-contain transition-transform duration-300 ease-in-out md:h-10 md:scale-[1.9]"
+            className="h-14 w-auto max-w-none origin-left object-contain transition-transform duration-300 ease-in-out md:h-10 md:scale-[1.9]"
           />
         </Link>
 
