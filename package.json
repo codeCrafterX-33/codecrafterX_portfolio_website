@@ -10,7 +10,7 @@
     "dev": "concurrently -k \"npm run dev:web\" \"npm run dev:api\"",
     "dev:web": "vite",
     "dev:api": "tsx watch server/index.ts",
-    "start": "node build/server.js",
+    "start": "NODE_ENV=production node build/server.js",
     "start:api": "tsx server/index.ts",
     "build": "prisma generate && tsc -b && npm run build:client && npm run build:server",
     "build:client": "vite build --outDir build/public",

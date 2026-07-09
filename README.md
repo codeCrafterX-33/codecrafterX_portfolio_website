@@ -51,7 +51,7 @@ npm run lint
 ## Hostinger production deployment
 
 The production deployment runs one Express process. Express serves the API under
-`/api/*` and the built React application from `dist/`.
+`/api/*` and the built React application from `build/public/`.
 
 Create a **Node.js Web App** in Hostinger and connect this Git repository.
 
@@ -62,11 +62,12 @@ Node.js version: 20 or newer
 Build command: npm run build
 Start command: npm start
 Output directory: build
+Entry file (only if Hostinger asks): server.js
 ```
 
 Add every value from `.env.example` to Hostinger's environment-variable
-settings. Do not set `PORT` or `API_PORT`; the production server uses
-Hostinger's expected port `3000` when `PORT` is not provided. Leave
+settings. Do not set `API_PORT`; the production server uses Hostinger's `PORT`
+value and falls back to `5000` when `PORT` is not provided. Leave
 `VITE_API_BASE_URL` empty so the frontend uses same-origin `/api` requests.
 
 After deployment, verify:

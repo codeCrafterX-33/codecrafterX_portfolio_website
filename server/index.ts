@@ -24,9 +24,8 @@ import { parseProjectInput, projectSelect } from "./projects";
 
 const app = express();
 const isProduction = process.env.NODE_ENV === "production";
-const port = Number(
-  process.env.PORT ?? (isProduction ? 3000 : process.env.API_PORT ?? 8787),
-);
+const defaultPort = isProduction ? 5000 : Number(process.env.API_PORT || 8787);
+const port = Number(process.env.PORT || defaultPort);
 const serverDirectory = dirname(fileURLToPath(import.meta.url));
 const frontendDistPath = isProduction
   ? resolve(serverDirectory, "public")
