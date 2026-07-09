@@ -18,6 +18,7 @@ const Contact = () => {
     company: "",
   });
   const [showSuccess, setShowSuccess] = useState(false);
+  const [submitError, setSubmitError] = useState("");
 
   const handleChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
@@ -28,7 +29,8 @@ const Contact = () => {
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    setLoading(true); // Show loading state
+    setLoading(true);
+    setSubmitError("");
 
     try {
       const response = await fetch(apiUrl("/api/contact"), {
@@ -56,8 +58,13 @@ const Contact = () => {
       setShowSuccess(true);
     } catch (error) {
       console.error("Contact form Error:", error);
+      setSubmitError(
+        error instanceof Error
+          ? error.message
+          : "Unable to send your message. Please try again.",
+      );
     } finally {
-      setLoading(false); // Always stop loading, even on error
+      setLoading(false);
     }
   };
 
@@ -152,6 +159,16 @@ const Contact = () => {
                         </div>
                       </div>
                     </button>
+
+                    {submitError && (
+                      <p
+                        role="alert"
+                        aria-live="polite"
+                        className="rounded-lg border border-red-500/30 bg-red-500/10 px-4 py-3 text-sm font-medium text-red-200"
+                      >
+                        {submitError}
+                      </p>
+                    )}
 
                     <div className="flex flex-col items-center gap-3 border-t border-white/10 pt-6 text-center">
                       <span className="text-sm text-white-50">
