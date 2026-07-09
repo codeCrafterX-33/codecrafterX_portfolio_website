@@ -34,6 +34,18 @@ const whatsappLogoUrl =
 const whatsappUrl =
   process.env.WHATSAPP_URL ??
   "https://wa.me/2349035466958?text=Hi%20Sopefoluwa%2C%20I%20came%20across%20your%20portfolio%20and%20I%27d%20like%20to%20discuss%20a%20project%20with%20you.";
+const allowedOrigins = new Set(
+  [
+    "http://localhost:5173",
+    "http://127.0.0.1:5173",
+    "https://sopefoluwabakare.dev",
+    "https://www.sopefoluwabakare.dev",
+    ...(process.env.CLIENT_ORIGINS ?? "")
+      .split(",")
+      .map((origin) => origin.trim())
+      .filter(Boolean),
+  ].map((origin) => origin.replace(/\/$/, "")),
+);
 
 if (!Number.isInteger(port) || port <= 0 || port > 65535) {
   throw new Error("PORT or API_PORT must be a valid TCP port.");
@@ -45,6 +57,30 @@ app.use((_req, res, next) => {
   res.setHeader("X-Content-Type-Options", "nosniff");
   res.setHeader("Referrer-Policy", "strict-origin-when-cross-origin");
   res.setHeader("X-Frame-Options", "SAMEORIGIN");
+  next();
+});
+app.use((req, res, next) => {
+  const origin = req.get("origin")?.replace(/\/$/, "");
+
+  if (origin && allowedOrigins.has(origin)) {
+    res.setHeader("Access-Control-Allow-Origin", origin);
+    res.setHeader("Vary", "Origin");
+  }
+
+  res.setHeader(
+    "Access-Control-Allow-Methods",
+    "GET,POST,PUT,DELETE,OPTIONS",
+  );
+  res.setHeader(
+    "Access-Control-Allow-Headers",
+    "Content-Type,Authorization",
+  );
+
+  if (req.method === "OPTIONS") {
+    res.sendStatus(204);
+    return;
+  }
+
   next();
 });
 
