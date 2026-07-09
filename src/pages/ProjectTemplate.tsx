@@ -1,8 +1,10 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, type SyntheticEvent } from "react";
 import { Link, useParams } from "react-router-dom";
 import ModernButton from "../components/ModernButton";
 import { getProject } from "../lib/projectsApi";
 import type { Project } from "../types/project";
+
+type ImageFit = "contain" | "cover";
 
 const ProjectTemplate = () => {
   const { projectId } = useParams();
@@ -10,6 +12,7 @@ const ProjectTemplate = () => {
   const [project, setProject] = useState<Project | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState("");
+  const [imageFits, setImageFits] = useState<Record<number, ImageFit>>({});
 
   useEffect(() => {
     const loadProject = async () => {
@@ -23,6 +26,7 @@ const ProjectTemplate = () => {
         const nextProject = await getProject(projectId);
         setProject(nextProject);
         setCurrentImageIndex(0);
+        setImageFits({});
       } catch (loadError) {
         setProject(null);
         setError(
@@ -72,6 +76,21 @@ const ProjectTemplate = () => {
     setCurrentImageIndex((prev) => (prev + 1) % project.images.length);
   };
 
+  const handleImageLoad = (index: number) => (event: SyntheticEvent<HTMLImageElement>) => {
+    const image = event.currentTarget;
+    const nextFit: ImageFit = image.naturalHeight > image.naturalWidth * 1.15 ? "contain" : "cover";
+
+    setImageFits((current) => {
+      if (current[index] === nextFit) {
+        return current;
+      }
+
+      return { ...current, [index]: nextFit };
+    });
+  };
+
+  const activeImageFit = imageFits[currentImageIndex] ?? "cover";
+
   const prevImage = () => {
     if (project.images.length === 0) {
       return;
@@ -87,7 +106,7 @@ const ProjectTemplate = () => {
       <div className="max-w-7xl mx-auto px-5 md:px-20 py-10">
         {/* Back Button */}
         <div className="mb-8">
-          <Link to="/" reloadDocument>
+          <Link to="/projects" reloadDocument>
             <ModernButton variant="outline" size="sm">
               ← Back to Projects
             </ModernButton>
@@ -123,11 +142,22 @@ const ProjectTemplate = () => {
         {/* Image Carousel */}
         {project.images.length > 0 && (
           <div className="mb-16 relative group">
-            <div className="relative overflow-hidden rounded-2xl bg-gray-800">
+            <div
+              className={`relative overflow-hidden rounded-2xl bg-gray-800 ${
+                activeImageFit === "contain"
+                  ? "aspect-[4/5] md:aspect-[9/12]"
+                  : "aspect-[4/3] md:aspect-[16/9]"
+              }`}
+            >
               <img
                 src={project.images[currentImageIndex]}
                 alt={`${project.title} screenshot ${currentImageIndex + 1}`}
-                className="w-full h-auto max-h-[600px] object-cover transition-all duration-300"
+                className={`absolute inset-0 size-full transition-all duration-300 ${
+                  activeImageFit === "contain"
+                    ? "object-contain object-top"
+                    : "object-cover object-top"
+                }`}
+                onLoad={handleImageLoad(currentImageIndex)}
                 onError={(e) => {
                   const target = e.target as HTMLImageElement;
                   target.src = project.images[0];
@@ -137,7 +167,7 @@ const ProjectTemplate = () => {
               <button
                 type="button"
                 onClick={prevImage}
-                className="absolute left-4 top-1/2 -translate-y-1/2 rounded-full border border-zinc-300 bg-white/80 p-3 text-zinc-900 opacity-0 shadow-sm backdrop-blur-sm transition-all duration-300 group-hover:opacity-100 hover:bg-white dark:border-zinc-700 dark:bg-zinc-900/70 dark:text-white dark:hover:bg-zinc-900"
+                className="absolute left-3 top-1/2 -translate-y-1/2 rounded-full border border-zinc-300 bg-white/85 p-3 text-zinc-900 opacity-100 shadow-sm backdrop-blur-sm transition-all duration-300 hover:bg-white md:left-4 md:opacity-0 md:group-hover:opacity-100 dark:border-zinc-700 dark:bg-zinc-900/70 dark:text-white dark:hover:bg-zinc-900"
                 aria-label="Previous image"
                 title="Previous image"
               >
@@ -146,7 +176,7 @@ const ProjectTemplate = () => {
               <button
                 type="button"
                 onClick={nextImage}
-                className="absolute right-4 top-1/2 -translate-y-1/2 rounded-full border border-zinc-300 bg-white/80 p-3 text-zinc-900 opacity-0 shadow-sm backdrop-blur-sm transition-all duration-300 group-hover:opacity-100 hover:bg-white dark:border-zinc-700 dark:bg-zinc-900/70 dark:text-white dark:hover:bg-zinc-900"
+                className="absolute right-3 top-1/2 -translate-y-1/2 rounded-full border border-zinc-300 bg-white/85 p-3 text-zinc-900 opacity-100 shadow-sm backdrop-blur-sm transition-all duration-300 hover:bg-white md:right-4 md:opacity-0 md:group-hover:opacity-100 dark:border-zinc-700 dark:bg-zinc-900/70 dark:text-white dark:hover:bg-zinc-900"
                 aria-label="Next image"
                 title="Next image"
               >

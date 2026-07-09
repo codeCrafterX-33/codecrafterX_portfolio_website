@@ -45,7 +45,7 @@ const AboutMe = () => {
                   Full-Stack Developer & Tech Enthusiast
                 </p>
                 <p className="text-gray-400 text-sm mt-1">
-                  Based in China | Former Accountant Turned Developer
+                  Based in China | Accountant Turned Developer
                 </p>
               </div>
 
@@ -207,12 +207,12 @@ const AboutMe = () => {
                 Long-term, I want to lead or be part of teams that innovate,
                 solve real-world problems, and bring ideas to life through code.
                 I'm currently working on meaningful side projects and actively
-                building in public. Open to full-time roles, internships, and
-                collaborations.
+                building in public. When I’m not coding, I’m probably watching
+                anime. Open to full-time roles, internships, and collaborations.
               </p>
               <div className="text-center">
                 <span className="text-green-400 font-semibold text-sm">
-                  🚀 Let's connect... especially if you're into tech, startups,
+                  🤝🏾 Let's connect... especially if you're into tech, startups,
                   or creating things that matter!
                 </span>
               </div>
