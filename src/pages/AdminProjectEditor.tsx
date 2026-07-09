@@ -137,6 +137,7 @@ const AdminProjectEditor = () => {
   const { isLoaded, isSignedIn, user } = useUser();
   const [form, setForm] = useState<ProjectFormState>(emptyForm);
   const [originalSlug, setOriginalSlug] = useState("");
+  const [persistedImageUrls, setPersistedImageUrls] = useState<string[]>([]);
   const [message, setMessage] = useState("");
   const [error, setError] = useState("");
   const [isLoadingProject, setIsLoadingProject] = useState(false);
@@ -172,6 +173,7 @@ const AdminProjectEditor = () => {
         const project = await getAdminProject(slug, { authToken: token });
         setForm(formFromProject(project));
         setOriginalSlug(project.slug);
+        setPersistedImageUrls(project.images);
       } catch (loadError) {
         setError(
           loadError instanceof Error
@@ -218,7 +220,9 @@ const AdminProjectEditor = () => {
       try {
         setError("");
 
-        if (isCloudinaryImageUrl(urlToRemove)) {
+        const isPersistedImage = persistedImageUrls.includes(urlToRemove);
+
+        if (isCloudinaryImageUrl(urlToRemove) && !isPersistedImage) {
           const token = await getSessionToken();
           await deleteCloudinaryImage(urlToRemove, { authToken: token });
         }
@@ -232,7 +236,7 @@ const AdminProjectEditor = () => {
         );
       }
     },
-    [getSessionToken, removeImageUrlFromForm],
+    [getSessionToken, persistedImageUrls, removeImageUrlFromForm],
   );
 
   const handleSubmit = async (event: FormEvent) => {
@@ -251,14 +255,18 @@ const AdminProjectEditor = () => {
       const input = inputFromForm(form);
 
       if (isEditing) {
-        await updateProject(originalSlug || slug!, input, { authToken: token });
+        const updated = await updateProject(originalSlug || slug!, input, {
+          authToken: token,
+        });
         setMessage("Project updated.");
-        setOriginalSlug(input.slug);
+        setOriginalSlug(updated.slug);
+        setPersistedImageUrls(updated.images);
         if (input.slug !== slug) {
           navigate(`/admin/projects/${input.slug}/edit`, { replace: true });
         }
       } else {
         const created = await createProject(input, { authToken: token });
+        setPersistedImageUrls(created.images);
         navigate(`/admin/projects/${created.slug}/edit`, { replace: true });
       }
     } catch (saveError) {

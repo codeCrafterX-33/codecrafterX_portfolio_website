@@ -3,6 +3,7 @@ import { gsap } from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { useGSAP } from "@gsap/react";
 import ModernButton from "../ModernButton";
+import FeaturedProjectCard from "../FeaturedProjectCard";
 import { getProjects } from "../../lib/projectsApi";
 import type { Project } from "../../types/project";
 
@@ -88,35 +89,13 @@ const ShowcaseSection = () => {
       </div>
 
       <div className="w-full mt-4">
-        <div className="showcaselayout space-y-8">
-          {items.map((project, idx) => (
-            <div
-              key={project.slug || idx}
-              className={`showcase-card ${idx === 0 ? "first-project-wrapper" : "project-list-wrapper"}`}
-            >
-              <div className="image-wrapper">
-                <img
-                  src={project.images?.[0] || "/images/placeholder.png"}
-                  alt={project.title}
-                />
-              </div>
-              <div className="text-content">
-                <h2 className="heading-3">{project.title}</h2>
-                <h3 className="paragraph">{project.description}</h3>
-                <p className="text-white-50 md:text-xl">
-                  {project.longDescription}
-                </p>
-                <div className="mt-4">
-                  <ModernButton
-                    href={`/projects/${project.slug}`}
-                    variant="primary"
-                    size="sm"
-                  >
-                    View Project →
-                  </ModernButton>
-                </div>
-              </div>
-            </div>
+        <div className="showcaselayout">
+          {items.map((project, index) => (
+            <FeaturedProjectCard
+              key={project.slug || project.id}
+              project={project}
+              index={index}
+            />
           ))}
 
           {error && (

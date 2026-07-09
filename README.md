@@ -43,5 +43,41 @@ npm run dev:web      # frontend only
 npm run dev:api      # backend only (watch mode)
 npm run start:api    # backend only (single run)
 npm run build
+npm run test
+npm run check
 npm run lint
+```
+
+## Hostinger production deployment
+
+The production deployment runs one Express process. Express serves the API under
+`/api/*` and the built React application from `dist/`.
+
+Create a **Node.js Web App** in Hostinger and connect this Git repository.
+
+Use these deployment settings:
+
+```text
+Node.js version: 20 or newer
+Build command: npm run build
+Start command: npm start
+```
+
+Add every value from `.env.example` to Hostinger's environment-variable
+settings. Do not set `PORT`; Hostinger provides it. Set `NODE_ENV=production`
+and leave `VITE_API_BASE_URL` empty so the frontend uses same-origin `/api`
+requests.
+
+After deployment, verify:
+
+```text
+https://your-domain.example/
+https://your-domain.example/about
+https://your-domain.example/api/health
+```
+
+The health endpoint must return:
+
+```json
+{"ok":true}
 ```

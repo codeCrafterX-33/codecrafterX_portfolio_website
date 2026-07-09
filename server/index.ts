@@ -2,6 +2,9 @@ import "dotenv/config";
 import { clerkMiddleware } from "@clerk/express";
 import express from "express";
 import { v2 as cloudinary } from "cloudinary";
+import { existsSync } from "node:fs";
+import { dirname, join, resolve } from "node:path";
+import { fileURLToPath } from "node:url";
 import { requireAdmin } from "./auth";
 import {
   checkContactRateLimit,
@@ -9,15 +12,24 @@ import {
   parseContactSubmission,
   type ContactRateLimitStore,
 } from "./contactGuard";
+import {
+  deletePortfolioImages,
+  extractCloudinaryPublicId,
+  getRemovedPortfolioImageUrls,
+  isPortfolioPublicId,
+  portfolioCloudinaryFolder,
+} from "./cloudinaryCleanup";
 import { prisma } from "./prisma";
 import { parseProjectInput, projectSelect } from "./projects";
 
 const app = express();
-const port = Number(process.env.API_PORT ?? 8787);
+const port = Number(process.env.PORT ?? process.env.API_PORT ?? 8787);
+const isProduction = process.env.NODE_ENV === "production";
+const serverDirectory = dirname(fileURLToPath(import.meta.url));
+const frontendDistPath = resolve(serverDirectory, "../dist");
 const contactRateLimitStore: ContactRateLimitStore = new Map();
 const clerkPublishableKey =
   process.env.CLERK_PUBLISHABLE_KEY ?? process.env.VITE_CLERK_PUBLISHABLE_KEY;
-const cloudinaryUploadFolder = "codeCrafterX_portfolio";
 const cloudinaryUploadPreset = "moThrift";
 const emailLogoUrl =
   "https://res.cloudinary.com/dgc8vxmc2/image/upload/v1782158021/codecrafter_logo_veeln5.png";
@@ -27,6 +39,25 @@ const whatsappUrl =
   process.env.WHATSAPP_URL ??
   "https://wa.me/2349035466958?text=Hi%20Sopefoluwa%2C%20I%20came%20across%20your%20portfolio%20and%20I%27d%20like%20to%20discuss%20a%20project%20with%20you.";
 
+if (!Number.isInteger(port) || port <= 0 || port > 65535) {
+  throw new Error("PORT or API_PORT must be a valid TCP port.");
+}
+
+if (isProduction && !existsSync(join(frontendDistPath, "index.html"))) {
+  throw new Error(
+    "Production frontend build is missing. Run `npm run build` before `npm start`.",
+  );
+}
+
+app.disable("x-powered-by");
+app.set("trust proxy", 1);
+app.use((_req, res, next) => {
+  res.setHeader("X-Content-Type-Options", "nosniff");
+  res.setHeader("Referrer-Policy", "strict-origin-when-cross-origin");
+  res.setHeader("X-Frame-Options", "SAMEORIGIN");
+  next();
+});
+
 const escapeHtml = (value: string) =>
   value
     .replace(/&/g, "&amp;")
@@ -34,34 +65,6 @@ const escapeHtml = (value: string) =>
     .replace(/>/g, "&gt;")
     .replace(/"/g, "&quot;")
     .replace(/'/g, "&#039;");
-
-const extractCloudinaryPublicId = (imageUrl: string) => {
-  try {
-    const parsedUrl = new URL(imageUrl);
-    const uploadPath = "/image/upload/";
-    const uploadIndex = parsedUrl.pathname.indexOf(uploadPath);
-
-    if (uploadIndex === -1) {
-      return null;
-    }
-
-    const assetPath = parsedUrl.pathname.slice(uploadIndex + uploadPath.length);
-    const segments = assetPath.split("/").filter(Boolean);
-    const versionIndex = segments.findIndex((segment) => /^v\d+$/.test(segment));
-    const publicIdSegments =
-      versionIndex >= 0 ? segments.slice(versionIndex + 1) : segments;
-
-    if (!publicIdSegments.length) {
-      return null;
-    }
-
-    return decodeURIComponent(
-      publicIdSegments.join("/").replace(/\.[^.]+$/, ""),
-    );
-  } catch {
-    return null;
-  }
-};
 
 const sendResendEmail = async ({
   label,
@@ -123,11 +126,36 @@ cloudinary.config({
   secure: true,
 });
 
+const destroyPortfolioImages = async (imageUrls: string[]) => {
+  if (!imageUrls.length) {
+    return [];
+  }
+
+  if (
+    !process.env.CLOUDINARY_API_SECRET ||
+    !process.env.CLOUDINARY_API_KEY ||
+    !process.env.CLOUDINARY_CLOUD_NAME
+  ) {
+    throw new Error("Cloudinary is not configured on the server.");
+  }
+
+  return deletePortfolioImages(imageUrls, (publicId) =>
+    cloudinary.uploader.destroy(publicId, {
+      invalidate: true,
+      resource_type: "image",
+    }),
+  );
+};
+
 app.get("/api/health", (_req, res) => {
   res.status(200).json({ ok: true });
 });
 
 app.use(express.json({ limit: "2mb" }));
+app.use("/api", (_req, res, next) => {
+  res.setHeader("Cache-Control", "no-store");
+  next();
+});
 app.use(clerkMiddleware({ publishableKey: clerkPublishableKey }));
 
 app.post("/api/contact", async (req, res, next) => {
@@ -346,7 +374,7 @@ app.get("/api/cloudinary/config", (_req, res) => {
 
   res.status(200).json({
     cloudName,
-    folder: cloudinaryUploadFolder,
+        folder: portfolioCloudinaryFolder,
     uploadPreset: cloudinaryUploadPreset,
   });
 });
@@ -378,7 +406,7 @@ app.post("/api/cloudinary/signature", async (req, res, next) => {
       ...(requestParams && typeof requestParams === "object"
         ? requestParams
         : {}),
-      folder: cloudinaryUploadFolder,
+      folder: portfolioCloudinaryFolder,
       timestamp: requestTimestamp,
     } as Record<string, string | number | boolean>;
     const signature = cloudinary.utils.api_sign_request(
@@ -391,7 +419,7 @@ app.post("/api/cloudinary/signature", async (req, res, next) => {
       timestamp: requestTimestamp,
       uploadSignatureTimestamp: requestTimestamp,
       apiKey,
-      folder: cloudinaryUploadFolder,
+      folder: portfolioCloudinaryFolder,
     });
   } catch (error) {
     next(error);
@@ -428,7 +456,7 @@ app.delete("/api/cloudinary/image", async (req, res, next) => {
       return;
     }
 
-    if (!publicId.startsWith(`${cloudinaryUploadFolder}/`)) {
+    if (!isPortfolioPublicId(publicId)) {
       res.status(400).json({
         error: "Only portfolio Cloudinary images can be deleted.",
       });
@@ -505,6 +533,22 @@ app.put("/api/projects/:slug", async (req, res, next) => {
   try {
     await requireAdmin(req);
     const data = parseProjectInput(req.body);
+    const existingProject = await prisma.project.findUnique({
+      where: { slug: req.params.slug },
+      select: { images: true },
+    });
+
+    if (!existingProject) {
+      res.status(404).json({ error: "Project not found." });
+      return;
+    }
+
+    const removedImages = getRemovedPortfolioImageUrls(
+      existingProject.images,
+      data.images,
+    );
+    await destroyPortfolioImages(removedImages);
+
     const project = await prisma.project.update({
       where: { slug: req.params.slug },
       data,
@@ -520,11 +564,45 @@ app.put("/api/projects/:slug", async (req, res, next) => {
 app.delete("/api/projects/:slug", async (req, res, next) => {
   try {
     await requireAdmin(req);
+    const project = await prisma.project.findUnique({
+      where: { slug: req.params.slug },
+      select: { images: true },
+    });
+
+    if (!project) {
+      res.status(404).json({ error: "Project not found." });
+      return;
+    }
+
+    await destroyPortfolioImages(project.images);
     await prisma.project.delete({ where: { slug: req.params.slug } });
     res.status(200).json({ ok: true });
   } catch (error) {
     next(error);
   }
+});
+
+app.use("/api", (_req, res) => {
+  res.status(404).json({ error: "API route not found." });
+});
+
+app.use(
+  "/assets",
+  express.static(join(frontendDistPath, "assets"), {
+    immutable: true,
+    maxAge: "1y",
+  }),
+);
+app.use(
+  express.static(frontendDistPath, {
+    index: false,
+    maxAge: "1h",
+  }),
+);
+
+app.get("*", (_req, res) => {
+  res.setHeader("Cache-Control", "no-cache");
+  res.sendFile(join(frontendDistPath, "index.html"));
 });
 
 app.use(
@@ -546,6 +624,38 @@ app.use(
   },
 );
 
-app.listen(port, () => {
-  console.log(`API server running on http://localhost:${port}`);
+const server = app.listen(port, "0.0.0.0", () => {
+  console.log(`Portfolio server running on port ${port}`);
 });
+
+let isShuttingDown = false;
+
+const shutdown = (signal: NodeJS.Signals) => {
+  if (isShuttingDown) {
+    return;
+  }
+
+  isShuttingDown = true;
+  console.log(`${signal} received. Shutting down gracefully.`);
+
+  const forceShutdownTimer = setTimeout(() => {
+    console.error("Graceful shutdown timed out.");
+    process.exit(1);
+  }, 10_000);
+  forceShutdownTimer.unref();
+
+  server.close(async (error) => {
+    clearTimeout(forceShutdownTimer);
+    await prisma.$disconnect();
+
+    if (error) {
+      console.error("Server shutdown failed:", error);
+      process.exit(1);
+    }
+
+    process.exit(0);
+  });
+};
+
+process.on("SIGTERM", () => shutdown("SIGTERM"));
+process.on("SIGINT", () => shutdown("SIGINT"));
