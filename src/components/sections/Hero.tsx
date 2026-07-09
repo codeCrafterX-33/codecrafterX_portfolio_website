@@ -25,7 +25,7 @@ const Hero = () => {
 
       <div className="hero-layout">
         {/*LEFT: HERO CONTENT*/}
-        <header className="flex flex-col justify-center md:w-full w-screen md:px-20 px-5">
+        <header className="flex w-full flex-col justify-center md:px-20 px-5">
           <div className="flex flex-col gap-7">
             {/* Main Header */}
             <div className="mb-4 flex items-start gap-6">
@@ -98,7 +98,7 @@ const Hero = () => {
           <img
             src="/images/main_codecrafter.jpeg"
             alt="Sopefoluwa"
-            className="hero-image"
+            className="hero-image object-contain md:object-cover object-top"
           />
         </figure>
       </div>

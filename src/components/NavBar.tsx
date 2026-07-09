@@ -1,4 +1,5 @@
 import { useEffect, useRef, useState } from "react";
+import { createPortal } from "react-dom";
 import { useLocation, Link } from "react-router-dom";
 import { navLinks } from "../constants";
 import ModernButton from "./ModernButton";
@@ -52,6 +53,89 @@ const NavBar = () => {
   const toggleMobileMenu = () => {
     setMobileMenuOpen(!mobileMenuOpen);
   };
+
+  const mobileMenu = mobileMenuOpen
+    ? createPortal(
+        <div className="mobile-menu-overlay" onClick={toggleMobileMenu}>
+          <div
+            className="mobile-menu-content"
+            onClick={(e) => e.stopPropagation()}
+          >
+            <button
+              className="mobile-close-btn"
+              onClick={toggleMobileMenu}
+              aria-label="Close mobile menu"
+            >
+              ×
+            </button>
+
+            <div className="mobile-nav-links">
+              {navLinks.map(({ name, href }) => {
+                const isActive =
+                  (href.startsWith("/") && location.pathname === href) ||
+                  (href.startsWith("#") &&
+                    location.pathname === "/" &&
+                    location.hash === href);
+
+                if (href.startsWith("#")) {
+                  return (
+                    <Link
+                      key={name}
+                      to={`/${href}`}
+                      className={`mobile-link ${isActive ? "active" : ""}`}
+                      onClick={toggleMobileMenu}
+                    >
+                      {name}
+                      {isActive && (
+                        <span className="mobile-active-indicator"></span>
+                      )}
+                    </Link>
+                  );
+                }
+
+                return (
+                  <Link
+                    key={name}
+                    to={href}
+                    className={`mobile-link ${isActive ? "active" : ""}`}
+                    onClick={toggleMobileMenu}
+                  >
+                    {name}
+                    {isActive && (
+                      <span className="mobile-active-indicator"></span>
+                    )}
+                  </Link>
+                );
+              })}
+            </div>
+
+            <div className="mobile-action-buttons">
+              <div onClick={toggleMobileMenu}>
+                <ModernButton
+                  href="/#contact"
+                  variant="primary"
+                  size="sm"
+                  icon={<span className="text-xs">📧</span>}
+                >
+                  Contact me
+                </ModernButton>
+              </div>
+              <div onClick={toggleMobileMenu}>
+                <ModernButton
+                  href="/about"
+                  variant="outline"
+                  size="sm"
+                  icon={<span className="text-xs">👤</span>}
+                >
+                  About me
+                </ModernButton>
+              </div>
+            </div>
+          </div>
+        </div>,
+        document.body,
+      )
+    : null;
 
   return (
     <header
@@ -155,89 +239,7 @@ const NavBar = () => {
           </ModernButton>
         </div>
 
-        {/* Mobile Menu Overlay */}
-        {mobileMenuOpen && (
-          <div className="mobile-menu-overlay" onClick={toggleMobileMenu}>
-            <div
-              className="mobile-menu-content"
-              onClick={(e) => e.stopPropagation()}
-            >
-              {/* Close Button */}
-              <button
-                className="mobile-close-btn"
-                onClick={toggleMobileMenu}
-                aria-label="Close mobile menu"
-              >
-                ×
-              </button>
-
-              {/* Mobile Navigation Links */}
-              <div className="mobile-nav-links">
-                {navLinks.map(({ name, href }) => {
-                  const isActive =
-                    (href.startsWith("/") && location.pathname === href) ||
-                    (href.startsWith("#") &&
-                      location.pathname === "/" &&
-                      location.hash === href);
-
-                  if (href.startsWith("#")) {
-                    return (
-                      <Link
-                        key={name}
-                        to={`/${href}`}
-                        className={`mobile-link ${isActive ? "active" : ""}`}
-                        onClick={toggleMobileMenu}
-                      >
-                        {name}
-                        {isActive && (
-                          <span className="mobile-active-indicator"></span>
-                        )}
-                      </Link>
-                    );
-                  }
-
-                  return (
-                    <Link
-                      key={name}
-                      to={href}
-                      className={`mobile-link ${isActive ? "active" : ""}`}
-                      onClick={toggleMobileMenu}
-                    >
-                      {name}
-                      {isActive && (
-                        <span className="mobile-active-indicator"></span>
-                      )}
-                    </Link>
-                  );
-                })}
-              </div>
-
-              {/* Mobile Action Buttons */}
-              <div className="mobile-action-buttons">
-                <div onClick={toggleMobileMenu}>
-                  <ModernButton
-                    href="/#contact"
-                    variant="primary"
-                    size="sm"
-                    icon={<span className="text-xs">📧</span>}
-                  >
-                    Contact me
-                  </ModernButton>
-                </div>
-                <div onClick={toggleMobileMenu}>
-                  <ModernButton
-                    href="/about"
-                    variant="outline"
-                    size="sm"
-                    icon={<span className="text-xs">👤</span>}
-                  >
-                    About me
-                  </ModernButton>
-                </div>
-              </div>
-            </div>
-          </div>
-        )}
+        {mobileMenu}
       </div>
     </header>
   );
