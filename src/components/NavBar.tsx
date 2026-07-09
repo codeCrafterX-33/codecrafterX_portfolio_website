@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState } from "react";
 import { createPortal } from "react-dom";
 import { useLocation, Link } from "react-router-dom";
+import { ArrowRight, Mail, UserRound, X } from "lucide-react";
 import { navLinks } from "../constants";
 import ModernButton from "./ModernButton";
 
@@ -61,13 +62,26 @@ const NavBar = () => {
             className="mobile-menu-content"
             onClick={(e) => e.stopPropagation()}
           >
-            <button
-              className="mobile-close-btn"
-              onClick={toggleMobileMenu}
-              aria-label="Close mobile menu"
-            >
-              ×
-            </button>
+            <div className="mobile-menu-topbar">
+              <Link
+                to="/"
+                className="mobile-menu-brand"
+                onClick={toggleMobileMenu}
+              >
+                <img
+                  src="/images/logos/codecrafter_logo.png"
+                  alt="CodeCrafterX"
+                />
+              </Link>
+
+              <button
+                className="mobile-close-btn"
+                onClick={toggleMobileMenu}
+                aria-label="Close mobile menu"
+              >
+                <X size={22} strokeWidth={2.4} />
+              </button>
+            </div>
 
             <div className="mobile-nav-links">
               {navLinks.map(({ name, href }) => {
@@ -85,7 +99,8 @@ const NavBar = () => {
                       className={`mobile-link ${isActive ? "active" : ""}`}
                       onClick={toggleMobileMenu}
                     >
-                      {name}
+                      <span>{name}</span>
+                      <ArrowRight className="mobile-link-icon" size={20} />
                       {isActive && (
                         <span className="mobile-active-indicator"></span>
                       )}
@@ -100,7 +115,8 @@ const NavBar = () => {
                     className={`mobile-link ${isActive ? "active" : ""}`}
                     onClick={toggleMobileMenu}
                   >
-                    {name}
+                    <span>{name}</span>
+                    <ArrowRight className="mobile-link-icon" size={20} />
                     {isActive && (
                       <span className="mobile-active-indicator"></span>
                     )}
@@ -110,26 +126,22 @@ const NavBar = () => {
             </div>
 
             <div className="mobile-action-buttons">
-              <div onClick={toggleMobileMenu}>
-                <ModernButton
-                  href="/#contact"
-                  variant="primary"
-                  size="sm"
-                  icon={<span className="text-xs">📧</span>}
-                >
-                  Contact me
-                </ModernButton>
-              </div>
-              <div onClick={toggleMobileMenu}>
-                <ModernButton
-                  href="/about"
-                  variant="outline"
-                  size="sm"
-                  icon={<span className="text-xs">👤</span>}
-                >
-                  About me
-                </ModernButton>
-              </div>
+              <a
+                href="/#contact"
+                className="mobile-menu-cta primary"
+                onClick={toggleMobileMenu}
+              >
+                <Mail size={18} />
+                <span>Contact me</span>
+              </a>
+              <Link
+                to="/about"
+                className="mobile-menu-cta secondary"
+                onClick={toggleMobileMenu}
+              >
+                <UserRound size={18} />
+                <span>About me</span>
+              </Link>
             </div>
           </div>
         </div>,
@@ -145,7 +157,7 @@ const NavBar = () => {
     >
       <div className="inner px-2 md:py-5">
         <Link
-          className="logo flex w-[220px] shrink-0 items-center justify-start -translate-x-4 md:w-[280px] md:-translate-x-4"
+          className="logo flex w-[220px] shrink-0 items-center justify-start md:w-[280px] md:-translate-x-4"
           to="/"
         >
           <img
