@@ -23,8 +23,10 @@ import { prisma } from "./prisma";
 import { parseProjectInput, projectSelect } from "./projects";
 
 const app = express();
-const port = Number(process.env.PORT ?? process.env.API_PORT ?? 8787);
 const isProduction = process.env.NODE_ENV === "production";
+const port = Number(
+  process.env.PORT ?? (isProduction ? 3000 : process.env.API_PORT ?? 8787),
+);
 const serverDirectory = dirname(fileURLToPath(import.meta.url));
 const frontendDistPath = resolve(serverDirectory, "../dist");
 const contactRateLimitStore: ContactRateLimitStore = new Map();

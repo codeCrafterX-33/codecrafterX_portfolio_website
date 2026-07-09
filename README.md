@@ -64,9 +64,9 @@ Start command: npm start
 ```
 
 Add every value from `.env.example` to Hostinger's environment-variable
-settings. Do not set `PORT`; Hostinger provides it. Set `NODE_ENV=production`
-and leave `VITE_API_BASE_URL` empty so the frontend uses same-origin `/api`
-requests.
+settings. Do not set `PORT` or `API_PORT`; the production server uses
+Hostinger's expected port `3000` when `PORT` is not provided. Leave
+`VITE_API_BASE_URL` empty so the frontend uses same-origin `/api` requests.
 
 After deployment, verify:
 
