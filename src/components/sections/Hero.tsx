@@ -28,7 +28,7 @@ const Hero = () => {
         <header className="flex w-full flex-col justify-center md:px-20 px-5">
           <div className="flex flex-col gap-7">
             {/* Main Header */}
-            <div className="mb-4 flex items-start gap-6">
+            <div className="hero-intro mb-4 flex items-start gap-5 md:gap-6">
               {/* Gradient Line */}
               <div className="flex flex-col items-center">
                 <div className="w-3 h-3 rounded-full bg-green-400 mb-2"></div>

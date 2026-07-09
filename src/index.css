@@ -105,6 +105,10 @@ section {
     @apply relative z-10 flex min-h-[calc(100dvh-5rem)] flex-col items-start justify-start pt-28 pb-16 md:pt-32 md:pb-0 xl:items-center xl:justify-start xl:pt-24;
   }
 
+  .hero-intro {
+    @apply mt-3 md:mt-0;
+  }
+
   .hero-text {
     @apply flex flex-col  md:text-[60px] text-[30px] font-semibold relative z-10 pointer-events-none;
     img {
@@ -310,13 +314,33 @@ section {
   }
 
   .navbar {
-    padding-block: 2.35rem;
-    padding-inline: 2rem;
+    position: fixed;
+    top: 0;
+    right: 0;
+    left: 0;
+    z-index: 100;
+    width: 100%;
+    background: #000;
+    padding-block: 1.6rem;
+    padding-inline: 1.35rem;
+    transition:
+      transform 300ms ease-in-out,
+      padding 300ms ease-in-out,
+      background-color 300ms ease-in-out;
+    will-change: transform;
+  }
+
+  .navbar.hidden-up {
+    transform: translate3d(0, -100%, 0);
+  }
+
+  .navbar.visible-down {
+    transform: translate3d(0, 0, 0);
   }
 
   @media (min-width: 40rem) {
     .navbar {
-      padding-inline: 2rem;
+      padding-inline: 1.75rem;
     }
   }
 
