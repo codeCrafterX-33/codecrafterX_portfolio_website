@@ -97,3 +97,16 @@ export const deleteProject = async (
 
   return readJson<{ ok: boolean }>(response);
 };
+
+export const deleteCloudinaryImage = async (
+  imageUrl: string,
+  options: ApiOptions,
+): Promise<{ ok: boolean; publicId?: string }> => {
+  const response = await fetch(apiUrl("/api/cloudinary/image"), {
+    method: "DELETE",
+    headers: jsonHeaders(options.authToken),
+    body: JSON.stringify({ imageUrl }),
+  });
+
+  return readJson<{ ok: boolean; publicId?: string }>(response);
+};

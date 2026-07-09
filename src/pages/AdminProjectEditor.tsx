@@ -18,6 +18,7 @@ import { Link, useNavigate, useParams } from "react-router-dom";
 import ImageUpload from "../components/ImageUpload";
 import {
   createProject,
+  deleteCloudinaryImage,
   getAdminProject,
   updateProject,
 } from "../lib/projectsApi";
@@ -114,6 +115,14 @@ const inputFromForm = (form: ProjectFormState): ProjectInput => ({
   sortOrder: Number(form.sortOrder) || 0,
 });
 
+const isCloudinaryImageUrl = (url: string) => {
+  try {
+    return new URL(url).hostname === "res.cloudinary.com";
+  } catch {
+    return false;
+  }
+};
+
 const fieldClass =
   "w-full rounded-lg border border-slate-300 bg-white px-4 py-3 text-slate-950 outline-none transition focus:border-emerald-500 dark:border-zinc-700 dark:bg-zinc-900 dark:!text-white";
 
@@ -195,7 +204,7 @@ const AdminProjectEditor = () => {
     });
   }, []);
 
-  const removeImageUrl = useCallback((urlToRemove: string) => {
+  const removeImageUrlFromForm = useCallback((urlToRemove: string) => {
     setForm((current) => ({
       ...current,
       images: listFromLines(current.images)
@@ -203,6 +212,28 @@ const AdminProjectEditor = () => {
         .join("\n"),
     }));
   }, []);
+
+  const removeImageUrl = useCallback(
+    async (urlToRemove: string) => {
+      try {
+        setError("");
+
+        if (isCloudinaryImageUrl(urlToRemove)) {
+          const token = await getSessionToken();
+          await deleteCloudinaryImage(urlToRemove, { authToken: token });
+        }
+
+        removeImageUrlFromForm(urlToRemove);
+      } catch (removeError) {
+        setError(
+          removeError instanceof Error
+            ? removeError.message
+            : "Unable to delete image.",
+        );
+      }
+    },
+    [getSessionToken, removeImageUrlFromForm],
+  );
 
   const handleSubmit = async (event: FormEvent) => {
     event.preventDefault();

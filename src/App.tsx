@@ -9,7 +9,6 @@ import BlogPost from "./pages/BlogPost";
 import Process from "./pages/Process";
 import Projects from "./pages/Projects";
 import ProjectTemplate from "./pages/ProjectTemplate";
-import { ThemeToggle } from "./components/ThemeToggle";
 import AdminProjectEditor from "./pages/AdminProjectEditor";
 import AdminProjects from "./pages/AdminProjects";
 import ScrollToTop from "./components/ScrollToTop";
@@ -33,9 +32,6 @@ const App = () => {
         <Route path="/admin/projects/new" element={<AdminProjectEditor />} />
         <Route path="/admin/projects/:slug/edit" element={<AdminProjectEditor />} />
       </Routes>
-      <div className="fixed bottom-5 right-5 z-[140] md:hidden">
-        <ThemeToggle />
-      </div>
       <Footer />
     </Router>
   );

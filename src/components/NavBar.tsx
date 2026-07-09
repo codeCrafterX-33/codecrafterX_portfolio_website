@@ -2,7 +2,6 @@ import { useEffect, useRef, useState } from "react";
 import { useLocation, Link } from "react-router-dom";
 import { navLinks } from "../constants";
 import ModernButton from "./ModernButton";
-import { ThemeToggle } from "./ThemeToggle";
 
 const NavBar = () => {
   const [scrolled, setScrolled] = useState(false);
@@ -133,7 +132,6 @@ const NavBar = () => {
 
         {/* Action Buttons - Desktop */}
         <div className="desktop-buttons flex-col sm:flex-row gap-2 sm:gap-3">
-          <ThemeToggle />
           <ModernButton
             href="/#contact"
             variant="primary"

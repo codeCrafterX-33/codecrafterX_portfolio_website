@@ -15,6 +15,7 @@ const Contact = () => {
     name: "",
     email: "",
     message: "",
+    company: "",
   });
   const [showSuccess, setShowSuccess] = useState(false);
 
@@ -48,7 +49,7 @@ const Contact = () => {
       }
 
       // Reset form and show success modal
-      setForm({ name: "", email: "", message: "" });
+      setForm({ name: "", email: "", message: "", company: "" });
       if (formRef.current) {
         formRef.current.reset();
       }
@@ -123,6 +124,19 @@ const Contact = () => {
                         onChange={handleChange}
                         required
                         className="mt-2 resize-none"
+                      />
+                    </div>
+
+                    <div className="hidden" aria-hidden="true">
+                      <label htmlFor="company">Company</label>
+                      <input
+                        type="text"
+                        id="company"
+                        name="company"
+                        tabIndex={-1}
+                        autoComplete="off"
+                        value={form.company}
+                        onChange={handleChange}
                       />
                     </div>
 

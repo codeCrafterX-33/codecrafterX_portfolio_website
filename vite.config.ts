@@ -7,6 +7,7 @@ const apiPort = process.env.API_PORT ?? "8787";
 export default defineConfig({
   plugins: [react(), tailwindcss()],
   server: {
+    allowedHosts: ["carinulate-unevilly-rubin.ngrok-free.dev"],
     proxy: {
       "/api": {
         target: `http://localhost:${apiPort}`,

@@ -41,7 +41,7 @@ export const socialImgs = [
   {
     name: "x",
     imgPath: "/images/x.png",
-    href:"https://x.com/Rowdy_Sammy_"
+    href: "https://x.com/Rowdy_Sammy_",
   },
   {
     name: "linkedin",
@@ -56,7 +56,6 @@ export const socialImgs = [
       "https://wa.me/2349035466958?text=Hi%20Sopefoluwa%2C%20I%20came%20across%20your%20portfolio%20and%20I%27d%20like%20to%20discuss%20a%20project%20with%20you.",
   },
 ];
-
 
 export const navLinks = [
   { name: "Projects", href: "/projects" },
@@ -147,7 +146,7 @@ export const techSkills = [
     logoPath: "/images/logos/MobileDevelopment.png",
   },
   {
-    title: "🚀 Frontend Development",
+    title: "👨🏾‍💻 Frontend Development",
     skills: [
       "⚛️ React – build dynamic, responsive, and scalable user interfaces",
       "🌀 Next.js – optimize for performance, SEO, and server-side rendering",

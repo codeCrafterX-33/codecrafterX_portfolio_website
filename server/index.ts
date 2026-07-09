@@ -3,11 +3,18 @@ import { clerkMiddleware } from "@clerk/express";
 import express from "express";
 import { v2 as cloudinary } from "cloudinary";
 import { requireAdmin } from "./auth";
+import {
+  checkContactRateLimit,
+  getContactClientKeyFromRequest,
+  parseContactSubmission,
+  type ContactRateLimitStore,
+} from "./contactGuard";
 import { prisma } from "./prisma";
 import { parseProjectInput, projectSelect } from "./projects";
 
 const app = express();
 const port = Number(process.env.API_PORT ?? 8787);
+const contactRateLimitStore: ContactRateLimitStore = new Map();
 const clerkPublishableKey =
   process.env.CLERK_PUBLISHABLE_KEY ?? process.env.VITE_CLERK_PUBLISHABLE_KEY;
 const cloudinaryUploadFolder = "codeCrafterX_portfolio";
@@ -27,6 +34,34 @@ const escapeHtml = (value: string) =>
     .replace(/>/g, "&gt;")
     .replace(/"/g, "&quot;")
     .replace(/'/g, "&#039;");
+
+const extractCloudinaryPublicId = (imageUrl: string) => {
+  try {
+    const parsedUrl = new URL(imageUrl);
+    const uploadPath = "/image/upload/";
+    const uploadIndex = parsedUrl.pathname.indexOf(uploadPath);
+
+    if (uploadIndex === -1) {
+      return null;
+    }
+
+    const assetPath = parsedUrl.pathname.slice(uploadIndex + uploadPath.length);
+    const segments = assetPath.split("/").filter(Boolean);
+    const versionIndex = segments.findIndex((segment) => /^v\d+$/.test(segment));
+    const publicIdSegments =
+      versionIndex >= 0 ? segments.slice(versionIndex + 1) : segments;
+
+    if (!publicIdSegments.length) {
+      return null;
+    }
+
+    return decodeURIComponent(
+      publicIdSegments.join("/").replace(/\.[^.]+$/, ""),
+    );
+  } catch {
+    return null;
+  }
+};
 
 const sendResendEmail = async ({
   label,
@@ -97,16 +132,28 @@ app.use(clerkMiddleware({ publishableKey: clerkPublishableKey }));
 
 app.post("/api/contact", async (req, res, next) => {
   try {
-    const name = typeof req.body?.name === "string" ? req.body.name.trim() : "";
-    const email =
-      typeof req.body?.email === "string" ? req.body.email.trim() : "";
-    const message =
-      typeof req.body?.message === "string" ? req.body.message.trim() : "";
+    const clientKey = getContactClientKeyFromRequest(req);
+    const rateLimit = checkContactRateLimit(
+      clientKey,
+      contactRateLimitStore,
+    );
 
-    if (!name || !email || !message) {
-      res.status(400).json({ error: "Name, email, and message are required." });
+    if (!rateLimit.allowed) {
+      res
+        .status(429)
+        .set("Retry-After", String(rateLimit.retryAfterSeconds))
+        .json({ error: "Too many messages. Please try again later." });
       return;
     }
+
+    const submission = parseContactSubmission(req.body);
+
+    if (!submission.ok) {
+      res.status(submission.status).json({ error: submission.error });
+      return;
+    }
+
+    const { name, email, message } = submission.data;
 
     const resendApiKey = process.env.RESEND_API_KEY;
     const fromEmail = process.env.RESEND_FROM_EMAIL;
@@ -346,6 +393,61 @@ app.post("/api/cloudinary/signature", async (req, res, next) => {
       apiKey,
       folder: cloudinaryUploadFolder,
     });
+  } catch (error) {
+    next(error);
+  }
+});
+
+app.delete("/api/cloudinary/image", async (req, res, next) => {
+  try {
+    await requireAdmin(req);
+
+    const apiSecret = process.env.CLOUDINARY_API_SECRET;
+    const apiKey = process.env.CLOUDINARY_API_KEY;
+    const cloudName = process.env.CLOUDINARY_CLOUD_NAME;
+    const imageUrl =
+      typeof req.body?.imageUrl === "string" ? req.body.imageUrl.trim() : "";
+    const publicId =
+      typeof req.body?.publicId === "string" && req.body.publicId.trim()
+        ? req.body.publicId.trim()
+        : imageUrl
+          ? extractCloudinaryPublicId(imageUrl)
+          : null;
+
+    if (!apiSecret || !apiKey || !cloudName) {
+      res.status(500).json({
+        error: "Cloudinary is not configured on the server.",
+      });
+      return;
+    }
+
+    if (!publicId) {
+      res.status(400).json({
+        error: "A valid Cloudinary image URL or public ID is required.",
+      });
+      return;
+    }
+
+    if (!publicId.startsWith(`${cloudinaryUploadFolder}/`)) {
+      res.status(400).json({
+        error: "Only portfolio Cloudinary images can be deleted.",
+      });
+      return;
+    }
+
+    const result = await cloudinary.uploader.destroy(publicId, {
+      invalidate: true,
+      resource_type: "image",
+    });
+
+    if (result.result !== "ok" && result.result !== "not found") {
+      res.status(502).json({
+        error: `Cloudinary delete failed with result: ${result.result}`,
+      });
+      return;
+    }
+
+    res.status(200).json({ ok: true, publicId, result });
   } catch (error) {
     next(error);
   }

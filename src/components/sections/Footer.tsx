@@ -145,7 +145,7 @@ const Footer = () => {
                 💼 <span className="ml-2">Available for Projects</span>
               </p>
               <p className="text-gray-300">
-                🚀 <span className="ml-2">Building in Public</span>
+                💪🏾 <span className="ml-2">Building in Public</span>
               </p>
             </div>
 

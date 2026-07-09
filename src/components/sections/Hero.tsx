@@ -1,6 +1,5 @@
 import words from "../../constants";
 import Button from "../Button";
-import HeroExperience from "../HeroModels/HeroExperience";
 import { useGSAP } from "@gsap/react";
 import { gsap } from "gsap";
 import ServiceHighlights from "./ServiceHighlights";
@@ -75,16 +74,32 @@ const Hero = () => {
                 that Deliver Results
               </h3>
             </div>
-            <Button
-              className="md:w-80 md:h-16 w-60 h-12"
-              id="counter"
-              text="See my work"
-            />
+            <div className="hidden md:block">
+              <Button
+                className="inline-flex h-16 w-80 [&_.cta-button]:size-full"
+                id="counter"
+                text="See my work"
+              />
+            </div>
+            <div className="hero-mobile-actions">
+              <a href="#counter" className="hero-mobile-action primary">
+                <span>See My Work</span>
+                <span aria-hidden="true">&#8600;</span>
+              </a>
+              <a href="#contact" className="hero-mobile-action secondary">
+                <span>Hire Me</span>
+                <span aria-hidden="true">&rarr;</span>
+              </a>
+            </div>
           </div>
         </header>
-        {/*RIGHT: 3D MODEL*/}
-        <figure className="hero-3d-layout">
-          <HeroExperience />
+        {/* RIGHT: PORTRAIT */}
+        <figure className="hero-image-layout">
+          <img
+            src="/images/main_codecrafter.jpeg"
+            alt="Sopefoluwa"
+            className="hero-image"
+          />
         </figure>
       </div>
       <ServiceHighlights />

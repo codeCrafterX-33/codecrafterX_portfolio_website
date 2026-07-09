@@ -3,6 +3,7 @@
 @custom-variant dark (&:where(.dark, .dark *));
 
 :root {
+  color-scheme: dark;
   --gradient: radial-gradient(circle, #e5e5e5 0%, #fff 100%);
   --theme-bg: #000000;
   --theme-bg-rgb: 0, 0, 0;
@@ -20,26 +21,6 @@
   --theme-input-text: #ffffff;
   --theme-accent: #22c55e;
   --theme-accent-strong: #10b981;
-}
-
-.light {
-  --gradient: radial-gradient(circle, #047857 0%, #f8fafc 100%);
-  --theme-bg: #f8fafc;
-  --theme-bg-rgb: 248, 250, 252;
-  --theme-section: #ffffff;
-  --theme-section-alt: #ecfdf5;
-  --theme-surface: #ffffff;
-  --theme-surface-elevated: #f1f5f9;
-  --theme-card: #ffffff;
-  --theme-text: #0f172a;
-  --theme-muted: #475569;
-  --theme-soft: #64748b;
-  --theme-border: #cbd5e1;
-  --theme-overlay: rgba(15, 23, 42, 0.48);
-  --theme-input: #eefdf4;
-  --theme-input-text: #0f172a;
-  --theme-accent: #047857;
-  --theme-accent-strong: #059669;
 }
 
 html,
@@ -121,7 +102,7 @@ section {
   }
 
   .hero-layout {
-    @apply relative z-10 xl:mt-20 mt-32 md:h-dvh h-[80vh] flex xl:items-center items-start justify-center;
+    @apply relative z-10 mt-32 flex flex-col items-start justify-start pb-16 md:h-dvh md:pb-0 xl:mt-20 xl:items-center xl:justify-center;
   }
 
   .hero-text {
@@ -152,8 +133,33 @@ section {
     @apply bg-black-200 py-2 px-4 rounded-full w-fit text-sm md:text-base text-nowrap;
   }
 
-  .hero-3d-layout {
-    @apply xl:w-[70%] w-full h-full min-h-[50vh] absolute xl:-top-20 top-24 xl:-right-20 right-0;
+  .hero-image-layout {
+    @apply relative z-10 mx-auto mt-12 w-[78%] max-w-80 rotate-3 rounded-[2rem] bg-white p-2 shadow-2xl md:absolute md:right-20 md:top-1/2 md:mt-0 md:w-72 md:-translate-y-1/2 xl:right-36 xl:w-96 xl:max-w-none;
+  }
+
+  .hero-image-layout::before {
+    content: "";
+    @apply pointer-events-none absolute inset-0 -z-10 translate-x-3 translate-y-3 rounded-[2rem] border-2 border-white/70;
+  }
+
+  .hero-image {
+    @apply block aspect-[4/5] w-full rounded-[1.5rem] object-cover;
+  }
+
+  .hero-mobile-actions {
+    @apply grid w-full grid-cols-2 gap-3 md:hidden;
+  }
+
+  .hero-mobile-action {
+    @apply flex h-12 items-center justify-between rounded-full px-5 text-sm font-bold uppercase tracking-wide transition-transform active:scale-95;
+  }
+
+  .hero-mobile-action.primary {
+    @apply bg-green-400 text-black;
+  }
+
+  .hero-mobile-action.secondary {
+    @apply border border-white/30 bg-white/5 text-white;
   }
 
   .navbar {
