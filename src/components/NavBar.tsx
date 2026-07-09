@@ -12,6 +12,8 @@ const NavBar = () => {
 
   // Handle scroll event to change navbar style
   useEffect(() => {
+    document.body.style.overflow = mobileMenuOpen ? "hidden" : "";
+
     const handleScroll = () => {
       const currentScrollY = window.scrollY;
       const isScrolled = currentScrollY > 10;
@@ -39,6 +41,7 @@ const NavBar = () => {
 
     // Cleanup event listener on component unmount
     return () => {
+      document.body.style.overflow = "";
       window.removeEventListener("scroll", handleScroll);
       if (revealTimer.current) {
         window.clearTimeout(revealTimer.current);
