@@ -102,7 +102,7 @@ section {
   }
 
   .hero-layout {
-    @apply relative z-10 mt-32 flex flex-col items-start justify-start pb-16 md:h-dvh md:pb-0 xl:mt-20 xl:items-center xl:justify-center;
+    @apply relative z-10 flex min-h-[calc(100dvh-5rem)] flex-col items-start justify-start pt-28 pb-16 md:pt-32 md:pb-0 xl:items-center xl:justify-start xl:pt-24;
   }
 
   .hero-text {
