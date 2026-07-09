@@ -28,7 +28,9 @@ const port = Number(
   process.env.PORT ?? (isProduction ? 3000 : process.env.API_PORT ?? 8787),
 );
 const serverDirectory = dirname(fileURLToPath(import.meta.url));
-const frontendDistPath = resolve(serverDirectory, "../dist");
+const frontendDistPath = isProduction
+  ? resolve(serverDirectory, "public")
+  : resolve(serverDirectory, "../dist");
 const contactRateLimitStore: ContactRateLimitStore = new Map();
 const clerkPublishableKey =
   process.env.CLERK_PUBLISHABLE_KEY ?? process.env.VITE_CLERK_PUBLISHABLE_KEY;

@@ -61,6 +61,8 @@ Use these deployment settings:
 Node.js version: 20 or newer
 Build command: npm run build
 Start command: npm start
+Output directory: build
+Entry file: server.js
 ```
 
 Add every value from `.env.example` to Hostinger's environment-variable
