@@ -122,7 +122,7 @@ const NavBar = () => {
 
         {/* Mobile Hamburger Button */}
         <button
-          className="md:hidden mobile-menu-btn"
+          className={`md:hidden mobile-menu-btn ${mobileMenuOpen ? "open" : ""}`}
           onClick={toggleMobileMenu}
           aria-label="Toggle mobile menu"
         >
