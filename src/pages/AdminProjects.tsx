@@ -1,6 +1,7 @@
 import { SignInButton, UserButton, useAuth, useUser } from "@clerk/clerk-react";
 import {
   ArrowUpRight,
+  BookOpen,
   LayoutDashboard,
   Pencil,
   Plus,
@@ -321,14 +322,22 @@ const AdminProjects = () => {
               </p>
               <h2 className="mt-1 text-2xl font-black">Projects</h2>
             </div>
-            <Link
-              to="/admin/projects/new"
-              reloadDocument
-              className="inline-flex items-center gap-2 rounded-full bg-slate-950 px-4 py-2 text-sm font-bold !text-white transition hover:bg-emerald-700 dark:bg-white dark:!text-slate-950 dark:hover:bg-emerald-200"
-            >
-              <Plus size={16} />
-              New project
-            </Link>
+            <div className="flex flex-wrap gap-3">
+              <Link
+                to="/admin/case-studies"
+                className="inline-flex items-center gap-2 rounded-full border border-slate-300 px-4 py-2 text-sm font-bold transition hover:border-emerald-500 hover:text-emerald-700 dark:border-white/15 dark:hover:text-emerald-200"
+              >
+                <BookOpen size={16} />
+                Case studies
+              </Link>
+              <Link
+                to="/admin/projects/new"
+                className="inline-flex items-center gap-2 rounded-full bg-slate-950 px-4 py-2 text-sm font-bold !text-white transition hover:bg-emerald-700 dark:bg-white dark:!text-slate-950 dark:hover:bg-emerald-200"
+              >
+                <Plus size={16} />
+                New project
+              </Link>
+            </div>
           </div>
 
           <div className="grid min-w-0 grid-cols-1 gap-4 md:grid-cols-[repeat(2,minmax(0,1fr))] xl:grid-cols-[repeat(3,minmax(0,1fr))]">

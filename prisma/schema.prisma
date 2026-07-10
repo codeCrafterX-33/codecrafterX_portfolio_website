@@ -22,10 +22,30 @@ model Project {
   features        String[]
   bgColor         String?  @map("bgcolor")
   featured        Boolean  @default(false)
+  caseStudy        Boolean  @default(false) @map("casestudy")
+  caseStudyTitle   String?  @map("casestudytitle")
+  caseStudyCompany String?  @map("casestudycompany")
   published       Boolean  @default(true)
   sortOrder       Int      @default(0) @map("sortorder")
   createdAt       DateTime @default(now()) @map("createdat")
   updatedAt       DateTime @updatedAt @map("updatedat")
 
   @@map("Project")
+}
+
+model CaseStudy {
+  id        String   @id @default(cuid())
+  slug      String   @unique
+  title     String
+  company   String
+  challenge String
+  solution  String
+  results   String[]
+  techStack String[]
+  images    String[]
+  liveUrl   String?
+  published Boolean  @default(true)
+  sortOrder Int      @default(0)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 }

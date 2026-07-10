@@ -39,6 +39,9 @@ type ProjectFormState = {
   features: string;
   bgColor: string;
   featured: boolean;
+  caseStudy: boolean;
+  caseStudyTitle: string;
+  caseStudyCompany: string;
   published: boolean;
   sortOrder: number;
 };
@@ -58,6 +61,9 @@ const emptyForm: ProjectFormState = {
   features: "",
   bgColor: "bg-[#ecfdf3]",
   featured: true,
+  caseStudy: false,
+  caseStudyTitle: "",
+  caseStudyCompany: "",
   published: true,
   sortOrder: 0,
 };
@@ -92,6 +98,9 @@ const formFromProject = (project: Project): ProjectFormState => ({
   features: textFromList(project.features),
   bgColor: project.bgColor ?? "bg-[#ecfdf3]",
   featured: project.featured,
+  caseStudy: project.caseStudy,
+  caseStudyTitle: project.caseStudyTitle ?? "",
+  caseStudyCompany: project.caseStudyCompany ?? "",
   published: project.published,
   sortOrder: project.sortOrder,
 });
@@ -111,6 +120,9 @@ const inputFromForm = (form: ProjectFormState): ProjectInput => ({
   features: listFromLines(form.features),
   bgColor: form.bgColor || null,
   featured: form.featured,
+  caseStudy: form.caseStudy,
+  caseStudyTitle: form.caseStudyTitle || null,
+  caseStudyCompany: form.caseStudyCompany || null,
   published: form.published,
   sortOrder: Number(form.sortOrder) || 0,
 });
@@ -138,6 +150,7 @@ const AdminProjectEditor = () => {
   const [form, setForm] = useState<ProjectFormState>(emptyForm);
   const [originalSlug, setOriginalSlug] = useState("");
   const [persistedImageUrls, setPersistedImageUrls] = useState<string[]>([]);
+  const [featureDraft, setFeatureDraft] = useState("");
   const [message, setMessage] = useState("");
   const [error, setError] = useState("");
   const [isLoadingProject, setIsLoadingProject] = useState(false);
@@ -146,6 +159,10 @@ const AdminProjectEditor = () => {
   const hasAdminRole = isClerkAdmin(user?.publicMetadata?.role);
   const isEditing = Boolean(slug);
   const imageUrls = useMemo(() => listFromLines(form.images), [form.images]);
+  const featureItems = useMemo(
+    () => listFromLines(form.features),
+    [form.features],
+  );
 
   const getSessionToken = useCallback(async () => {
     const token = await getToken();
@@ -211,6 +228,31 @@ const AdminProjectEditor = () => {
       ...current,
       images: listFromLines(current.images)
         .filter((url) => url !== urlToRemove)
+        .join("\n"),
+    }));
+  }, []);
+
+  const addFeature = useCallback(() => {
+    const nextFeature = featureDraft.trim();
+
+    if (!nextFeature) {
+      return;
+    }
+
+    setForm((current) => {
+      const nextFeatures = new Set(listFromLines(current.features));
+      nextFeatures.add(nextFeature);
+
+      return { ...current, features: Array.from(nextFeatures).join("\n") };
+    });
+    setFeatureDraft("");
+  }, [featureDraft]);
+
+  const removeFeature = useCallback((featureToRemove: string) => {
+    setForm((current) => ({
+      ...current,
+      features: listFromLines(current.features)
+        .filter((feature) => feature !== featureToRemove)
         .join("\n"),
     }));
   }, []);
@@ -487,16 +529,62 @@ const AdminProjectEditor = () => {
                 rows={4}
               />
             </label>
-            <label className="space-y-2">
-              <span className={labelClass}>Features</span>
+            <div className="space-y-3">
+              <div className="flex flex-wrap items-center justify-between gap-3">
+                <span className={labelClass}>Features</span>
+                <span className="text-xs font-semibold text-slate-500 dark:text-gray-400">
+                  {featureItems.length} items
+                </span>
+              </div>
+              <div className="flex flex-col gap-3 sm:flex-row">
+                <input
+                  value={featureDraft}
+                  onChange={(event) => setFeatureDraft(event.target.value)}
+                  onKeyDown={(event) => {
+                    if (event.key === "Enter") {
+                      event.preventDefault();
+                      addFeature();
+                    }
+                  }}
+                  className={fieldClass}
+                  placeholder="Add a feature and press Enter"
+                />
+                <button
+                  type="button"
+                  onClick={addFeature}
+                  className="inline-flex shrink-0 items-center justify-center rounded-full bg-emerald-600 px-5 py-3 font-bold !text-white transition hover:bg-emerald-700 dark:bg-emerald-500 dark:hover:bg-emerald-400"
+                >
+                  Add feature
+                </button>
+              </div>
+              {featureItems.length > 0 ? (
+                <div className="flex flex-wrap gap-2">
+                  {featureItems.map((feature, index) => (
+                    <button
+                      key={`${feature}-${index}`}
+                      type="button"
+                      onClick={() => removeFeature(feature)}
+                      className="inline-flex items-center gap-2 rounded-full border border-emerald-500/30 bg-emerald-500/10 px-4 py-2 text-sm font-semibold text-emerald-800 transition hover:bg-emerald-500/20 dark:text-emerald-200"
+                      title="Remove feature"
+                    >
+                      {feature}
+                      <span className="text-base leading-none">×</span>
+                    </button>
+                  ))}
+                </div>
+              ) : (
+                <p className="text-sm text-slate-500 dark:text-gray-400">
+                  No features added yet.
+                </p>
+              )}
               <textarea
                 value={form.features}
                 onChange={(event) => updateField("features", event.target.value)}
                 className={fieldClass}
-                rows={5}
-                placeholder="One per line"
+                rows={4}
+                placeholder="One feature per line"
               />
-            </label>
+            </div>
             <label className="space-y-2">
               <span className={labelClass}>Results</span>
               <textarea
@@ -574,6 +662,16 @@ const AdminProjectEditor = () => {
             <label className="flex items-center gap-2 text-sm font-semibold">
               <input
                 type="checkbox"
+                checked={form.caseStudy}
+                onChange={(event) =>
+                  updateField("caseStudy", event.target.checked)
+                }
+              />
+              Include in case studies
+            </label>
+            <label className="flex items-center gap-2 text-sm font-semibold">
+              <input
+                type="checkbox"
                 checked={form.published}
                 onChange={(event) =>
                   updateField("published", event.target.checked)
@@ -587,7 +685,43 @@ const AdminProjectEditor = () => {
                 Ready for public view
               </span>
             )}
+            {form.caseStudy && !form.published && (
+              <span className="text-sm font-semibold text-amber-700 dark:text-amber-300">
+                Publish this project before its case study can appear publicly.
+              </span>
+            )}
           </div>
+
+          {form.caseStudy && (
+            <div className="mt-6 grid gap-5 rounded-2xl border border-emerald-500/20 bg-emerald-500/5 p-5 md:grid-cols-2">
+              <label className="space-y-2">
+                <span className={labelClass}>Case study title</span>
+                <input
+                  value={form.caseStudyTitle}
+                  onChange={(event) =>
+                    updateField("caseStudyTitle", event.target.value)
+                  }
+                  className={fieldClass}
+                  placeholder={form.title || "Uses project title if empty"}
+                />
+              </label>
+              <label className="space-y-2">
+                <span className={labelClass}>Client or company</span>
+                <input
+                  value={form.caseStudyCompany}
+                  onChange={(event) =>
+                    updateField("caseStudyCompany", event.target.value)
+                  }
+                  className={fieldClass}
+                  placeholder={form.category || "Uses category if empty"}
+                />
+              </label>
+              <p className="text-sm text-slate-600 dark:text-gray-300 md:col-span-2">
+                The case study uses this project&apos;s challenge, solution,
+                results, tech stack, first image, and live URL.
+              </p>
+            </div>
+          )}
 
           <button
             type="submit"

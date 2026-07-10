@@ -14,6 +14,9 @@ export type Project = {
   features: string[];
   bgColor?: string | null;
   featured: boolean;
+  caseStudy: boolean;
+  caseStudyTitle?: string | null;
+  caseStudyCompany?: string | null;
   published: boolean;
   sortOrder: number;
   createdAt?: string;

@@ -92,10 +92,10 @@ const ModernButton = ({
   );
 
   if (href) {
-    // Use React Router Link for route navigation, regular <a> for hash anchors
+    // Use client-side routing for app routes so static hosts do not 404.
     if (href.startsWith("/") && !href.includes("#")) {
       return (
-        <Link to={href} reloadDocument className={classes}>
+        <Link to={href} className={classes}>
           {content}
         </Link>
       );

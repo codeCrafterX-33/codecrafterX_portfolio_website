@@ -102,7 +102,7 @@ section {
   }
 
   .hero-layout {
-    @apply relative z-10 flex min-h-[calc(100dvh-5rem)] flex-col items-start justify-start pt-28 pb-16 md:pt-32 md:pb-0 xl:items-center xl:justify-start xl:pt-24;
+    @apply relative z-10 flex min-h-[calc(100dvh-5rem)] flex-col items-start justify-start pt-28 pb-16 md:pt-32 md:pb-0 xl:items-center xl:justify-start xl:pt-40;
   }
 
   .hero-intro {
@@ -138,7 +138,7 @@ section {
   }
 
   .hero-image-layout {
-    @apply relative z-10 mx-auto mt-12 w-[78%] max-w-80 rotate-3 rounded-[2rem] bg-white p-2 shadow-2xl md:absolute md:right-20 md:top-1/2 md:mt-0 md:w-72 md:-translate-y-1/2 xl:right-36 xl:w-96 xl:max-w-none;
+    @apply relative z-10 mx-auto mt-12 w-[78%] max-w-80 rotate-3 rounded-[2rem] bg-white p-2 shadow-2xl md:absolute md:right-20 md:top-[54%] md:mt-0 md:w-72 md:-translate-y-1/2 xl:right-36 xl:w-96 xl:max-w-none;
   }
 
   .hero-image-layout::before {

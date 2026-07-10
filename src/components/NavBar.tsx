@@ -199,7 +199,6 @@ const NavBar = () => {
                 <li key={name} className="group">
                   <Link
                     to={href}
-                    reloadDocument
                     className={isActive ? "active" : ""}
                   >
                     <span> {name}</span>

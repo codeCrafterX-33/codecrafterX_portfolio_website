@@ -7,7 +7,7 @@ const stats = [
     label: "Average Sales Increase",
   },
   {
-    end: 2,
+    end: 5,
     suffix: "+",
     label: "Complete Platforms Built",
   },

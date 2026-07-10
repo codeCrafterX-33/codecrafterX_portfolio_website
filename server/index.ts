@@ -18,6 +18,7 @@ import {
 } from "./cloudinaryCleanup";
 import { prisma } from "./prisma";
 import { parseProjectInput, projectSelect } from "./projects";
+import { caseStudySelect, parseCaseStudyInput } from "./caseStudies";
 
 const app = express();
 const isProduction = process.env.NODE_ENV === "production";
@@ -388,6 +389,54 @@ app.get("/api/projects/:slug", async (req, res, next) => {
   }
 });
 
+app.get("/api/case-studies", async (_req, res, next) => {
+  try {
+    const [standaloneStudies, projectStudies] = await Promise.all([
+      prisma.caseStudy.findMany({
+        where: { published: true },
+        orderBy: [{ sortOrder: "asc" }, { createdAt: "desc" }],
+        select: caseStudySelect,
+      }),
+      prisma.project.findMany({
+        where: { published: true, caseStudy: true },
+        orderBy: [{ sortOrder: "asc" }, { createdAt: "desc" }],
+        select: projectSelect,
+      }),
+    ]);
+
+    const attachedStudies = projectStudies.map((project) => ({
+      id: `project:${project.id}`,
+      slug: `project-${project.slug}`,
+      title: project.caseStudyTitle || project.title,
+      company: project.caseStudyCompany || project.category,
+      challenge: project.challenge || project.description,
+      solution: project.solution || project.longDescription,
+      results: project.results,
+      techStack: project.techStack,
+      images: project.images,
+      liveUrl: project.liveUrl,
+      published: project.published,
+      sortOrder: project.sortOrder,
+      projectSlug: project.slug,
+      createdAt: project.createdAt,
+      updatedAt: project.updatedAt,
+    }));
+
+    const studies = [
+      ...standaloneStudies.map((study) => ({ ...study, projectSlug: null })),
+      ...attachedStudies,
+    ].sort(
+      (left, right) =>
+        left.sortOrder - right.sortOrder ||
+        new Date(right.createdAt).getTime() - new Date(left.createdAt).getTime(),
+    );
+
+    res.status(200).json(studies);
+  } catch (error) {
+    next(error);
+  }
+});
+
 app.get("/api/cloudinary/config", (_req, res) => {
   const cloudName = process.env.CLOUDINARY_CLOUD_NAME;
 
@@ -521,6 +570,36 @@ app.get("/api/admin/projects", async (_req, res, next) => {
   }
 });
 
+app.get("/api/admin/case-studies", async (req, res, next) => {
+  try {
+    await requireAdmin(req);
+    const studies = await prisma.caseStudy.findMany({
+      orderBy: [{ sortOrder: "asc" }, { createdAt: "desc" }],
+      select: caseStudySelect,
+    });
+    res.status(200).json(studies);
+  } catch (error) {
+    next(error);
+  }
+});
+
+app.get("/api/admin/case-studies/:slug", async (req, res, next) => {
+  try {
+    await requireAdmin(req);
+    const study = await prisma.caseStudy.findUnique({
+      where: { slug: req.params.slug },
+      select: caseStudySelect,
+    });
+    if (!study) {
+      res.status(404).json({ error: "Case study not found." });
+      return;
+    }
+    res.status(200).json(study);
+  } catch (error) {
+    next(error);
+  }
+});
+
 app.get("/api/admin/projects/:slug", async (req, res, next) => {
   try {
     await requireAdmin(req);
@@ -550,6 +629,64 @@ app.post("/api/projects", async (req, res, next) => {
     });
 
     res.status(201).json(project);
+  } catch (error) {
+    next(error);
+  }
+});
+
+app.post("/api/case-studies", async (req, res, next) => {
+  try {
+    await requireAdmin(req);
+    const study = await prisma.caseStudy.create({
+      data: parseCaseStudyInput(req.body),
+      select: caseStudySelect,
+    });
+    res.status(201).json(study);
+  } catch (error) {
+    next(error);
+  }
+});
+
+app.put("/api/case-studies/:slug", async (req, res, next) => {
+  try {
+    await requireAdmin(req);
+    const data = parseCaseStudyInput(req.body);
+    const existing = await prisma.caseStudy.findUnique({
+      where: { slug: req.params.slug },
+      select: { images: true },
+    });
+    if (!existing) {
+      res.status(404).json({ error: "Case study not found." });
+      return;
+    }
+    await destroyPortfolioImages(
+      getRemovedPortfolioImageUrls(existing.images, data.images),
+    );
+    const study = await prisma.caseStudy.update({
+      where: { slug: req.params.slug },
+      data,
+      select: caseStudySelect,
+    });
+    res.status(200).json(study);
+  } catch (error) {
+    next(error);
+  }
+});
+
+app.delete("/api/case-studies/:slug", async (req, res, next) => {
+  try {
+    await requireAdmin(req);
+    const study = await prisma.caseStudy.findUnique({
+      where: { slug: req.params.slug },
+      select: { images: true },
+    });
+    if (!study) {
+      res.status(404).json({ error: "Case study not found." });
+      return;
+    }
+    await destroyPortfolioImages(study.images);
+    await prisma.caseStudy.delete({ where: { slug: req.params.slug } });
+    res.status(200).json({ ok: true });
   } catch (error) {
     next(error);
   }

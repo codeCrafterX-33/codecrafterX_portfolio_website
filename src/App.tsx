@@ -11,6 +11,8 @@ import Projects from "./pages/Projects";
 import ProjectTemplate from "./pages/ProjectTemplate";
 import AdminProjectEditor from "./pages/AdminProjectEditor";
 import AdminProjects from "./pages/AdminProjects";
+import AdminCaseStudies from "./pages/AdminCaseStudies";
+import AdminCaseStudyEditor from "./pages/AdminCaseStudyEditor";
 import ScrollToTop from "./components/ScrollToTop";
 
 const App = () => {
@@ -31,6 +33,9 @@ const App = () => {
         <Route path="/admin/projects" element={<AdminProjects />} />
         <Route path="/admin/projects/new" element={<AdminProjectEditor />} />
         <Route path="/admin/projects/:slug/edit" element={<AdminProjectEditor />} />
+        <Route path="/admin/case-studies" element={<AdminCaseStudies />} />
+        <Route path="/admin/case-studies/new" element={<AdminCaseStudyEditor />} />
+        <Route path="/admin/case-studies/:slug/edit" element={<AdminCaseStudyEditor />} />
       </Routes>
       <Footer />
     </Router>

@@ -16,6 +16,9 @@ export const projectSelect = {
   features: true,
   bgColor: true,
   featured: true,
+  caseStudy: true,
+  caseStudyTitle: true,
+  caseStudyCompany: true,
   published: true,
   sortOrder: true,
   createdAt: true,
@@ -75,6 +78,9 @@ export const parseProjectInput = (body: unknown): ProjectInput => {
     features: stringList(payload.features),
     bgColor: optionalText(payload.bgColor),
     featured: Boolean(payload.featured),
+    caseStudy: Boolean(payload.caseStudy),
+    caseStudyTitle: optionalText(payload.caseStudyTitle),
+    caseStudyCompany: optionalText(payload.caseStudyCompany),
     published: payload.published !== false,
     sortOrder:
       typeof payload.sortOrder === "number" &&

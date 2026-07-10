@@ -1,0 +1,4 @@
+ALTER TABLE "Project"
+ADD COLUMN IF NOT EXISTS "casestudy" BOOLEAN NOT NULL DEFAULT false,
+ADD COLUMN IF NOT EXISTS "casestudytitle" TEXT,
+ADD COLUMN IF NOT EXISTS "casestudycompany" TEXT;
