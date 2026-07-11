@@ -204,6 +204,14 @@ section {
     @apply grid w-full grid-cols-2 gap-3 md:hidden;
   }
 
+  .hero-desktop-actions {
+    @apply hidden items-center gap-4 md:flex;
+  }
+
+  .hero-desktop-action {
+    @apply inline-flex h-16 w-48 items-center justify-between rounded-xl border border-white/30 bg-white/5 px-6 text-base font-bold uppercase tracking-wide text-white transition-colors hover:border-green-400 hover:bg-green-400 hover:text-black xl:w-56;
+  }
+
   .hero-mobile-action {
     @apply flex h-12 items-center justify-between rounded-full px-5 text-sm font-bold uppercase tracking-wide transition-transform active:scale-95;
   }

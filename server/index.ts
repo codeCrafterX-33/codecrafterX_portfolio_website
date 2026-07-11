@@ -34,7 +34,7 @@ const whatsappLogoUrl =
   "https://res.cloudinary.com/dgc8vxmc2/image/upload/v1782159168/whatsapp_icon_oaentw.avif";
 const whatsappUrl =
   process.env.WHATSAPP_URL ??
-  "https://wa.me/2349035466958?text=Hi%20Sopefoluwa%2C%20I%20came%20across%20your%20portfolio%20and%20I%27d%20like%20to%20discuss%20a%20project%20with%20you.";
+  "https://wa.me/2349035466958?text=Hi%codeCrafterX%2C%20I%20came%20across%20your%20portfolio%20and%20I%27d%20like%20to%20discuss%20a%20project%20with%20you.";
 const allowedOrigins = new Set(
   [
     "http://localhost:5173",
@@ -68,14 +68,8 @@ app.use((req, res, next) => {
     res.setHeader("Vary", "Origin");
   }
 
-  res.setHeader(
-    "Access-Control-Allow-Methods",
-    "GET,POST,PUT,DELETE,OPTIONS",
-  );
-  res.setHeader(
-    "Access-Control-Allow-Headers",
-    "Content-Type,Authorization",
-  );
+  res.setHeader("Access-Control-Allow-Methods", "GET,POST,PUT,DELETE,OPTIONS");
+  res.setHeader("Access-Control-Allow-Headers", "Content-Type,Authorization");
 
   if (req.method === "OPTIONS") {
     res.sendStatus(204);
@@ -92,6 +86,24 @@ const escapeHtml = (value: string) =>
     .replace(/>/g, "&gt;")
     .replace(/"/g, "&quot;")
     .replace(/'/g, "&#039;");
+
+const normalizeEmailAddress = (value: string) =>
+  value
+    .trim()
+    .replace(/^.*<([^>]+)>.*$/, "$1")
+    .toLowerCase();
+
+const formatSender = (email: string, name: string) => {
+  const trimmedEmail = email.trim();
+  const trimmedName = name.trim();
+
+  if (!trimmedName || trimmedEmail.includes("<")) {
+    return trimmedEmail;
+  }
+
+  const safeName = trimmedName.replace(/["<>]/g, "");
+  return `${safeName} <${trimmedEmail}>`;
+};
 
 const sendResendEmail = async ({
   label,
@@ -189,10 +201,7 @@ app.use(clerkMiddleware({ publishableKey: clerkPublishableKey }));
 app.post("/api/contact", async (req, res, next) => {
   try {
     const clientKey = getContactClientKeyFromRequest(req);
-    const rateLimit = checkContactRateLimit(
-      clientKey,
-      contactRateLimitStore,
-    );
+    const rateLimit = checkContactRateLimit(clientKey, contactRateLimitStore);
 
     if (!rateLimit.allowed) {
       res
@@ -214,6 +223,7 @@ app.post("/api/contact", async (req, res, next) => {
     const resendApiKey = process.env.RESEND_API_KEY;
     const fromEmail = process.env.RESEND_FROM_EMAIL;
     const toEmail = process.env.RESEND_TO_EMAIL;
+    const fromName = process.env.RESEND_FROM_NAME || "CodeCrafterX Portfolio";
 
     if (!resendApiKey || !fromEmail || !toEmail) {
       res.status(500).json({
@@ -222,46 +232,30 @@ app.post("/api/contact", async (req, res, next) => {
       return;
     }
 
-    const logoUrl = emailLogoUrl;
+    if (normalizeEmailAddress(fromEmail) === normalizeEmailAddress(toEmail)) {
+      console.warn(
+        "RESEND_FROM_EMAIL and RESEND_TO_EMAIL are the same mailbox. Use a separate sender like portfolio@yourdomain for better deliverability.",
+      );
+    }
+
+    const sender = formatSender(fromEmail, fromName);
     const safeName = escapeHtml(name);
     const safeEmail = escapeHtml(email);
     const safeMessage = escapeHtml(message);
     const replyMailto = `mailto:${encodeURIComponent(email)}?subject=${encodeURIComponent(
-      `Re: Your message to CodeCrafterX`,
+      "Re: Your message to CodeCrafterX",
     )}`;
-    const notificationSubject = `New contact form message from ${name}`;
+    const notificationSubject = "New portfolio contact message";
     const notificationHtml = `
-      <div style="font-family: Arial, sans-serif; line-height: 1.6; color: #111827; max-width: 680px; background: #f8fafc; padding: 24px;">
-        <div style="background: #050505; border-radius: 18px 18px 0 0; padding: 24px;">
-          <img src="${logoUrl}" alt="CodeCrafterX" style="display: block; width: 190px; max-width: 100%; margin-bottom: 22px;" />
-          <p style="margin: 0 0 8px; color: #22c55e; font-size: 13px; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase;">New portfolio inquiry</p>
-          <h2 style="margin: 0; color: #ffffff; font-size: 28px; line-height: 1.25;">A new client message just came in</h2>
+      <div style="font-family: Arial, sans-serif; line-height: 1.6; color: #111827; max-width: 640px;">
+        <p style="margin: 0 0 14px;">A new message was submitted through the portfolio contact form.</p>
+        <p style="margin: 0 0 6px;"><strong>Name:</strong> ${safeName}</p>
+        <p style="margin: 0 0 18px;"><strong>Email:</strong> <a href="${replyMailto}" style="color: #047857;">${safeEmail}</a></p>
+        <div style="border-left: 3px solid #22c55e; padding-left: 14px;">
+          <p style="margin: 0 0 8px; font-weight: 700;">Message</p>
+          <p style="margin: 0; white-space: pre-wrap;">${safeMessage}</p>
         </div>
-        <div style="background: #ffffff; border: 1px solid #e5e7eb; border-top: 0; border-radius: 0 0 18px 18px; padding: 24px;">
-          <p style="margin: 0 0 18px; color: #4b5563;">
-            Someone submitted the contact form on your portfolio. Their details are organized below so you can follow up quickly.
-          </p>
-          <div style="margin: 0 0 22px;">
-            <div style="display: inline-block; width: 30%; min-width: 150px; margin: 0 10px 10px 0; padding: 14px; border: 1px solid #e5e7eb; border-radius: 12px; background: #f9fafb; vertical-align: top;">
-              <p style="margin: 0 0 6px; color: #6b7280; font-size: 12px; font-weight: 700; text-transform: uppercase;">Name</p>
-              <p style="margin: 0; color: #111827; font-weight: 700;">${safeName}</p>
-            </div>
-            <div style="display: inline-block; width: 58%; min-width: 220px; margin: 0 0 10px; padding: 14px; border: 1px solid #e5e7eb; border-radius: 12px; background: #f9fafb; vertical-align: top;">
-              <p style="margin: 0 0 6px; color: #6b7280; font-size: 12px; font-weight: 700; text-transform: uppercase;">Email</p>
-              <p style="margin: 0; color: #111827; font-weight: 700;">${safeEmail}</p>
-            </div>
-          </div>
-          <div style="margin: 0 0 22px; padding: 18px; border-left: 4px solid #22c55e; border-radius: 12px; background: #f0fdf4;">
-            <p style="margin: 0 0 10px; color: #14532d; font-size: 13px; font-weight: 700; text-transform: uppercase;">Message</p>
-            <p style="margin: 0; color: #111827; white-space: pre-wrap;">${safeMessage}</p>
-          </div>
-          <a href="${replyMailto}" style="display: inline-block; padding: 12px 18px; border-radius: 10px; background: #22c55e; color: #ffffff; text-decoration: none; font-weight: 700;">
-            Reply to client
-          </a>
-          <p style="margin: 18px 0 0; color: #6b7280; font-size: 13px;">
-            Tip: you can also reply directly to this email because the submitted email is set as the reply-to address.
-          </p>
-        </div>
+        <p style="margin: 18px 0 0; color: #6b7280; font-size: 13px;">Use the linked email address above to reply to ${safeName}.</p>
       </div>
     `;
     const notificationText = [
@@ -273,28 +267,22 @@ app.post("/api/contact", async (req, res, next) => {
       "Message:",
       message,
     ].join("\n");
-    const clientSubject = "Thanks for reaching out to CodeCrafterX";
+    const clientSubject = "We received your message";
     const clientHtml = `
-      <div style="font-family: Arial, sans-serif; line-height: 1.7; color: #111827; max-width: 640px;">
-        <img src="${logoUrl}" alt="CodeCrafterX" style="display: block; width: 180px; max-width: 100%; margin-bottom: 24px;" />
-        <h2 style="margin: 0 0 16px;">Thanks for reaching out, ${safeName}</h2>
-        <p style="margin: 0 0 16px;">
-          I have received your message and appreciate you taking the time to contact me.
-        </p>
-        <p style="margin: 0 0 16px;">
-          I will review your message and get back to you within 24 hours with a thoughtful response.
-        </p>
-        <div style="margin: 24px 0; padding: 16px; border-left: 4px solid #22c55e; background: #f0fdf4;">
+      <div style="font-family: Arial, sans-serif; line-height: 1.7; color: #111827; max-width: 620px;">
+        <img src="${emailLogoUrl}" alt="CodeCrafterX" style="display: block; width: 180px; max-width: 100%; margin-bottom: 24px;" />
+        <p style="margin: 0 0 16px;">Hi ${safeName},</p>
+        <p style="margin: 0 0 16px;">I received your message and appreciate you taking the time to contact me.</p>
+        <p style="margin: 0 0 16px;">I will review your message and get back to you within 24 hours.</p>
+        <div style="margin: 22px 0; padding: 16px; border-left: 3px solid #22c55e; background: #f9fafb;">
           <p style="margin: 0; font-weight: 700;">Your message</p>
           <p style="margin: 8px 0 0; white-space: pre-wrap;">${safeMessage}</p>
         </div>
         <div style="margin: 24px 0; padding: 18px; border: 1px solid #bbf7d0; border-radius: 12px; background: #f7fee7;">
           <p style="margin: 0 0 10px; font-weight: 700;">Prefer to continue on WhatsApp?</p>
-          <p style="margin: 0 0 14px; color: #374151;">
-            You can also reach me directly on WhatsApp for a quicker conversation.
-          </p>
-          <a href="${whatsappUrl}" style="display: inline-flex; align-items: center; gap: 8px; padding: 10px 14px; border-radius: 8px; background: #22c55e; color: #ffffff; text-decoration: none; font-weight: 700;">
-            <img src="${whatsappLogoUrl}" alt="" style="display: inline-block; width: 20px; height: 20px; vertical-align: middle;" />
+          <p style="margin: 0 0 14px; color: #374151;">You can also reach me directly on WhatsApp for a quicker conversation.</p>
+          <a href="${whatsappUrl}" style="display: inline-block; padding: 10px 14px; border-radius: 8px; background: #22c55e; color: #ffffff; text-decoration: none; font-weight: 700;">
+            <img src="${whatsappLogoUrl}" alt="" style="display: inline-block; width: 20px; height: 20px; vertical-align: middle; margin-right: 8px;" />
             Message me on WhatsApp
           </a>
         </div>
@@ -306,8 +294,8 @@ app.post("/api/contact", async (req, res, next) => {
     const clientText = [
       `Thanks for reaching out, ${name}`,
       "",
-      "I have received your message and appreciate you taking the time to contact me.",
-      "I will review your message and get back to you within 24 hours with a thoughtful response.",
+      "I received your message and appreciate you taking the time to contact me.",
+      "I will review your message and get back to you within 24 hours.",
       "",
       "Your message:",
       message,
@@ -323,7 +311,7 @@ app.post("/api/contact", async (req, res, next) => {
       sendResendEmail({
         label: "owner notification",
         apiKey: resendApiKey,
-        from: fromEmail,
+        from: sender,
         to: [toEmail],
         replyTo: email,
         subject: notificationSubject,
@@ -333,7 +321,7 @@ app.post("/api/contact", async (req, res, next) => {
       sendResendEmail({
         label: "client confirmation",
         apiKey: resendApiKey,
-        from: fromEmail,
+        from: sender,
         to: [email],
         replyTo: toEmail,
         subject: clientSubject,
@@ -358,12 +346,16 @@ app.post("/api/contact", async (req, res, next) => {
       failedEmails.forEach(({ label, result }) => {
         console.error(
           `Required email failed (${label}):`,
-          result.reason instanceof Error ? result.reason.message : result.reason,
+          result.reason instanceof Error
+            ? result.reason.message
+            : result.reason,
         );
       });
-      throw new Error(
-        "The message and confirmation email could not both be sent. Please try again.",
-      );
+      res.status(502).json({
+        error:
+          "Message could not be sent right now. Please try again in a moment or use WhatsApp.",
+      });
+      return;
     }
 
     res.status(200).json({ ok: true, confirmationSent: true });
@@ -443,7 +435,8 @@ app.get("/api/case-studies", async (_req, res, next) => {
     ].sort(
       (left, right) =>
         left.sortOrder - right.sortOrder ||
-        new Date(right.createdAt).getTime() - new Date(left.createdAt).getTime(),
+        new Date(right.createdAt).getTime() -
+          new Date(left.createdAt).getTime(),
     );
 
     res.status(200).json(studies);
@@ -464,7 +457,7 @@ app.get("/api/cloudinary/config", (_req, res) => {
 
   res.status(200).json({
     cloudName,
-        folder: portfolioCloudinaryFolder,
+    folder: portfolioCloudinaryFolder,
     uploadPreset: cloudinaryUploadPreset,
   });
 });
@@ -775,11 +768,7 @@ app.use(
     const message = error instanceof Error ? error.message : "Request failed.";
     console.error("API request failed:", message);
     const status =
-      message === "Unauthorized."
-        ? 401
-        : message === "Forbidden."
-          ? 403
-          : 400;
+      message === "Unauthorized." ? 401 : message === "Forbidden." ? 403 : 400;
     res.status(status).json({ error: message });
   },
 );

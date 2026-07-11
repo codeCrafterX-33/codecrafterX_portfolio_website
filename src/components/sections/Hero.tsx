@@ -74,12 +74,16 @@ const Hero = () => {
                 that Deliver Results
               </h3>
             </div>
-            <div className="hidden md:block">
+            <div className="hero-desktop-actions">
               <Button
-                className="inline-flex h-16 w-80 [&_.cta-button]:size-full"
+                className="inline-flex h-16 w-72 [&_.cta-button]:size-full xl:w-80"
                 id="counter"
                 text="See my work"
               />
+              <a href="#contact" className="hero-desktop-action">
+                <span>Hire Me</span>
+                <span aria-hidden="true">&rarr;</span>
+              </a>
             </div>
             <div className="hero-mobile-actions">
               <a href="#counter" className="hero-mobile-action primary">

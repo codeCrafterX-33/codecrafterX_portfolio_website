@@ -50,6 +50,12 @@ const Contact = () => {
       });
 
       if (!response.ok) {
+        if (response.status >= 500) {
+          throw new Error(
+            "Message could not be sent right now. Please try again in a moment or use WhatsApp.",
+          );
+        }
+
         const responseText = await response.text();
         const payload = (() => {
           try {
@@ -60,9 +66,7 @@ const Contact = () => {
         })();
         throw new Error(
           payload?.error ??
-            (response.status >= 500
-              ? "The email service is temporarily unavailable. Please try again or use WhatsApp."
-              : `Unable to send message. (${response.status})`),
+            `Unable to send message. (${response.status})`,
         );
       }
 
