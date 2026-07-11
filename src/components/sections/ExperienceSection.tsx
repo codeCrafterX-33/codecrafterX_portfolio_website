@@ -4,6 +4,7 @@ import GlowCard from "../GlowCard";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { useGSAP } from "@gsap/react";
+import { useRef } from "react";
 
 interface ExpCard {
   company: string;
@@ -17,53 +18,80 @@ interface ExpCard {
 gsap.registerPlugin(ScrollTrigger);
 
 export const ExperienceSection = () => {
+  const sectionRef = useRef<HTMLElement | null>(null);
+
   useGSAP(() => {
-    gsap.utils.toArray(".timeline-card").forEach((card) => {
-      gsap.from(card as gsap.TweenTarget, {
-        xPercent: -100,
-        opacity: 0,
-        transformOrigin: "left left",
-        duration: 1,
-        ease: "power2.inOut",
+    const section = sectionRef.current;
+    if (!section) return;
+
+    const cards = section.querySelectorAll<HTMLElement>(".timeline-card");
+    const details = section.querySelectorAll<HTMLElement>(".expText");
+    const timelineCovers = section.querySelectorAll<HTMLElement>(".timeline");
+
+    cards.forEach((card) => {
+      gsap.fromTo(
+        card,
+        { xPercent: -100, opacity: 0 },
+        {
+          xPercent: 0,
+          opacity: 1,
+          transformOrigin: "left left",
+          duration: 1,
+          ease: "power2.inOut",
+          scrollTrigger: {
+            trigger: card,
+            start: "top 80%",
+            once: true,
+          },
+        },
+      );
+    });
+
+    details.forEach((detail) => {
+      gsap.fromTo(
+        detail,
+        { opacity: 0, y: 24 },
+        {
+          opacity: 1,
+          y: 0,
+          duration: 0.8,
+          ease: "power2.out",
+          scrollTrigger: {
+            trigger: detail,
+            start: "top 75%",
+            once: true,
+          },
+        },
+      );
+    });
+
+    if (timelineCovers.length) {
+      gsap.to(timelineCovers, {
+        scaleY: 0,
+        transformOrigin: "bottom",
+        ease: "none",
         scrollTrigger: {
-          trigger: card as gsap.DOMTarget,
-          start: "top 80%",
+          trigger: section,
+          start: "top center",
+          end: "bottom center",
+          scrub: true,
         },
       });
-    });
+    }
 
-    gsap.to(".timeline", {
-      transformOrigin: "bottom bottom",
-      ease: "power1.inOut",
-      scrollTrigger: {
-        trigger: ".timeline",
-        start: "top center",
-        end: "70% center",
-        onUpdate: (self) => {
-          gsap.to(".timeline", {
-            scaleY: 1 - self.progress,
-          });
-        },
-      },
-    });
+    const refresh = () => ScrollTrigger.refresh();
+    const frame = requestAnimationFrame(refresh);
+    window.addEventListener("load", refresh, { once: true });
 
-    gsap.utils.toArray(".expText").forEach((text) => {
-      gsap.from(text as gsap.DOMTarget, {
-        xPercent: 0,
-        opacity: 0,
-
-        duration: 1,
-        ease: "power2.inOut",
-        scrollTrigger: {
-          trigger: text as gsap.DOMTarget,
-          start: "top 60%",
-        },
-      });
-    });
-  }, []);
+    return () => {
+      cancelAnimationFrame(frame);
+      window.removeEventListener("load", refresh);
+    };
+  }, { scope: sectionRef });
 
   return (
     <section
+      ref={sectionRef}
       id="experience"
       className="w-full md:mt-40 my-20 section-padding xl:px-0"
     >

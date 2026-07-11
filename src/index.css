@@ -201,11 +201,24 @@ section {
   }
 
   .hero-mobile-actions {
-    @apply grid w-full grid-cols-2 gap-3 md:hidden;
+    display: grid;
+    @apply w-full grid-cols-2 gap-3;
   }
 
   .hero-desktop-actions {
-    @apply hidden items-center gap-4 md:flex;
+    display: none;
+    @apply items-center gap-4;
+  }
+
+  @media (min-width: 768px) {
+    .hero-mobile-actions {
+      display: none;
+    }
+
+    .hero-desktop-actions {
+      display: flex;
+      margin-top: 1rem;
+    }
   }
 
   .hero-desktop-action {
@@ -652,12 +665,12 @@ section {
     @apply flex flex-col justify-between items-center xl:gap-5 xl:h-[50vh] overflow-hidden relative z-10 group-hover:cursor-grab;
 
     & p {
-      @apply text-sm xl:text-base 2xl:text-lg pb-5 xl:pb-5 font-semibold text-white-50 text-center relative z-20 break-words px-2 transition-colors duration-300 group-hover:text-white;
+      @apply text-sm xl:text-base 2xl:text-lg pb-9 xl:pb-10 font-semibold text-white-50 text-center relative z-20 break-words px-2 transition-colors duration-300 group-hover:text-white;
     }
   }
 
   .tech-grid {
-    @apply grid xl:grid-cols-5 md:grid-cols-3 grid-cols-1 xl:gap-16 md:gap-10 gap-5 mt-16 xl:justify-items-center;
+    @apply grid xl:grid-cols-4 md:grid-cols-2 grid-cols-1 xl:gap-12 md:gap-10 gap-5 mt-16 justify-items-center;
   }
 
   .tech-icon-wrapper {

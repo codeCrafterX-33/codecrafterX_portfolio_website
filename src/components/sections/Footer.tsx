@@ -3,6 +3,9 @@ import { socialImgs } from "../../constants";
 
 const Footer = () => {
   const currentYear = new Date().getFullYear();
+  const whatsappHref =
+    socialImgs.find((social) => social.name === "whatsapp")?.href ??
+    "https://wa.me/2349035466958";
 
   return (
     <footer className="mt-20 bg-gradient-to-t from-gray-900 to-black border-t border-gray-800">
@@ -107,15 +110,6 @@ const Footer = () => {
                   Case Studies
                 </Link>
               </li>
-              <li>
-                <Link
-                  to="/process"
-                  reloadDocument
-                  className="text-gray-300 hover:text-green-400 transition-colors duration-300"
-                >
-                  Process
-                </Link>
-              </li>
             </ul>
           </div>
 
@@ -151,13 +145,14 @@ const Footer = () => {
 
             {/* Call to Action */}
             <div className="pt-4">
-              <Link
-                to="/"
-                reloadDocument
+              <a
+                href={whatsappHref}
+                target="_blank"
+                rel="noopener noreferrer"
                 className="inline-flex items-center px-4 py-2 bg-gradient-to-r from-green-500 to-emerald-500 text-white rounded-lg hover:from-green-600 hover:to-emerald-600 transition-all duration-300 text-sm font-medium"
               >
                 Let's Connect →
-              </Link>
+              </a>
             </div>
           </div>
         </div>

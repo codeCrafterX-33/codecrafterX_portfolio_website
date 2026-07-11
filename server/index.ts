@@ -242,20 +242,36 @@ app.post("/api/contact", async (req, res, next) => {
     const safeName = escapeHtml(name);
     const safeEmail = escapeHtml(email);
     const safeMessage = escapeHtml(message);
-    const replyMailto = `mailto:${encodeURIComponent(email)}?subject=${encodeURIComponent(
+    const replyMailto = `mailto:${email}?subject=${encodeURIComponent(
       "Re: Your message to CodeCrafterX",
     )}`;
     const notificationSubject = "New portfolio contact message";
     const notificationHtml = `
-      <div style="font-family: Arial, sans-serif; line-height: 1.6; color: #111827; max-width: 640px;">
-        <p style="margin: 0 0 14px;">A new message was submitted through the portfolio contact form.</p>
-        <p style="margin: 0 0 6px;"><strong>Name:</strong> ${safeName}</p>
-        <p style="margin: 0 0 18px;"><strong>Email:</strong> <a href="${replyMailto}" style="color: #047857;">${safeEmail}</a></p>
-        <div style="border-left: 3px solid #22c55e; padding-left: 14px;">
-          <p style="margin: 0 0 8px; font-weight: 700;">Message</p>
-          <p style="margin: 0; white-space: pre-wrap;">${safeMessage}</p>
+      <div style="font-family: Arial, sans-serif; line-height: 1.6; color: #111827; max-width: 680px; background: #f8fafc; padding: 24px;">
+        <div style="background: #050505; border-radius: 18px 18px 0 0; padding: 24px;">
+          <img src="${emailLogoUrl}" alt="CodeCrafterX" style="display: block; width: 190px; max-width: 100%; margin-bottom: 22px;" />
+          <p style="margin: 0 0 8px; color: #22c55e; font-size: 13px; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase;">New portfolio inquiry</p>
+          <h2 style="margin: 0; color: #ffffff; font-size: 28px; line-height: 1.25;">A new client message just came in</h2>
         </div>
-        <p style="margin: 18px 0 0; color: #6b7280; font-size: 13px;">Use the linked email address above to reply to ${safeName}.</p>
+        <div style="background: #ffffff; border: 1px solid #e5e7eb; border-top: 0; border-radius: 0 0 18px 18px; padding: 24px;">
+          <p style="margin: 0 0 18px; color: #4b5563;">Someone submitted the contact form on your portfolio. Their details are organized below so you can follow up quickly.</p>
+          <div style="margin: 0 0 22px;">
+            <div style="display: inline-block; width: 30%; min-width: 150px; margin: 0 10px 10px 0; padding: 14px; border: 1px solid #e5e7eb; border-radius: 12px; background: #f9fafb; vertical-align: top;">
+              <p style="margin: 0 0 6px; color: #6b7280; font-size: 12px; font-weight: 700; text-transform: uppercase;">Name</p>
+              <p style="margin: 0; color: #111827; font-weight: 700;">${safeName}</p>
+            </div>
+            <div style="display: inline-block; width: 58%; min-width: 220px; margin: 0 0 10px; padding: 14px; border: 1px solid #e5e7eb; border-radius: 12px; background: #f9fafb; vertical-align: top;">
+              <p style="margin: 0 0 6px; color: #6b7280; font-size: 12px; font-weight: 700; text-transform: uppercase;">Email</p>
+              <p style="margin: 0; font-weight: 700;"><a href="${replyMailto}" style="color: #111827; text-decoration: none;">${safeEmail}</a></p>
+            </div>
+          </div>
+          <div style="margin: 0 0 22px; padding: 18px; border-left: 4px solid #22c55e; border-radius: 12px; background: #f0fdf4;">
+            <p style="margin: 0 0 10px; color: #14532d; font-size: 13px; font-weight: 700; text-transform: uppercase;">Message</p>
+            <p style="margin: 0; color: #111827; white-space: pre-wrap;">${safeMessage}</p>
+          </div>
+          <a href="${replyMailto}" style="display: inline-block; padding: 12px 18px; border-radius: 10px; background: #22c55e; color: #ffffff; text-decoration: none; font-weight: 700;">Reply to client</a>
+          <p style="margin: 18px 0 0; color: #6b7280; font-size: 13px;">Tip: you can also reply directly to this email because the submitted email is set as the reply-to address.</p>
+        </div>
       </div>
     `;
     const notificationText = [

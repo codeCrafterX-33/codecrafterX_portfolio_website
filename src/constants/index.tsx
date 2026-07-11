@@ -231,10 +231,6 @@ export const techStackImgs = [
     imgPath: "/images/logos/node.png",
   },
   {
-    name: "Interactive Developer",
-    imgPath: "/images/logos/three.png",
-  },
-  {
     name: "Project Manager",
     imgPath: "/images/logos/git.svg",
   },
@@ -243,9 +239,7 @@ export const techStackImgs = [
 export const techStackIcons = [
   {
     name: "React & React Native Developer",
-    modelPath: "/models/react_logo-transformed.glb",
-    scale: 1,
-    rotation: [0, 0, 0],
+    imgPath: "/images/logos/react.png",
   },
   // {
   //   name: "Python Developer",
@@ -255,9 +249,7 @@ export const techStackIcons = [
   // },
   {
     name: "Backend Developer (Node.js, Express.js)",
-    modelPath: "/models/node-transformed.glb",
-    scale: 5,
-    rotation: [0, -Math.PI / 2, 0],
+    imgPath: "/images/logos/node.png",
   },
 
   {
@@ -265,15 +257,7 @@ export const techStackIcons = [
     imgPath: "/images/logos/wordpress.png",
   },
   {
-    name: "Interactive Developer",
-    modelPath: "/models/three.js-transformed.glb",
-    scale: 0.05,
-    rotation: [0, 0, 0],
-  },
-  {
     name: "Project Manager",
-    modelPath: "/models/git-svg-transformed.glb",
-    scale: 0.05,
-    rotation: [0, -Math.PI / 4, 0],
+    imgPath: "/images/logos/git.svg",
   },
 ];

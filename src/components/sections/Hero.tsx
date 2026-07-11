@@ -74,7 +74,7 @@ const Hero = () => {
                 that Deliver Results
               </h3>
             </div>
-            <div className="hero-desktop-actions">
+            <div className="hero-desktop-actions mt-15 gap-5">
               <Button
                 className="inline-flex h-16 w-72 [&_.cta-button]:size-full xl:w-80"
                 id="counter"

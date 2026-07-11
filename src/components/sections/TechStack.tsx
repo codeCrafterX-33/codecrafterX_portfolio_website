@@ -1,6 +1,5 @@
 import TitleHeader from "../TitleHeader";
 import { techStackIcons } from "../../constants";
-import TechIcon from "../models/TechLogos/TechIcon";
 import { useGSAP } from "@gsap/react";
 import gsap from "gsap";
 
@@ -39,15 +38,11 @@ const TechStack = () => {
               <div className="tech-card-animated-bg" />
               <div className="tech-card-content">
                 <div className="tech-icon-wrapper">
-                  {icon.imgPath ? (
-                    <img
-                      className="xl:size-30"
-                      src={icon.imgPath}
-                      alt={icon.name}
-                    />
-                  ) : (
-                    <TechIcon model={icon} />
-                  )}
+                  <img
+                    className="xl:size-30"
+                    src={icon.imgPath}
+                    alt={icon.name}
+                  />
                 </div>
 
                 <div className="padding-x w-full relative z-20">

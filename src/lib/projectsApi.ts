@@ -4,10 +4,13 @@ type ApiOptions = {
   authToken?: string;
 };
 
-export const apiBaseUrl = (import.meta.env.VITE_API_BASE_URL ?? "").replace(
-  /\/$/,
-  "",
-);
+const productionApiUrl =
+  "https://codecrafterx-portfolio-website.onrender.com";
+
+export const apiBaseUrl = (
+  import.meta.env.VITE_API_BASE_URL ||
+  (import.meta.env.PROD ? productionApiUrl : "")
+).replace(/\/$/, "");
 
 export const apiUrl = (path: string) => `${apiBaseUrl}${path}`;
 
@@ -17,6 +20,14 @@ const jsonHeaders = (authToken?: string) => ({
 });
 
 const readJson = async <T>(response: Response): Promise<T> => {
+  const contentType = response.headers.get("content-type") ?? "";
+
+  if (!contentType.includes("application/json")) {
+    throw new Error(
+      `The API returned ${contentType || "a non-JSON response"} (${response.status}).`,
+    );
+  }
+
   if (!response.ok) {
     const error = await response.json().catch(() => ({}));
     const message =
