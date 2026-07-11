@@ -59,6 +59,56 @@ section {
   }
 }
 
+@keyframes contactAvailabilityReveal {
+  0% {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes contactAvailabilityGlow {
+  0%,
+  100% {
+    color: rgb(110 231 183);
+    text-shadow: 0 0 0 rgb(52 211 153 / 0);
+  }
+  50% {
+    color: rgb(167 243 208);
+    text-shadow: 0 0 18px rgb(52 211 153 / 0.55);
+  }
+}
+
+@keyframes contactAvailabilityPulse {
+  0%,
+  100% {
+    box-shadow: 0 0 0 0 rgb(52 211 153 / 0.45);
+  }
+  50% {
+    box-shadow: 0 0 0 7px rgb(52 211 153 / 0);
+  }
+}
+
+.contact-availability {
+  animation:
+    contactAvailabilityReveal 600ms ease-out both,
+    contactAvailabilityGlow 2.8s ease-in-out 700ms infinite;
+}
+
+.contact-availability-dot {
+  animation: contactAvailabilityPulse 1.8s ease-out infinite;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .contact-availability,
+  .contact-availability-dot {
+    animation: none;
+  }
+}
+
 @layer components {
   .padding-x {
     @apply px-5 md:px-10;

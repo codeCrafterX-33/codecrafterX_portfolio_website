@@ -114,6 +114,7 @@ const sendResendEmail = async ({
 }) => {
   const response = await fetch("https://api.resend.com/emails", {
     method: "POST",
+    signal: AbortSignal.timeout(15_000),
     headers: {
       Authorization: `Bearer ${apiKey}`,
       "Content-Type": "application/json",
@@ -318,7 +319,7 @@ app.post("/api/contact", async (req, res, next) => {
       "CodeCrafterX",
     ].join("\n");
 
-    const emailResults = await Promise.allSettled([
+    const [ownerEmailResult, clientEmailResult] = await Promise.allSettled([
       sendResendEmail({
         label: "owner notification",
         apiKey: resendApiKey,
@@ -341,17 +342,31 @@ app.post("/api/contact", async (req, res, next) => {
       }),
     ]);
 
-    const failedEmail = emailResults.find(
-      (result): result is PromiseRejectedResult => result.status === "rejected",
+    const failedEmails = [
+      { label: "owner notification", result: ownerEmailResult },
+      { label: "client confirmation", result: clientEmailResult },
+    ].filter(
+      (
+        email,
+      ): email is {
+        label: string;
+        result: PromiseRejectedResult;
+      } => email.result.status === "rejected",
     );
 
-    if (failedEmail) {
-      throw failedEmail.reason instanceof Error
-        ? failedEmail.reason
-        : new Error("One or more contact emails failed to send.");
+    if (failedEmails.length > 0) {
+      failedEmails.forEach(({ label, result }) => {
+        console.error(
+          `Required email failed (${label}):`,
+          result.reason instanceof Error ? result.reason.message : result.reason,
+        );
+      });
+      throw new Error(
+        "The message and confirmation email could not both be sent. Please try again.",
+      );
     }
 
-    res.status(200).json({ ok: true });
+    res.status(200).json({ ok: true, confirmationSent: true });
   } catch (error) {
     next(error);
   }
@@ -758,6 +773,7 @@ app.use(
   ) => {
     void _next;
     const message = error instanceof Error ? error.message : "Request failed.";
+    console.error("API request failed:", message);
     const status =
       message === "Unauthorized."
         ? 401
