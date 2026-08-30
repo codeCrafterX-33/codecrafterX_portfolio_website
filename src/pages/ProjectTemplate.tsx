@@ -1,4 +1,9 @@
-import { useEffect, useState, type SyntheticEvent } from "react";
+import {
+  useEffect,
+  useRef,
+  useState,
+  type SyntheticEvent,
+} from "react";
 import { Link, useParams } from "react-router-dom";
 import ModernButton from "../components/ModernButton";
 import { getProject } from "../lib/projectsApi";
@@ -13,6 +18,8 @@ const ProjectTemplate = () => {
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState("");
   const [imageFits, setImageFits] = useState<Record<number, ImageFit>>({});
+  const [isImageViewerOpen, setIsImageViewerOpen] = useState(false);
+  const closeButtonRef = useRef<HTMLButtonElement>(null);
 
   useEffect(() => {
     const loadProject = async () => {
@@ -27,6 +34,7 @@ const ProjectTemplate = () => {
         setProject(nextProject);
         setCurrentImageIndex(0);
         setImageFits({});
+        setIsImageViewerOpen(false);
       } catch (loadError) {
         setProject(null);
         setError(
@@ -41,6 +49,49 @@ const ProjectTemplate = () => {
 
     void loadProject();
   }, [projectId]);
+
+  useEffect(() => {
+    if (!isImageViewerOpen) {
+      return;
+    }
+
+    const previousBodyOverflow = document.body.style.overflow;
+    document.body.style.overflow = "hidden";
+    closeButtonRef.current?.focus();
+
+    const handleKeyDown = (event: KeyboardEvent) => {
+      if (event.key === "Escape") {
+        setIsImageViewerOpen(false);
+        return;
+      }
+
+      if (!project || project.images.length < 2) {
+        return;
+      }
+
+      if (event.key === "ArrowLeft") {
+        event.preventDefault();
+        setCurrentImageIndex(
+          (previous) =>
+            (previous - 1 + project.images.length) % project.images.length,
+        );
+      }
+
+      if (event.key === "ArrowRight") {
+        event.preventDefault();
+        setCurrentImageIndex(
+          (previous) => (previous + 1) % project.images.length,
+        );
+      }
+    };
+
+    window.addEventListener("keydown", handleKeyDown);
+
+    return () => {
+      document.body.style.overflow = previousBodyOverflow;
+      window.removeEventListener("keydown", handleKeyDown);
+    };
+  }, [isImageViewerOpen, project]);
 
   if (isLoading) {
     return (
@@ -90,6 +141,10 @@ const ProjectTemplate = () => {
   };
 
   const activeImageFit = imageFits[currentImageIndex] ?? "cover";
+
+  const openImageViewer = () => {
+    setIsImageViewerOpen(true);
+  };
 
   const prevImage = () => {
     if (project.images.length === 0) {
@@ -149,25 +204,35 @@ const ProjectTemplate = () => {
                   : "aspect-[4/3] md:aspect-[16/9]"
               }`}
             >
-              <img
-                src={project.images[currentImageIndex]}
-                alt={`${project.title} screenshot ${currentImageIndex + 1}`}
-                className={`absolute inset-0 size-full transition-all duration-300 ${
-                  activeImageFit === "contain"
-                    ? "object-contain object-top"
-                    : "object-cover object-top"
-                }`}
-                onLoad={handleImageLoad(currentImageIndex)}
-                onError={(e) => {
-                  const target = e.target as HTMLImageElement;
-                  target.src = project.images[0];
-                }}
-              />
+              <button
+                type="button"
+                onClick={openImageViewer}
+                className="absolute inset-0 z-0 size-full cursor-zoom-in border-0 bg-transparent p-0"
+                aria-label={`Open ${project.title} screenshot ${currentImageIndex + 1} in full view`}
+              >
+                <img
+                  src={project.images[currentImageIndex]}
+                  alt={`${project.title} screenshot ${currentImageIndex + 1}`}
+                  className={`pointer-events-none absolute inset-0 size-full transition-all duration-300 ${
+                    activeImageFit === "contain"
+                      ? "object-contain object-top"
+                      : "object-cover object-top"
+                  }`}
+                  onLoad={handleImageLoad(currentImageIndex)}
+                  onError={(e) => {
+                    const target = e.target as HTMLImageElement;
+                    target.src = project.images[0];
+                  }}
+                />
+                <span className="pointer-events-none absolute bottom-4 right-4 rounded-full bg-black/70 px-3 py-1.5 text-xs font-medium text-white opacity-100 transition-opacity md:opacity-0 md:group-hover:opacity-100">
+                  View full size
+                </span>
+              </button>
 
               <button
                 type="button"
                 onClick={prevImage}
-                className="absolute left-3 top-1/2 -translate-y-1/2 rounded-full border border-zinc-300 bg-white/85 p-3 text-zinc-900 opacity-100 shadow-sm backdrop-blur-sm transition-all duration-300 hover:bg-white md:left-4 md:opacity-0 md:group-hover:opacity-100 dark:border-zinc-700 dark:bg-zinc-900/70 dark:text-white dark:hover:bg-zinc-900"
+                className="absolute left-3 top-1/2 z-10 -translate-y-1/2 rounded-full border border-zinc-300 bg-white/85 p-3 text-zinc-900 opacity-100 shadow-sm backdrop-blur-sm transition-all duration-300 hover:bg-white md:left-4 md:opacity-0 md:group-hover:opacity-100 dark:border-zinc-700 dark:bg-zinc-900/70 dark:text-white dark:hover:bg-zinc-900"
                 aria-label="Previous image"
                 title="Previous image"
               >
@@ -176,7 +241,7 @@ const ProjectTemplate = () => {
               <button
                 type="button"
                 onClick={nextImage}
-                className="absolute right-3 top-1/2 -translate-y-1/2 rounded-full border border-zinc-300 bg-white/85 p-3 text-zinc-900 opacity-100 shadow-sm backdrop-blur-sm transition-all duration-300 hover:bg-white md:right-4 md:opacity-0 md:group-hover:opacity-100 dark:border-zinc-700 dark:bg-zinc-900/70 dark:text-white dark:hover:bg-zinc-900"
+                className="absolute right-3 top-1/2 z-10 -translate-y-1/2 rounded-full border border-zinc-300 bg-white/85 p-3 text-zinc-900 opacity-100 shadow-sm backdrop-blur-sm transition-all duration-300 hover:bg-white md:right-4 md:opacity-0 md:group-hover:opacity-100 dark:border-zinc-700 dark:bg-zinc-900/70 dark:text-white dark:hover:bg-zinc-900"
                 aria-label="Next image"
                 title="Next image"
               >
@@ -202,6 +267,75 @@ const ProjectTemplate = () => {
                 ))}
               </div>
             )}
+          </div>
+        )}
+
+        {isImageViewerOpen && (
+          <div
+            className="fixed inset-0 z-[1100] flex min-h-dvh items-center justify-center bg-black/95 p-4 backdrop-blur-sm"
+            role="dialog"
+            aria-modal="true"
+            aria-label={`${project.title} image viewer`}
+            onClick={() => setIsImageViewerOpen(false)}
+          >
+            <button
+              ref={closeButtonRef}
+              type="button"
+              onClick={() => setIsImageViewerOpen(false)}
+              className="absolute right-4 top-4 z-20 flex size-11 items-center justify-center rounded-full border border-white/20 bg-white/10 text-2xl text-white transition-colors hover:bg-white/20 focus:outline-none focus:ring-2 focus:ring-green-400"
+              aria-label="Close full-screen image"
+              title="Close full-screen image"
+            >
+              ×
+            </button>
+
+            <div
+              className="relative flex max-h-[calc(100dvh-5rem)] max-w-full items-center justify-center"
+              onClick={(event) => event.stopPropagation()}
+            >
+              <img
+                src={project.images[currentImageIndex]}
+                alt={`${project.title} screenshot ${currentImageIndex + 1} full view`}
+                className="max-h-[calc(100dvh-5rem)] max-w-[calc(100vw-2rem)] object-contain"
+                onError={(e) => {
+                  const target = e.target as HTMLImageElement;
+                  target.src = project.images[0];
+                }}
+              />
+            </div>
+
+            {project.images.length > 1 && (
+              <>
+                <button
+                  type="button"
+                  onClick={(event) => {
+                    event.stopPropagation();
+                    prevImage();
+                  }}
+                  className="absolute left-3 top-1/2 z-20 flex size-11 -translate-y-1/2 items-center justify-center rounded-full border border-white/20 bg-white/10 text-2xl text-white transition-colors hover:bg-white/20 focus:outline-none focus:ring-2 focus:ring-green-400"
+                  aria-label="Previous image in full view"
+                  title="Previous image"
+                >
+                  ←
+                </button>
+                <button
+                  type="button"
+                  onClick={(event) => {
+                    event.stopPropagation();
+                    nextImage();
+                  }}
+                  className="absolute right-3 top-1/2 z-20 flex size-11 -translate-y-1/2 items-center justify-center rounded-full border border-white/20 bg-white/10 text-2xl text-white transition-colors hover:bg-white/20 focus:outline-none focus:ring-2 focus:ring-green-400"
+                  aria-label="Next image in full view"
+                  title="Next image"
+                >
+                  →
+                </button>
+              </>
+            )}
+
+            <p className="absolute bottom-4 left-1/2 -translate-x-1/2 text-sm text-white/70">
+              {currentImageIndex + 1} / {project.images.length}
+            </p>
           </div>
         )}
 
