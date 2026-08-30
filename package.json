@@ -15,6 +15,7 @@
     "build": "tsc -b && npm run build:client",
     "build:client": "vite build",
     "build:server": "esbuild server/index.ts --bundle --platform=node --format=esm --packages=external --target=node22 --define:process.env.NODE_ENV='\"production\"' --outfile=server/server.js",
+    "heroku-postbuild": "npm run build:server",
     "test": "node --import tsx --test server/*.test.ts",
     "check": "npm run test && npm run build",
     "lint": "eslint .",
