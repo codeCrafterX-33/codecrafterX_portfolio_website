@@ -145,7 +145,7 @@ const ProjectTemplate = () => {
             <div
               className={`relative overflow-hidden rounded-2xl bg-gray-800 ${
                 activeImageFit === "contain"
-                  ? "aspect-[4/5] md:aspect-[9/12]"
+                  ? "aspect-[4/3] max-h-[600px] md:aspect-[16/9]"
                   : "aspect-[4/3] md:aspect-[16/9]"
               }`}
             >
