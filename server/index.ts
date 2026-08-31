@@ -41,6 +41,8 @@ const allowedOrigins = new Set(
     "http://127.0.0.1:5173",
     "https://sopefoluwabakare.dev",
     "https://www.sopefoluwabakare.dev",
+    "https://sopefoluwabakare.engineer",
+    "https://www.sopefoluwabakare.engineer",
     ...(process.env.CLIENT_ORIGINS ?? "")
       .split(",")
       .map((origin) => origin.trim())

@@ -5,7 +5,7 @@ type ApiOptions = {
 };
 
 const productionApiUrl =
-  "https://codecrafterx-portfolio-website.onrender.com";
+  "https://api.sopefoluwabakare.engineer";
 
 export const apiBaseUrl = (
   import.meta.env.VITE_API_BASE_URL ||
