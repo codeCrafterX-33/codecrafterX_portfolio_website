@@ -10,7 +10,15 @@ const FeatureCards = () => {
             className="card-border rounded-xl p-8 flex flex-col gap-4"
           >
             <div className="size-14 flex items-center justify-center rounded-full">
-              <img src={imgPath} alt={ability} className="size-12" />
+            <img
+              src={imgPath}
+              alt={ability}
+              className="size-12"
+              width={50}
+              height={50}
+              loading="lazy"
+              decoding="async"
+            />
             </div>
             <h3 className="text-white text-2xl font-semibold mt-2">
               {ability}

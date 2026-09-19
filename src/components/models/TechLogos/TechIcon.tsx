@@ -3,23 +3,29 @@ import { useGLTF, Environment, Float, OrbitControls } from "@react-three/drei";
 import { Canvas } from "@react-three/fiber";
 import * as THREE from "three";
 
+type TechModel = {
+  name: string;
+  modelPath: string;
+  scale?: number | [number, number, number];
+  rotation?: [number, number, number];
+};
+
 interface TechIconProps {
-  model: any;
+  model: TechModel;
 }
 
 const TechIcon = ({ model }: TechIconProps) => {
-  const gltf = useGLTF(model.modelPath);
-  const scene = Array.isArray(gltf) ? gltf[0].scene : gltf.scene;
+  const { scene } = useGLTF(model.modelPath);
 
   useEffect(() => {
     if (model.name === "Interactive Developer") {
-      scene.traverse((child: any) => {
-        if (child.isMesh && child.name == "Object_5") {
+      scene.traverse((child) => {
+        if (child instanceof THREE.Mesh && child.name === "Object_5") {
           child.material = new THREE.MeshStandardMaterial({ color: "white" });
         }
       });
     }
-  }, [scene]);
+  }, [model.name, scene]);
 
   return (
     <Canvas>

@@ -9,6 +9,7 @@ import {
 
 type ImageUploadProps = {
   value: string[];
+  getAuthToken: () => Promise<string>;
   disabled?: boolean;
   single?: boolean;
   multiple?: boolean;
@@ -20,6 +21,7 @@ type ImageUploadProps = {
 
 const ImageUpload = ({
   value,
+  getAuthToken,
   disabled,
   single,
   multiple,
@@ -50,8 +52,9 @@ const ImageUpload = ({
   const openWidget = useCallback(async () => {
     try {
       setIsUploading(true);
+      const authToken = await getAuthToken();
       const [config] = await Promise.all([
-        fetchCloudinaryConfig(),
+        fetchCloudinaryConfig(authToken),
         loadCloudinaryWidget(),
       ]);
 
@@ -93,7 +96,7 @@ const ImageUpload = ({
         error instanceof Error ? error.message : "Unable to upload images.",
       );
     }
-  }, [allowMultiple, onChange, onError, onUploadSuccess]);
+  }, [allowMultiple, getAuthToken, onChange, onError, onUploadSuccess]);
 
   if (!isMounted) {
     return null;

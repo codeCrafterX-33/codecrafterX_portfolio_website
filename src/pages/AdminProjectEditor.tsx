@@ -612,6 +612,7 @@ const AdminProjectEditor = () => {
               </div>
               <ImageUpload
                 value={imageUrls}
+                getAuthToken={getSessionToken}
                 multiple
                 disabled={isSaving}
                 onChange={(url) => appendImageUrls([url])}

@@ -78,8 +78,13 @@ export const loadCloudinaryWidget = () => {
 };
 
 export const fetchCloudinaryConfig = async (
+  authToken: string,
 ): Promise<CloudinaryConfigResponse> => {
-  const response = await fetch(apiUrl("/api/cloudinary/config"));
+  const response = await fetch(apiUrl("/api/cloudinary/config"), {
+    headers: {
+      Authorization: `Bearer ${authToken}`,
+    },
+  });
 
   if (!response.ok) {
     const error = await response.json().catch(() => ({}));

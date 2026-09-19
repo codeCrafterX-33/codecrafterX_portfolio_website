@@ -22,11 +22,14 @@ const FeaturedProjectCard = ({
         }`}
       >
         <div className="featured-project-glow" aria-hidden="true" />
-        <img
-          src={project.images?.[0] || "/images/placeholder.png"}
-          alt={`${project.title} project preview`}
-          loading={index === 0 ? "eager" : "lazy"}
-        />
+          <img
+            src={project.images?.[0] || "/images/placeholder.png"}
+            alt={`${project.title} project preview`}
+            width={1280}
+            height={720}
+            loading="lazy"
+            decoding="async"
+          />
         <span className="featured-project-number" aria-hidden="true">
           {number}
         </span>

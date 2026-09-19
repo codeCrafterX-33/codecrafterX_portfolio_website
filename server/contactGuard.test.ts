@@ -43,6 +43,33 @@ test("parseContactSubmission rejects invalid email addresses", () => {
   );
 });
 
+test("parseContactSubmission accepts an apostrophe in an email local part", () => {
+  const result = parseContactSubmission({
+    name: "Example",
+    email: "o'connor@example.com",
+    message: "Hello there",
+    company: "",
+  });
+  assert.equal(result.ok, true);
+  if (result.ok) assert.equal(result.data.email, "o'connor@example.com");
+});
+
+test("parseContactSubmission rejects unsupported quoted email addresses", () => {
+  assert.deepEqual(
+    parseContactSubmission({
+      name: "Sope",
+      email: '"quoted"@example.com',
+      message: "Hello there",
+      company: "",
+    }),
+    {
+      ok: false,
+      status: 400,
+      error: "Enter a valid email address.",
+    },
+  );
+});
+
 test("parseContactSubmission rejects overlong contact fields", () => {
   assert.deepEqual(
     parseContactSubmission({
@@ -110,9 +137,7 @@ test("checkContactRateLimit blocks clients after the request limit", () => {
   assert.equal(reset.allowed, true);
 });
 
-test("getContactClientKey prefers the first forwarded IP", () => {
-  assert.equal(
-    getContactClientKey("203.0.113.10, 70.41.3.18", "127.0.0.1"),
-    "203.0.113.10",
-  );
+test("getContactClientKey uses the trusted request IP", () => {
+  assert.equal(getContactClientKey("203.0.113.10"), "203.0.113.10");
+  assert.equal(getContactClientKey(undefined), "unknown");
 });

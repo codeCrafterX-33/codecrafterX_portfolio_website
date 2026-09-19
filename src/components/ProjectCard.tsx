@@ -42,6 +42,10 @@ const ProjectCard: React.FC<ProjectCardProps> = ({
             src={image}
             alt={title}
             className="w-full h-full object-cover rounded-lg"
+            width={1280}
+            height={720}
+            loading="lazy"
+            decoding="async"
           />
           {featured && (
             <div className="absolute top-3 right-3 bg-green-600 text-black dark:text-white px-2 py-1 rounded-full text-xs font-medium">
@@ -97,7 +101,14 @@ const ProjectCard: React.FC<ProjectCardProps> = ({
     return (
       <div className={`project ${className}`}>
         <div className={`image-wrapper ${bgColor}`}>
-          <img src={image} alt={title} />
+          <img
+            src={image}
+            alt={title}
+            width={1280}
+            height={720}
+            loading="lazy"
+            decoding="async"
+          />
         </div>
         <div className="text-content space-y-4 p-4">
           <h2 className="heading-3">{title}</h2>
@@ -133,6 +144,10 @@ const ProjectCard: React.FC<ProjectCardProps> = ({
           src={image}
           alt={title}
           className="w-full h-full object-cover rounded-lg"
+          width={1280}
+          height={720}
+          loading="lazy"
+          decoding="async"
         />
         {featured && (
           <div className="absolute top-3 right-3 bg-green-600 text-black dark:text-white px-2 py-1 rounded-full text-xs font-medium">

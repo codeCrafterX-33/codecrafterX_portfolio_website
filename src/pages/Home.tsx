@@ -1,24 +1,35 @@
+import { lazy } from "react";
 import Hero from "../components/sections/Hero";
 import ShowcaseSection from "../components/sections/ShowcaseSection";
-import LogoSection from "../components/sections/LogoSection";
-import FeatureCards from "../components/sections/FeatureCards";
-import { ExperienceSection } from "../components/sections/ExperienceSection";
-import TechStack from "../components/sections/TechStack";
-import TechSkills from "../components/sections/TechSkills";
+import DeferredSection from "../components/DeferredSection";
 
-import Contact from "../components/sections/Contact";
+const LogoSection = lazy(() => import("../components/sections/LogoSection"));
+const FeatureCards = lazy(() => import("../components/sections/FeatureCards"));
+const TechStack = lazy(() => import("../components/sections/TechStack"));
+const TechSkills = lazy(() => import("../components/sections/TechSkills"));
+
+const Contact = lazy(() => import("../components/sections/Contact"));
 
 const Home = () => {
   return (
     <>
       <Hero />
       <ShowcaseSection />
-      <LogoSection />
-      <FeatureCards />
-      <ExperienceSection />
-      <TechSkills />
-      <TechStack />
-      <Contact />
+      <DeferredSection minHeight="14rem">
+        <LogoSection />
+      </DeferredSection>
+      <DeferredSection minHeight="22rem">
+        <FeatureCards />
+      </DeferredSection>
+      <DeferredSection minHeight="52rem">
+        <TechSkills />
+      </DeferredSection>
+      <DeferredSection id="skills" minHeight="36rem">
+        <TechStack sectionId="" />
+      </DeferredSection>
+      <DeferredSection id="contact" minHeight="48rem">
+        <Contact sectionId="" />
+      </DeferredSection>
     </>
   );
 };

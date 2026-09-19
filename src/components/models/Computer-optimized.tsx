@@ -4,11 +4,18 @@ Command: npx gltfjsx@6.5.3 computer-optimized.glb
 */
 
 import { useGLTF } from "@react-three/drei";
+import type { ThreeElements } from "@react-three/fiber";
+import * as THREE from "three";
 
-export function Computer(props: any) {
+type ComputerGLTF = {
+  nodes: Record<string, THREE.Mesh>;
+  materials: Record<string, THREE.Material>;
+};
+
+export function Computer(props: ThreeElements["group"]) {
   const { nodes, materials } = useGLTF(
     "/models/computer-optimized-transformed.glb"
-  ) as any;
+  ) as unknown as ComputerGLTF;
   return (
     <group {...props} dispose={null}>
       <group position={[-4.005, 67.549, 58.539]}>

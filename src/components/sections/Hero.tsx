@@ -1,26 +1,20 @@
 import words from "../../constants";
 import Button from "../Button";
-import { useGSAP } from "@gsap/react";
-import { gsap } from "gsap";
 import ServiceHighlights from "./ServiceHighlights";
+import { Link } from "react-router-dom";
 const Hero = () => {
-  useGSAP(() => {
-    gsap.fromTo(
-      ".hero-text h1",
-      { y: 50, opacity: 0 },
-      {
-        y: 0,
-        opacity: 1,
-        duration: 1,
-        stagger: 0.2,
-        ease: "power2.inOut",
-      },
-    );
-  });
   return (
     <section id="hero" className="hero-dark relative overflow-hidden">
       <div className="absolute top-0 left-0 z-10">
-        <img src="/images/bg.png" alt="background" />
+        <img
+          src="/images/bg.png"
+          alt=""
+          aria-hidden="true"
+          width={418}
+          height={327}
+          loading="eager"
+          decoding="async"
+        />
       </div>
 
       <div className="hero-layout">
@@ -28,7 +22,7 @@ const Hero = () => {
         <header className="flex w-full flex-col justify-center md:px-20 px-5">
           <div className="flex flex-col gap-7">
             {/* Main Header */}
-            <div className="hero-intro mb-4 flex items-start gap-5 md:gap-6">
+            <div className="hero-intro hero-reveal hero-reveal-first mb-4 flex items-start gap-5 md:gap-6">
               {/* Gradient Line */}
               <div className="flex flex-col items-center">
                 <div className="w-3 h-3 rounded-full bg-green-400 mb-2"></div>
@@ -42,10 +36,16 @@ const Hero = () => {
                 <h2 className="text-xl md:text-2xl lg:text-1xl xl:text-1xl font-semibold text-white-50">
                   A passionate Software Engineer
                 </h2>
+                <Link
+                  to="/about"
+                  className="mt-3 inline-block text-sm font-medium text-green-400 underline-offset-4 hover:underline focus-visible:underline md:text-base"
+                >
+                  Co-founder at Xiongzai (熊崽电竞)
+                </Link>
               </div>
             </div>
 
-            <div className="hero-text">
+            <div className="hero-text hero-reveal hero-reveal-second">
               <h3 className="text-3xl md:text-xl lg:text-3xl xl:text-3xl">
                 Shaping{" "}
                 <span className="slide relative overflow-hidden">
@@ -59,6 +59,10 @@ const Hero = () => {
                           src={word.imgPath}
                           alt={word.text}
                           className="size-8 p-1 rounded-full bg-white-50"
+                          width={32}
+                          height={32}
+                          loading="eager"
+                          decoding="async"
                         />
                         {word.text}
                       </span>
@@ -74,7 +78,7 @@ const Hero = () => {
                 that Deliver Results
               </h3>
             </div>
-            <div className="hero-desktop-actions mt-15 gap-5">
+            <div className="hero-desktop-actions hero-reveal hero-reveal-third mt-15 gap-5">
               <Button
                 className="inline-flex h-16 w-72 [&_.cta-button]:size-full xl:w-80"
                 id="counter"
@@ -85,7 +89,7 @@ const Hero = () => {
                 <span aria-hidden="true">&rarr;</span>
               </a>
             </div>
-            <div className="hero-mobile-actions">
+            <div className="hero-mobile-actions hero-reveal hero-reveal-third">
               <a href="#counter" className="hero-mobile-action primary">
                 <span>See My Work</span>
                 <span aria-hidden="true">&#8600;</span>
@@ -103,6 +107,11 @@ const Hero = () => {
             src="/images/main_codecrafter.jpeg"
             alt="Sopefoluwa"
             className="hero-image object-contain md:object-cover object-top"
+            width={768}
+            height={1024}
+            loading="eager"
+            fetchPriority="high"
+            decoding="async"
           />
         </figure>
       </div>

@@ -19,22 +19,25 @@ import {
 import { prisma } from "./prisma";
 import { parseProjectInput, projectSelect } from "./projects";
 import { caseStudySelect, parseCaseStudyInput } from "./caseStudies";
+import { getHttpErrorStatus } from "./httpError";
 
 const app = express();
 const isProduction = process.env.NODE_ENV === "production";
 const defaultPort = isProduction ? 5000 : Number(process.env.API_PORT || 8787);
 const port = Number(process.env.PORT || defaultPort);
 const contactRateLimitStore: ContactRateLimitStore = new Map();
+const publicApiCacheControl =
+  "public, max-age=60, stale-while-revalidate=300";
 const clerkPublishableKey =
   process.env.CLERK_PUBLISHABLE_KEY ?? process.env.VITE_CLERK_PUBLISHABLE_KEY;
-const cloudinaryUploadPreset = "moThrift";
+const cloudinaryUploadPreset = process.env.CLOUDINARY_UPLOAD_PRESET?.trim();
 const emailLogoUrl =
   "https://res.cloudinary.com/dgc8vxmc2/image/upload/v1782158021/codecrafter_logo_veeln5.png";
 const whatsappLogoUrl =
   "https://res.cloudinary.com/dgc8vxmc2/image/upload/v1782159168/whatsapp_icon_oaentw.avif";
 const whatsappUrl =
   process.env.WHATSAPP_URL ??
-  "https://wa.me/2349035466958?text=Hi%codeCrafterX%2C%20I%20came%20across%20your%20portfolio%20and%20I%27d%20like%20to%20discuss%20a%20project%20with%20you.";
+  "https://wa.me/2349035466958?text=Hi%20Sopefoluwa%2C%20I%20came%20across%20your%20portfolio%20and%20I%27d%20like%20to%20discuss%20a%20project%20with%20you.";
 const allowedOrigins = new Set(
   [
     "http://localhost:5173",
@@ -55,7 +58,7 @@ if (!Number.isInteger(port) || port <= 0 || port > 65535) {
 }
 
 app.disable("x-powered-by");
-app.set("trust proxy", 1);
+app.set("trust proxy", isProduction ? 1 : false);
 app.use((_req, res, next) => {
   res.setHeader("X-Content-Type-Options", "nosniff");
   res.setHeader("Referrer-Policy", "strict-origin-when-cross-origin");
@@ -189,6 +192,24 @@ const destroyPortfolioImages = async (imageUrls: string[]) => {
   );
 };
 
+const cleanupRemovedPortfolioImages = async (
+  imageUrls: string[],
+  resource: string,
+) => {
+  if (!imageUrls.length) {
+    return;
+  }
+
+  try {
+    await destroyPortfolioImages(imageUrls);
+  } catch (error) {
+    console.error(
+      `Unable to clean up removed images for ${resource}:`,
+      error instanceof Error ? error.message : error,
+    );
+  }
+};
+
 app.get("/api/health", (_req, res) => {
   res.status(200).json({ ok: true });
 });
@@ -244,9 +265,11 @@ app.post("/api/contact", async (req, res, next) => {
     const safeName = escapeHtml(name);
     const safeEmail = escapeHtml(email);
     const safeMessage = escapeHtml(message);
-    const replyMailto = `mailto:${email}?subject=${encodeURIComponent(
-      "Re: Your message to CodeCrafterX",
-    )}`;
+    const safeReplyMailto = escapeHtml(
+      `mailto:${encodeURIComponent(email)}?subject=${encodeURIComponent(
+        "Re: Your message to CodeCrafterX",
+      )}`,
+    );
     const notificationSubject = "New portfolio contact message";
     const notificationHtml = `
       <div style="font-family: Arial, sans-serif; line-height: 1.6; color: #111827; max-width: 680px; background: #f8fafc; padding: 24px;">
@@ -264,14 +287,14 @@ app.post("/api/contact", async (req, res, next) => {
             </div>
             <div style="display: inline-block; width: 58%; min-width: 220px; margin: 0 0 10px; padding: 14px; border: 1px solid #e5e7eb; border-radius: 12px; background: #f9fafb; vertical-align: top;">
               <p style="margin: 0 0 6px; color: #6b7280; font-size: 12px; font-weight: 700; text-transform: uppercase;">Email</p>
-              <p style="margin: 0; font-weight: 700;"><a href="${replyMailto}" style="color: #111827; text-decoration: none;">${safeEmail}</a></p>
+              <p style="margin: 0; font-weight: 700;"><a href="${safeReplyMailto}" style="color: #111827; text-decoration: none;">${safeEmail}</a></p>
             </div>
           </div>
           <div style="margin: 0 0 22px; padding: 18px; border-left: 4px solid #22c55e; border-radius: 12px; background: #f0fdf4;">
             <p style="margin: 0 0 10px; color: #14532d; font-size: 13px; font-weight: 700; text-transform: uppercase;">Message</p>
             <p style="margin: 0; color: #111827; white-space: pre-wrap;">${safeMessage}</p>
           </div>
-          <a href="${replyMailto}" style="display: inline-block; padding: 12px 18px; border-radius: 10px; background: #22c55e; color: #ffffff; text-decoration: none; font-weight: 700;">Reply to client</a>
+          <a href="${safeReplyMailto}" style="display: inline-block; padding: 12px 18px; border-radius: 10px; background: #22c55e; color: #ffffff; text-decoration: none; font-weight: 700;">Reply to client</a>
           <p style="margin: 18px 0 0; color: #6b7280; font-size: 13px;">Tip: you can also reply directly to this email because the submitted email is set as the reply-to address.</p>
         </div>
       </div>
@@ -390,6 +413,7 @@ app.get("/api/projects", async (_req, res, next) => {
       select: projectSelect,
     });
 
+    res.setHeader("Cache-Control", publicApiCacheControl);
     res.status(200).json(projects);
   } catch (error) {
     next(error);
@@ -408,6 +432,7 @@ app.get("/api/projects/:slug", async (req, res, next) => {
       return;
     }
 
+    res.setHeader("Cache-Control", publicApiCacheControl);
     res.status(200).json(project);
   } catch (error) {
     next(error);
@@ -457,27 +482,35 @@ app.get("/api/case-studies", async (_req, res, next) => {
           new Date(left.createdAt).getTime(),
     );
 
+    res.setHeader("Cache-Control", publicApiCacheControl);
     res.status(200).json(studies);
   } catch (error) {
     next(error);
   }
 });
 
-app.get("/api/cloudinary/config", (_req, res) => {
-  const cloudName = process.env.CLOUDINARY_CLOUD_NAME;
+app.get("/api/cloudinary/config", async (req, res, next) => {
+  try {
+    await requireAdmin(req);
 
-  if (!cloudName) {
-    res.status(500).json({
-      error: "CLOUDINARY_CLOUD_NAME is not configured on the server.",
+    const cloudName = process.env.CLOUDINARY_CLOUD_NAME;
+
+    if (!cloudName || !cloudinaryUploadPreset) {
+      res.status(500).json({
+        error:
+          "Cloudinary upload configuration is incomplete on the server.",
+      });
+      return;
+    }
+
+    res.status(200).json({
+      cloudName,
+      folder: portfolioCloudinaryFolder,
+      uploadPreset: cloudinaryUploadPreset,
     });
-    return;
+  } catch (error) {
+    next(error);
   }
-
-  res.status(200).json({
-    cloudName,
-    folder: portfolioCloudinaryFolder,
-    uploadPreset: cloudinaryUploadPreset,
-  });
 });
 
 app.post("/api/cloudinary/signature", async (req, res, next) => {
@@ -685,14 +718,19 @@ app.put("/api/case-studies/:slug", async (req, res, next) => {
       res.status(404).json({ error: "Case study not found." });
       return;
     }
-    await destroyPortfolioImages(
-      getRemovedPortfolioImageUrls(existing.images, data.images),
+    const removedImages = getRemovedPortfolioImageUrls(
+      existing.images,
+      data.images,
     );
     const study = await prisma.caseStudy.update({
       where: { slug: req.params.slug },
       data,
       select: caseStudySelect,
     });
+    await cleanupRemovedPortfolioImages(
+      removedImages,
+      `case study ${study.slug}`,
+    );
     res.status(200).json(study);
   } catch (error) {
     next(error);
@@ -710,8 +748,11 @@ app.delete("/api/case-studies/:slug", async (req, res, next) => {
       res.status(404).json({ error: "Case study not found." });
       return;
     }
-    await destroyPortfolioImages(study.images);
     await prisma.caseStudy.delete({ where: { slug: req.params.slug } });
+    await cleanupRemovedPortfolioImages(
+      study.images,
+      `deleted case study ${req.params.slug}`,
+    );
     res.status(200).json({ ok: true });
   } catch (error) {
     next(error);
@@ -736,7 +777,6 @@ app.put("/api/projects/:slug", async (req, res, next) => {
       existingProject.images,
       data.images,
     );
-    await destroyPortfolioImages(removedImages);
 
     const project = await prisma.project.update({
       where: { slug: req.params.slug },
@@ -744,6 +784,10 @@ app.put("/api/projects/:slug", async (req, res, next) => {
       select: projectSelect,
     });
 
+    await cleanupRemovedPortfolioImages(
+      removedImages,
+      `project ${project.slug}`,
+    );
     res.status(200).json(project);
   } catch (error) {
     next(error);
@@ -763,8 +807,11 @@ app.delete("/api/projects/:slug", async (req, res, next) => {
       return;
     }
 
-    await destroyPortfolioImages(project.images);
     await prisma.project.delete({ where: { slug: req.params.slug } });
+    await cleanupRemovedPortfolioImages(
+      project.images,
+      `deleted project ${req.params.slug}`,
+    );
     res.status(200).json({ ok: true });
   } catch (error) {
     next(error);
@@ -780,14 +827,20 @@ app.use(
     error: unknown,
     _req: express.Request,
     res: express.Response,
-    _next: express.NextFunction,
+    next: express.NextFunction,
   ) => {
-    void _next;
+    if (res.headersSent) {
+      next(error);
+      return;
+    }
+
     const message = error instanceof Error ? error.message : "Request failed.";
-    console.error("API request failed:", message);
-    const status =
-      message === "Unauthorized." ? 401 : message === "Forbidden." ? 403 : 400;
-    res.status(status).json({ error: message });
+    const status = getHttpErrorStatus(error);
+    const responseMessage =
+      status >= 500 && isProduction ? "Request failed." : message;
+
+    console.error("API request failed:", error);
+    res.status(status).json({ error: responseMessage });
   },
 );
 

@@ -1,4 +1,5 @@
 import type { ProjectInput } from "../src/types/project";
+import { HttpError } from "./httpError";
 
 export const projectSelect = {
   id: true,
@@ -51,16 +52,19 @@ export const slugify = (value: string) =>
     .replace(/(^-|-$)+/g, "");
 
 export const parseProjectInput = (body: unknown): ProjectInput => {
-  const payload = body as Partial<ProjectInput>;
+  const payload =
+    body && typeof body === "object" && !Array.isArray(body)
+      ? (body as Partial<ProjectInput>)
+      : {};
   const title = text(payload.title);
   const slug = slugify(text(payload.slug) || title);
 
   if (!title) {
-    throw new Error("Project title is required.");
+    throw new HttpError(400, "Project title is required.");
   }
 
   if (!slug) {
-    throw new Error("Project slug is required.");
+    throw new HttpError(400, "Project slug is required.");
   }
 
   return {

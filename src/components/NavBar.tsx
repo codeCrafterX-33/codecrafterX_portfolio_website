@@ -71,6 +71,10 @@ const NavBar = () => {
                 <img
                   src="/images/logos/codecrafter_logo.png"
                   alt="CodeCrafterX"
+                  width={570}
+                  height={140}
+                  loading="lazy"
+                  decoding="async"
                 />
               </Link>
 
@@ -164,6 +168,10 @@ const NavBar = () => {
             src="/images/logos/codecrafter_logo.png"
             alt="CodeCrafterX"
             className="h-14 w-auto max-w-none origin-left object-contain transition-transform duration-300 ease-in-out md:h-10 md:scale-[1.9]"
+            width={570}
+            height={140}
+            loading="eager"
+            decoding="async"
           />
         </Link>
 

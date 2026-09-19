@@ -1,9 +1,18 @@
 import { logoIconsList } from "../../constants";
 
-const LogoIcon = ({ icon }: { icon: any }) => {
+type LogoIconData = (typeof logoIconsList)[number];
+
+const LogoIcon = ({ icon }: { icon: LogoIconData }) => {
   return (
     <div className="flex-none flex-center marquee-item">
-      <img src={icon.imgPath} alt={icon.alt} />
+      <img
+        src={icon.imgPath}
+        alt={icon.alt}
+        width={icon.width}
+        height={icon.height}
+        loading="lazy"
+        decoding="async"
+      />
     </div>
   );
 };

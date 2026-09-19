@@ -44,8 +44,12 @@ const Footer = () => {
                     className={`w-5 h-5 ${
                       social.name === "x" || social.name === "whatsapp"
                         ? "opacity-70 group-hover:opacity-100" // X and WhatsApp icons already carry their own colors.
-                        : "filter brightness-0 invert opacity-70 group-hover:opacity-100"
+                      : "filter brightness-0 invert opacity-70 group-hover:opacity-100"
                     }`}
+                    width={20}
+                    height={20}
+                    loading="lazy"
+                    decoding="async"
                   />
                 </a>
               ))}
@@ -62,6 +66,10 @@ const Footer = () => {
                   alt=""
                   aria-hidden="true"
                   className="mr-2 h-7 w-auto object-contain"
+                  width={570}
+                  height={140}
+                  loading="lazy"
+                  decoding="async"
                 />
                 <span>codecrafterx@sopefoluwabakare.dev</span>
               </a>

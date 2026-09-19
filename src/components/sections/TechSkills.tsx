@@ -8,7 +8,7 @@ gsap.registerPlugin(ScrollTrigger);
 
 const TechSkills = () => {
   useGSAP(() => {
-    gsap.utils.toArray<HTMLElement>(".tech-timeline-card").forEach((card: HTMLElement) => {
+    gsap.utils.toArray<HTMLElement>(".tech-exp-card-wrapper").forEach((card: HTMLElement) => {
       gsap.from(card, {
         xPercent: -100,
         opacity: 0,
@@ -69,7 +69,14 @@ const TechSkills = () => {
                 <div className="xl:w-2/6">
                   <GlowCard card={skill} index={index}>
                     <div>
-                      <img src={skill.logoPath} alt={skill.logoPath} />
+                    <img
+                      src={skill.logoPath}
+                      alt={skill.title}
+                      width={998}
+                      height={931}
+                      loading="lazy"
+                      decoding="async"
+                    />
                     </div>
                   </GlowCard>
                 </div>
@@ -86,6 +93,10 @@ const TechSkills = () => {
                           src={skill.logoPath}
                           alt="logo"
                           className="size-full rounded-full object-contain p-1 md:p-2"
+                          width={998}
+                          height={931}
+                          loading="lazy"
+                          decoding="async"
                         />
                       </div>
                       <div>

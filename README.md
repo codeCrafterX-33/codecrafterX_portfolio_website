@@ -12,9 +12,17 @@ Copy `.env.example` to `.env` and fill:
 - `CLOUDINARY_CLOUD_NAME`
 - `CLOUDINARY_API_KEY`
 - `CLOUDINARY_API_SECRET`
+- `CLOUDINARY_UPLOAD_PRESET` (restricted unsigned preset for admin image uploads)
 - `CLERK_SECRET_KEY`
+- `CLERK_PUBLISHABLE_KEY` (server-side Clerk middleware)
 - `VITE_CLERK_PUBLISHABLE_KEY`
 - `VITE_API_BASE_URL` (optional; leave empty when using Vite proxy)
+- `CLIENT_ORIGINS` (optional comma-separated additional API origins)
+- `RESEND_API_KEY`
+- `RESEND_FROM_EMAIL`
+- `RESEND_FROM_NAME`
+- `RESEND_TO_EMAIL`
+- `WHATSAPP_URL` (optional)
 
 ## Development
 

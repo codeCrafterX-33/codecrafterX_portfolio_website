@@ -42,7 +42,7 @@ const AboutMe = () => {
                   Hi, I'm Sopefoluwa!
                 </h3>
                 <p className="text-green-400 font-semibold">
-                  Full-Stack Developer & Tech Enthusiast
+                  Full-Stack Developer & Co-founder at Xiongzai
                 </p>
                 <p className="text-gray-400 text-sm mt-1">
                   Based in China | Accountant Turned Developer
@@ -51,11 +51,11 @@ const AboutMe = () => {
 
               <div className="space-y-6 text-gray-300 leading-relaxed">
                 <p>
-                  I'm a passionate Full-Stack Developer with over a year of
-                  experience building cool stuff with JavaScript, TypeScript,
-                  React, React Native, and more. I work across both web and
-                  mobile, and I love creating clean, user-friendly interfaces
-                  and solving tricky problems under the hood.
+                  I'm a React Native and React full-stack engineer with 3+ years
+                  of experience building mobile, web, and e-commerce products
+                  for international clients. I work with TypeScript, Expo,
+                  Node.js, and relational databases, from the interface through
+                  to payments, authentication, and cloud services.
                 </p>
 
                 <p>
@@ -70,19 +70,23 @@ const AboutMe = () => {
                 </p>
 
                 <p>
-                  As a Website Manager for Toke Makinwa Beauty, I've helped
-                  optimize e-commerce platforms, resulting in a{" "}
-                  <span className="text-green-400 font-semibold">
-                    40% increase in online sales
-                  </span>{" "}
-                  through collaborative efforts and performance improvements.
+                  My work spans live e-commerce and learning platforms,
+                  marketplace development, and mobile MVPs. I also built
+                  ScreenLingo, an AI screenshot translator that combines Gemini,
+                  Google Vision OCR, and Google Translate with a backend on
+                  Google Cloud Run. Its complete flow has been tested on a
+                  physical iPhone; App Store submission is still pending.
                 </p>
 
                 <p>
-                  Currently based in China, I'm working on meaningful side
-                  projects and actively building in public. My goal is to join a
-                  forward-thinking team where I can grow and build scalable
-                  products that have real impact.
+                  I'm also a co-founder at{" "}
+                  <span className="text-green-400 font-semibold">
+                    Xiongzai (熊崽电竞)
+                  </span>
+                  , where we're building a gaming marketplace in China that
+                  connects players with gaming companions. It's a chance to
+                  bring my business background and software development work
+                  together while building a product with a team.
                 </p>
               </div>
             </div>
@@ -120,9 +124,9 @@ const AboutMe = () => {
                 </div>
                 <div className="bg-gray-800/50 rounded-lg p-3 border border-gray-700">
                   <div className="text-green-400 font-semibold mb-1">
-                    AI LLM Integration
+                    AI API Integration
                   </div>
-                  <div className="text-sm text-gray-400">Future Focus Area</div>
+                  <div className="text-sm text-gray-400">Gemini, OCR & Translation</div>
                 </div>
               </div>
             </div>
@@ -173,7 +177,7 @@ const AboutMe = () => {
                   </div>
                   <div>
                     <div className="text-white font-semibold">
-                      Current Position
+                      Website Management
                     </div>
                     <div className="text-gray-400 text-sm">
                       Toke Makinwa Beauty - Website Manager optimizing
@@ -187,12 +191,27 @@ const AboutMe = () => {
                     4
                   </div>
                   <div>
-                    <div className="text-white font-semibold">Future Goals</div>
+                    <div className="text-white font-semibold">Building Xiongzai</div>
                     <div className="text-gray-400 text-sm">
-                      Diving deep into AI LLM integration and automation to
-                      revolutionize business operations and workflows
+                      Co-founder of an esports marketplace in China, currently
+                      in development across mobile, administration, and backend services.
                     </div>
                   </div>
+                </div>
+              </div>
+            </div>
+
+            <div className="bg-gradient-to-br from-gray-800 to-gray-900 rounded-xl p-8 border border-gray-700">
+              <h3 className="text-2xl font-bold text-white mb-6">Education</h3>
+              <div className="space-y-6">
+                <div>
+                  <h4 className="text-white font-semibold">Master of Management (Accounting)</h4>
+                  <p className="text-gray-400 text-sm mt-2">Wuhan Textile University, China · 2026</p>
+                  <p className="text-green-400 text-sm mt-2">CGPA: 3.89/4.00 · Outstanding Master's Graduate Award</p>
+                </div>
+                <div>
+                  <h4 className="text-white font-semibold">B.Sc. Accounting</h4>
+                  <p className="text-gray-400 text-sm mt-2">Afe Babalola University, Nigeria · 2020</p>
                 </div>
               </div>
             </div>

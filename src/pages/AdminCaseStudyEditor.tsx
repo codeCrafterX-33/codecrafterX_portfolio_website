@@ -67,13 +67,19 @@ const AdminCaseStudyEditor = () => {
   }, [isAdmin, isLoaded, isSignedIn, slug, token]);
 
   const update = <K extends keyof FormState>(key: K, value: FormState[K]) => setForm((current) => ({ ...current, [key]: value }));
-  const appendImage = (url: string) => update("images", Array.from(new Set([...imageUrls, url])).join("\n"));
+  const appendImage = (url: string) => setForm((current) => ({
+    ...current,
+    images: Array.from(new Set([...lines(current.images), url])).join("\n"),
+  }));
   const removeImage = async (url: string) => {
     try {
       if (url.includes("res.cloudinary.com") && !persistedImages.includes(url)) {
         await deleteCloudinaryImage(url, { authToken: await token() });
       }
-      update("images", imageUrls.filter((image) => image !== url).join("\n"));
+      setForm((current) => ({
+        ...current,
+        images: lines(current.images).filter((image) => image !== url).join("\n"),
+      }));
     } catch (removeError) {
       setError(removeError instanceof Error ? removeError.message : "Unable to remove image.");
     }
@@ -124,7 +130,15 @@ const AdminCaseStudyEditor = () => {
             <label className={labelClass}>Tech stack, one per line<textarea className={fieldClass} rows={6} value={form.techStack} onChange={(e) => update("techStack", e.target.value)} /></label>
             <div className="space-y-3 md:col-span-2">
               <span className="text-sm font-semibold">Images</span>
-              <ImageUpload value={imageUrls} multiple disabled={saving} onChange={appendImage} onRemove={(url) => void removeImage(url)} onError={setError} />
+              <ImageUpload
+                value={imageUrls}
+                getAuthToken={token}
+                multiple
+                disabled={saving}
+                onChange={appendImage}
+                onRemove={(url) => void removeImage(url)}
+                onError={setError}
+              />
               <textarea className={fieldClass} rows={4} value={form.images} onChange={(e) => update("images", e.target.value)} placeholder="One image URL per line" />
             </div>
             <label className={labelClass}>Sort order<input type="number" className={fieldClass} value={form.sortOrder} onChange={(e) => update("sortOrder", Number(e.target.value))} /></label>

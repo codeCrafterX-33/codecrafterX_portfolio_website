@@ -11,20 +11,28 @@ interface ExpCard {
   review: string;
   role: string;
   logoPath: string;
+  logoWidth: number;
+  logoHeight: number;
   duration: string;
   responsibilities: string[];
 }
 
+type ExperienceSectionProps = {
+  sectionId?: string;
+};
+
 gsap.registerPlugin(ScrollTrigger);
 
-export const ExperienceSection = () => {
+export const ExperienceSection = ({
+  sectionId = "experience",
+}: ExperienceSectionProps) => {
   const sectionRef = useRef<HTMLElement | null>(null);
 
   useGSAP(() => {
     const section = sectionRef.current;
     if (!section) return;
 
-    const cards = section.querySelectorAll<HTMLElement>(".timeline-card");
+    const cards = section.querySelectorAll<HTMLElement>(".exp-card-wrapper");
     const details = section.querySelectorAll<HTMLElement>(".expText");
     const timelineCovers = section.querySelectorAll<HTMLElement>(".timeline");
 
@@ -92,7 +100,7 @@ export const ExperienceSection = () => {
   return (
     <section
       ref={sectionRef}
-      id="experience"
+      id={sectionId || undefined}
       className="w-full md:mt-40 my-20 section-padding xl:px-0"
     >
       <div className="w-full h-full md:px-20 px-5">
@@ -107,7 +115,14 @@ export const ExperienceSection = () => {
                 <div className="xl:w-2/6">
                   <GlowCard card={card}>
                     <div>
-                      <img src={card.logoPath} alt={card.logoPath} />
+                      <img
+                        src={card.logoPath}
+                        alt={card.company}
+                        width={card.logoWidth}
+                        height={card.logoHeight}
+                        loading="lazy"
+                        decoding="async"
+                      />
                     </div>
                   </GlowCard>
                 </div>
@@ -124,6 +139,10 @@ export const ExperienceSection = () => {
                           src={card.logoPath}
                           alt="logo"
                           className="size-full rounded-full object-contain p-1 md:p-2"
+                          width={card.logoWidth}
+                          height={card.logoHeight}
+                          loading="lazy"
+                          decoding="async"
                         />
                       </div>
                       <div>

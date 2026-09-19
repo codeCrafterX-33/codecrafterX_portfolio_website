@@ -31,6 +31,10 @@ const isValidEmail = (value: string) => {
     return false;
   }
 
+  if (/[<>"]/.test(value)) {
+    return false;
+  }
+
   return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value);
 };
 
@@ -76,20 +80,11 @@ export const parseContactSubmission = (body: unknown): ContactParseResult => {
   return { ok: true, data: { name, email, message } };
 };
 
-export const getContactClientKey = (
-  forwardedFor: string | string[] | undefined,
-  fallbackIp: string | undefined,
-) => {
-  const forwardedValue = Array.isArray(forwardedFor)
-    ? forwardedFor[0]
-    : forwardedFor;
-  const firstForwardedIp = forwardedValue?.split(",")[0]?.trim();
-
-  return firstForwardedIp || fallbackIp || "unknown";
-};
+export const getContactClientKey = (clientIp: string | undefined) =>
+  clientIp?.trim() || "unknown";
 
 export const getContactClientKeyFromRequest = (request: Request) =>
-  getContactClientKey(request.headers["x-forwarded-for"], request.ip);
+  getContactClientKey(request.ip);
 
 export const checkContactRateLimit = (
   clientKey: string,

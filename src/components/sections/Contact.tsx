@@ -10,7 +10,11 @@ import Modal from "../Modal";
 import { apiUrl } from "../../lib/projectsApi";
 import { socialImgs } from "../../constants";
 
-const Contact = () => {
+type ContactProps = {
+  sectionId?: string;
+};
+
+const Contact = ({ sectionId = "contact" }: ContactProps) => {
   const formRef = useRef<HTMLFormElement | null>(null);
   const whatsappSocial = socialImgs.find(
     (social) => social.name === "whatsapp",
@@ -90,7 +94,7 @@ const Contact = () => {
 
   return (
     <section
-      id="contact"
+      id={sectionId || undefined}
       className="relative mt-24 overflow-hidden border-y border-white/10 bg-black px-5 py-24 md:mt-40 md:px-10 md:py-32"
     >
       <div className="pointer-events-none absolute -left-32 top-20 h-80 w-80 rounded-full bg-emerald-500/10 blur-[110px]" />
@@ -151,6 +155,10 @@ const Contact = () => {
                     alt=""
                     aria-hidden="true"
                     className="h-7 w-7 object-contain"
+                    width={100}
+                    height={100}
+                    loading="lazy"
+                    decoding="async"
                   />
                 </span>
                 <ArrowUpRight

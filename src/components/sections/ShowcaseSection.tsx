@@ -1,16 +1,10 @@
-import { useEffect, useRef, useState } from "react";
-import { gsap } from "gsap";
-import { ScrollTrigger } from "gsap/ScrollTrigger";
-import { useGSAP } from "@gsap/react";
+import { useEffect, useState } from "react";
 import ModernButton from "../ModernButton";
 import FeaturedProjectCard from "../FeaturedProjectCard";
 import { getProjects } from "../../lib/projectsApi";
 import type { Project } from "../../types/project";
 
-gsap.registerPlugin(ScrollTrigger);
-
 const ShowcaseSection = () => {
-  const sectionRef = useRef<HTMLDivElement | null>(null);
   const [projects, setProjects] = useState<Project[]>([]);
   const [error, setError] = useState("");
 
@@ -39,42 +33,10 @@ const ShowcaseSection = () => {
     };
   }, []);
 
-  useGSAP(() => {
-    const cards = sectionRef.current
-      ? Array.from(sectionRef.current.querySelectorAll(".showcase-card"))
-      : [];
-
-    cards.forEach((card, index) => {
-      gsap.fromTo(
-        card,
-        { y: 50, opacity: 0 },
-        {
-          y: 0,
-          opacity: 1,
-          duration: 1,
-          delay: 0.25 * (index + 1),
-          scrollTrigger: {
-            trigger: card,
-            start: "top bottom-=100",
-          },
-        },
-      );
-    });
-
-    gsap.fromTo(
-      sectionRef.current,
-      { opacity: 0 },
-      {
-        opacity: 1,
-        duration: 1.2,
-      },
-    );
-  }, [projects]);
-
   const items = projects.filter((project) => project.featured).slice(0, 3);
 
   return (
-    <section ref={sectionRef} id="work" className="app-showcase">
+    <section id="work" className="app-showcase">
       <div className="text-center mb-10 px-5 md:px-10">
         <h2 className="text-4xl md:text-5xl font-bold text-white mb-6">
           Featured{" "}

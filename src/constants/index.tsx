@@ -59,7 +59,6 @@ export const socialImgs = [
 
 export const navLinks = [
   { name: "Projects", href: "/projects" },
-  { name: "Experience", href: "#experience" },
   { name: "Skills", href: "#skills" },
   { name: "Case Studies", href: "/case-studies" },
   { name: "Blog", href: "/blog" },
@@ -69,46 +68,68 @@ export const logoIconsList = [
   {
     imgPath: "/images/logos/company-logo-1.png",
     alt: "Logo 1",
+    width: 280,
+    height: 64,
   },
   {
     imgPath: "/images/logos/company-logo-2.png",
     alt: "Logo 2",
+    width: 336,
+    height: 64,
   },
   {
     imgPath: "/images/logos/company-logo-3.png",
     alt: "Logo 3",
+    width: 310,
+    height: 64,
   },
   {
     imgPath: "/images/logos/company-logo-4.png",
     alt: "Logo 4",
+    width: 290,
+    height: 64,
   },
   {
     imgPath: "/images/logos/company-logo-5.png",
     alt: "Logo 5",
+    width: 320,
+    height: 64,
   },
   {
     imgPath: "/images/logos/company-logo-6.png",
     alt: "Logo 6",
+    width: 280,
+    height: 64,
   },
   {
     imgPath: "/images/logos/company-logo-7.png",
     alt: "Logo 7",
+    width: 320,
+    height: 64,
   },
   {
     imgPath: "/images/logos/company-logo-8.png",
     alt: "Logo 8",
+    width: 320,
+    height: 64,
   },
   {
     imgPath: "/images/logos/company-logo-9.png",
     alt: "Logo 9",
+    width: 280,
+    height: 64,
   },
   {
     imgPath: "/images/logos/company-logo-10.png",
     alt: "Logo 10",
+    width: 280,
+    height: 64,
   },
   {
     imgPath: "/images/logos/company-logo-11.png",
     alt: "Logo 11",
+    width: 244,
+    height: 64,
   },
 ];
 
@@ -182,6 +203,8 @@ export const expCards = [
       "Sopefoluwa has been instrumental in transforming our digital presence. As our Website Manager, he optimized our e-commerce platform resulting in a 40% increase in online sales and significantly improved our brand visibility in the luxury perfume market.",
     role: "Website Manager",
     duration: "June 2025 - Present",
+    logoWidth: 998,
+    logoHeight: 516,
     responsibilities: [
       "Designed and implemented web applications and e-commerce solutions.",
       "Optimized application performance, resulting in a 30% reduction in load times.",
@@ -208,6 +231,8 @@ export const expCards = [
       "Sopefoluwa single-handedly built our entire WordPress e-commerce store from scratch and has been managing our digital operations. His solo expertise in WordPress development and digital marketing helped us achieve a 60% increase in online sales and establish a strong brand presence in the beauty industry.",
     role: "Website Manager",
     duration: "January 2023 - December 2024",
+    logoWidth: 1280,
+    logoHeight: 353,
     responsibilities: [
       "Solo-built and launched the complete WordPress e-commerce platform for beauty products.",
       "Independently implemented digital marketing strategies that increased online sales by 60%.",
@@ -240,6 +265,8 @@ export const techStackIcons = [
   {
     name: "React & React Native Developer",
     imgPath: "/images/logos/react.png",
+    width: 141,
+    height: 129,
   },
   // {
   //   name: "Python Developer",
@@ -250,14 +277,20 @@ export const techStackIcons = [
   {
     name: "Backend Developer (Node.js, Express.js)",
     imgPath: "/images/logos/node.png",
+    width: 139,
+    height: 145,
   },
 
   {
     name: "WordPress Developer",
     imgPath: "/images/logos/wordpress.png",
+    width: 500,
+    height: 500,
   },
   {
     name: "Project Manager",
     imgPath: "/images/logos/git.svg",
+    width: 155,
+    height: 155,
   },
 ];

@@ -1,5 +1,6 @@
 import type { Request } from "express";
 import { clerkClient, getAuth } from "@clerk/express";
+import { HttpError } from "./httpError";
 
 type ClerkRoleMetadata = {
   role?: string;
@@ -29,11 +30,11 @@ export const requireAdmin = async (request: Request) => {
   const { userId } = getAuth(request);
 
   if (!userId) {
-    throw new Error("Unauthorized.");
+    throw new HttpError(401, "Unauthorized.");
   }
 
   const user = await clerkClient.users.getUser(userId);
   if (user.publicMetadata.role !== "admin") {
-    throw new Error("Forbidden.");
+    throw new HttpError(403, "Forbidden.");
   }
 };

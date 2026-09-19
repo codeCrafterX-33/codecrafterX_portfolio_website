@@ -1,4 +1,12 @@
-const TitleHeader = ({ title, sub }: { title: any; sub: any }) => {
+import type { ReactNode } from "react";
+
+const TitleHeader = ({
+  title,
+  sub,
+}: {
+  title: ReactNode;
+  sub: ReactNode;
+}) => {
   return (
     <div className="flex flex-col items-center gap-5 ">
       <div className="rounded-full border border-emerald-200 bg-emerald-50 px-4 py-2 text-sm md:text-base dark:border-transparent dark:bg-black-200">

@@ -1,4 +1,5 @@
 import type { CaseStudyInput } from "../src/types/caseStudy";
+import { HttpError } from "./httpError";
 import { slugify } from "./projects";
 
 export const caseStudySelect = {
@@ -35,12 +36,15 @@ const stringList = (value: unknown) =>
     : [];
 
 export const parseCaseStudyInput = (body: unknown): CaseStudyInput => {
-  const payload = body as Partial<CaseStudyInput>;
+  const payload =
+    body && typeof body === "object" && !Array.isArray(body)
+      ? (body as Partial<CaseStudyInput>)
+      : {};
   const title = text(payload.title);
   const slug = slugify(text(payload.slug) || title);
 
-  if (!title) throw new Error("Case study title is required.");
-  if (!slug) throw new Error("Case study slug is required.");
+  if (!title) throw new HttpError(400, "Case study title is required.");
+  if (!slug) throw new HttpError(400, "Case study slug is required.");
 
   return {
     slug,
