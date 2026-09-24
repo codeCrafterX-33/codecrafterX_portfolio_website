@@ -34,8 +34,9 @@ const Hero = () => {
                   Hi, I'm <span className="text-green-400">Sopefoluwa</span>
                 </h1>
                 <h2 className="text-xl md:text-2xl lg:text-1xl xl:text-1xl font-semibold text-white-50">
-                  A passionate Software Engineer
+                  React Native & React Full-Stack Engineer
                 </h2>
+                <p className="mt-3 max-w-lg text-base leading-relaxed text-gray-300">Building mobile apps, web platforms, and AI-powered tools.</p>
                 <Link
                   to="/about"
                   className="mt-3 inline-block text-sm font-medium text-green-400 underline-offset-4 hover:underline focus-visible:underline md:text-base"
@@ -81,7 +82,7 @@ const Hero = () => {
             <div className="hero-desktop-actions hero-reveal hero-reveal-third mt-15 gap-5">
               <Button
                 className="inline-flex h-16 w-72 [&_.cta-button]:size-full xl:w-80"
-                id="counter"
+                id="work"
                 text="See my work"
               />
               <a href="#contact" className="hero-desktop-action">
@@ -90,7 +91,7 @@ const Hero = () => {
               </a>
             </div>
             <div className="hero-mobile-actions hero-reveal hero-reveal-third">
-              <a href="#counter" className="hero-mobile-action primary">
+              <a href="#work" className="hero-mobile-action primary">
                 <span>See My Work</span>
                 <span aria-hidden="true">&#8600;</span>
               </a>

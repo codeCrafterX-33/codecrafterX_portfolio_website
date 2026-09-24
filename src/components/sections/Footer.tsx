@@ -194,23 +194,7 @@ const Footer = () => {
               </div>
             </div>
 
-            {/* Additional Links */}
-            <div className="flex space-x-6">
-              <Link
-                to="/process"
-                reloadDocument
-                className="text-gray-400 hover:text-green-400 text-xs transition-colors duration-300"
-              >
-                Privacy Policy
-              </Link>
-              <Link
-                to="/case-studies"
-                reloadDocument
-                className="text-gray-400 hover:text-green-400 text-xs transition-colors duration-300"
-              >
-                Terms of Service
-              </Link>
-            </div>
+
           </div>
         </div>
       </div>

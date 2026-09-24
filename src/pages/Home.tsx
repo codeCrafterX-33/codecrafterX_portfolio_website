@@ -6,7 +6,6 @@ import DeferredSection from "../components/DeferredSection";
 const LogoSection = lazy(() => import("../components/sections/LogoSection"));
 const FeatureCards = lazy(() => import("../components/sections/FeatureCards"));
 const TechStack = lazy(() => import("../components/sections/TechStack"));
-const TechSkills = lazy(() => import("../components/sections/TechSkills"));
 
 const Contact = lazy(() => import("../components/sections/Contact"));
 
@@ -20,9 +19,6 @@ const Home = () => {
       </DeferredSection>
       <DeferredSection minHeight="22rem">
         <FeatureCards />
-      </DeferredSection>
-      <DeferredSection minHeight="52rem">
-        <TechSkills />
       </DeferredSection>
       <DeferredSection id="skills" minHeight="36rem">
         <TechStack sectionId="" />

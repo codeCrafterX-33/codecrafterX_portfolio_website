@@ -14,8 +14,7 @@ const AboutMe = () => {
             </span>
           </h2>
           <p className="text-xl text-gray-300 max-w-3xl mx-auto">
-            Get to know the person behind the code - my journey, passion, and
-            commitment to building exceptional digital experiences
+            Mobile, web, and AI products — with a background in business.
           </p>
         </div>
 
@@ -23,8 +22,10 @@ const AboutMe = () => {
         <div className="flex justify-center mb-16">
           <div className="relative">
             <img
-              src="/images/codecrafterX.jpg"
+              src="/images/The_codeCrafterX.png"
               alt="Sopefoluwa"
+              width={724}
+              height={682}
               className="w-48 h-48 rounded-full object-cover border-4 border-green-500/30 shadow-2xl"
             />
             <div className="absolute -bottom-2 -right-2 w-12 h-12 bg-green-500 rounded-full flex items-center justify-center border-4 border-zinc-900">
@@ -33,7 +34,7 @@ const AboutMe = () => {
           </div>
         </div>
 
-        <div className="grid lg:grid-cols-2 gap-12 items-center">
+        <div className="grid lg:grid-cols-2 gap-12 items-start">
           {/* Left Side - Background Story */}
           <div className="space-y-8">
             <div className="bg-gradient-to-br from-gray-800 to-gray-900 rounded-xl p-8 border border-gray-700">
@@ -59,34 +60,20 @@ const AboutMe = () => {
                 </p>
 
                 <p>
-                  I originally came from an{" "}
-                  <span className="text-green-400 font-semibold">
-                    accounting background
-                  </span>
-                  , but I found my passion in tech and haven't looked back
-                  since. That mix of business logic and technical know-how helps
-                  me build apps that aren't just functional, but actually make
-                  sense to users and teams.
+                  I'm also a co-founder at <span className="font-semibold text-green-400">Xiongzai (熊崽电竞)</span>,
+                  where we're building a gaming marketplace in China that connects
+                  players with gaming companions.
                 </p>
-
                 <p>
-                  My work spans live e-commerce and learning platforms,
-                  marketplace development, and mobile MVPs. I also built
-                  ScreenLingo, an AI screenshot translator that combines Gemini,
-                  Google Vision OCR, and Google Translate with a backend on
-                  Google Cloud Run. Its complete flow has been tested on a
-                  physical iPhone; App Store submission is still pending.
+                  I enjoy working across the whole product, from the screens
+                  people use to the services behind them. I care about making
+                  things easy to use, testing how they behave, and keeping the
+                  code straightforward to maintain.
                 </p>
-
                 <p>
-                  I'm also a co-founder at{" "}
-                  <span className="text-green-400 font-semibold">
-                    Xiongzai (熊崽电竞)
-                  </span>
-                  , where we're building a gaming marketplace in China that
-                  connects players with gaming companions. It's a chance to
-                  bring my business background and software development work
-                  together while building a product with a team.
+                  My accounting background shapes how I approach software:
+                  understanding the business, making workflows clear, and paying
+                  attention to the details behind payments and reporting.
                 </p>
               </div>
             </div>
@@ -100,10 +87,10 @@ const AboutMe = () => {
               <div className="grid grid-cols-2 gap-4">
                 <div className="bg-gray-800/50 rounded-lg p-3 border border-gray-700">
                   <div className="text-green-400 font-semibold mb-1">
-                    Full-Stack Development
+                    Frontend Development
                   </div>
                   <div className="text-sm text-gray-400">
-                    JavaScript, TypeScript, React
+                    React, Next.js, TypeScript & Tailwind CSS
                   </div>
                 </div>
                 <div className="bg-gray-800/50 rounded-lg p-3 border border-gray-700">
@@ -111,96 +98,33 @@ const AboutMe = () => {
                     Mobile Development
                   </div>
                   <div className="text-sm text-gray-400">
-                    React Native & Expo
+                    React Native, Expo & EAS Build
                   </div>
                 </div>
                 <div className="bg-gray-800/50 rounded-lg p-3 border border-gray-700">
                   <div className="text-green-400 font-semibold mb-1">
-                    Business Logic
+                    Backend Development
                   </div>
                   <div className="text-sm text-gray-400">
-                    Accounting Background
+                    Node.js, Express, FastAPI & PostgreSQL
                   </div>
                 </div>
                 <div className="bg-gray-800/50 rounded-lg p-3 border border-gray-700">
                   <div className="text-green-400 font-semibold mb-1">
-                    AI API Integration
+                    API & Payment Integration
                   </div>
-                  <div className="text-sm text-gray-400">Gemini, OCR & Translation</div>
+                  <div className="text-sm text-gray-400">REST APIs, Webhooks, Paystack & Clerk</div>
                 </div>
               </div>
+              <p className="mt-5 border-t border-green-500/20 pt-4 text-sm leading-relaxed text-gray-300">
+                <span className="font-semibold text-green-400">Deployment & Delivery:</span>{" "}
+                Docker, GitHub Actions, Vercel & Google Cloud Run
+              </p>
             </div>
           </div>
 
-          {/* Right Side - Timeline/Journey */}
+          {/* Education and personal background */}
           <div className="space-y-8">
-            <div className="bg-gradient-to-br from-gray-800 to-gray-900 rounded-xl p-8 border border-gray-700">
-              <h3 className="text-2xl font-bold text-white mb-6 flex items-center">
-                <span className="text-2xl mr-3">📈</span>
-                My Journey
-              </h3>
-
-              <div className="space-y-6">
-                <div className="flex items-start space-x-4">
-                  <div className="flex-shrink-0 w-8 h-8 bg-gradient-to-r from-green-500 to-emerald-500 rounded-full flex items-center justify-center text-sm font-bold">
-                    1
-                  </div>
-                  <div>
-                    <div className="text-white font-semibold">
-                      Self-Taught Journey
-                    </div>
-                    <div className="text-gray-400 text-sm">
-                      Started exploring web development through online resources
-                      and practical application
-                    </div>
-                  </div>
-                </div>
-
-                <div className="flex items-start space-x-4">
-                  <div className="flex-shrink-0 w-8 h-8 bg-gradient-to-r from-emerald-500 to-green-500 rounded-full flex items-center justify-center text-sm font-bold">
-                    2
-                  </div>
-                  <div>
-                    <div className="text-white font-semibold">
-                      First Professional Role
-                    </div>
-                    <div className="text-gray-400 text-sm">
-                      Crismyla International - Built complete WordPress
-                      e-commerce solution from scratch
-                    </div>
-                  </div>
-                </div>
-
-                <div className="flex items-start space-x-4">
-                  <div className="flex-shrink-0 w-8 h-8 bg-gradient-to-r from-green-500 to-emerald-500 rounded-full flex items-center justify-center text-sm font-bold">
-                    3
-                  </div>
-                  <div>
-                    <div className="text-white font-semibold">
-                      Website Management
-                    </div>
-                    <div className="text-gray-400 text-sm">
-                      Toke Makinwa Beauty - Website Manager optimizing
-                      dual-platform e-commerce operations
-                    </div>
-                  </div>
-                </div>
-
-                <div className="flex items-start space-x-4">
-                  <div className="flex-shrink-0 w-8 h-8 bg-gradient-to-r from-lime-500 to-green-500 rounded-full flex items-center justify-center text-sm font-bold">
-                    4
-                  </div>
-                  <div>
-                    <div className="text-white font-semibold">Building Xiongzai</div>
-                    <div className="text-gray-400 text-sm">
-                      Co-founder of an esports marketplace in China, currently
-                      in development across mobile, administration, and backend services.
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
-
             <div className="bg-gradient-to-br from-gray-800 to-gray-900 rounded-xl p-8 border border-gray-700">
               <h3 className="text-2xl font-bold text-white mb-6">Education</h3>
               <div className="space-y-6">
@@ -223,11 +147,10 @@ const AboutMe = () => {
                 Beyond Code
               </h4>
               <p className="text-gray-300 text-sm leading-relaxed mb-4">
-                Long-term, I want to lead or be part of teams that innovate,
-                solve real-world problems, and bring ideas to life through code.
-                I'm currently working on meaningful side projects and actively
-                building in public. When I’m not coding, I’m probably watching
-                anime. Open to full-time roles, internships, and collaborations.
+                I'm based in China and enjoy building products with people from
+                different backgrounds. Outside coding, I'm learning Chinese and
+                watching anime. Open to React Native, React, and AI-enabled
+                application development roles and collaborations.
               </p>
               <div className="text-center">
                 <span className="text-green-400 font-semibold text-sm">
